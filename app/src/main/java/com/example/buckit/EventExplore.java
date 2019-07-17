@@ -28,6 +28,7 @@ public class EventExplore extends AppCompatActivity {
     public RecyclerView rvEvents;
     public EventCardAdapter adapter;
     ArrayList<Event> eventsList;
+    Event event;
 
 
     @Override
