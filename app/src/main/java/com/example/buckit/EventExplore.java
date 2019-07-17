@@ -2,6 +2,8 @@ package com.example.buckit;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.example.buckit.models.Event;
@@ -23,8 +25,8 @@ public class EventExplore extends AppCompatActivity {
     public final static String API_KEY_PARAM = "token";
     public final static String privateToken = "NTGHZITV2KGOOD67X3DX";
     public final static String API_KEY_LOCATION = "location.address";
-
-    AsyncHttpClient client;
+    public RecyclerView rvEvents;
+    public EventCardAdapter adapter;
     ArrayList<Event> eventsList;
 
 
@@ -32,13 +34,18 @@ public class EventExplore extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        client = new AsyncHttpClient();
+        rvEvents = findViewById(R.id.rvEvents);
+        final GridLayoutManager layout = new GridLayoutManager(EventExplore.this, 1);
+        rvEvents.setLayoutManager(layout);
         eventsList = new ArrayList<>();
+        adapter = new EventCardAdapter(EventExplore.this, eventsList);
+        rvEvents.setAdapter(adapter);
         getEvents();
-        printEvents();
+
     }
 
     private void getEvents() {
+        AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
         params.put(API_KEY_LOCATION, "sanfrancisco");
         params.put(API_KEY_PARAM, privateToken);
@@ -50,14 +57,14 @@ public class EventExplore extends AppCompatActivity {
                     for(int i = 0; i < events.length(); i++){
                         Event currEvent = new Event(events.getJSONObject(i));
                         eventsList.add(currEvent);
+                        adapter.notifyDataSetChanged();
                     }
                 } catch (JSONException e){
                     Log.d("Get events", "Failure to retrieve events");
                 }
-
+                printEvents();
             }
         });
-
     }
 
     private void printEvents(){
