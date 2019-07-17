@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">buckit</string>
+    <string name="logo_description">Logo of application</string>
+    <string name="interest">Because you expressed interest in</string>
 </resources>

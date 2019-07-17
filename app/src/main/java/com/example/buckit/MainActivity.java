@@ -1,7 +1,9 @@
 package com.example.buckit;
 
 import android.os.Bundle;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -26,10 +28,17 @@ public class MainActivity extends AppCompatActivity {
     AsyncHttpClient client;
     ArrayList<String> events;
 
+    BottomNavigationView bottomNavigationView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         setContentView(R.layout.activity_main);
         client = new AsyncHttpClient();
         getEvents();
