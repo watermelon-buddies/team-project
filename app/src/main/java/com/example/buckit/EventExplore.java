@@ -1,7 +1,9 @@
 package com.example.buckit;
 
 import android.os.Bundle;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -30,10 +32,17 @@ public class EventExplore extends AppCompatActivity {
     ArrayList<Event> eventsList;
     Event event;
 
+    BottomNavigationView bottomNavigationView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         setContentView(R.layout.activity_main);
         rvEvents = findViewById(R.id.rvEvents);
         final GridLayoutManager layout = new GridLayoutManager(EventExplore.this, 1);

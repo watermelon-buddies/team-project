@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_events"
+        android:enabled="true"
+        android:icon="@drawable/ic_event"
+        android:title="Search"
+        app:labelVisibilityMode="unlabeled"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_bucket"
+        android:enabled="true"
+        android:icon="@drawable/ic_bucket"
+        android:title="Bucket"
+        app:labelVisibilityMode="unlabeled"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_schedule"
+        android:enabled="true"
+        android:icon="@drawable/ic_schedule"
+        android:title="Schedule"
+        app:labelVisibilityMode="unlabeled"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_user"
+        android:enabled="true"
+        android:icon="@drawable/ic_profile"
+        android:title="Profile"
+        app:labelVisibilityMode="unlabeled"
+        app:showAsAction="ifRoom" />
+</menu>
