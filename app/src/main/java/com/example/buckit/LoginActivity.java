@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void goToHome() {
-        final Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        final Intent intent = new Intent(LoginActivity.this, EventExplore.class);
         startActivity(intent);
         // Finish so user can't go back to home screen
         finish();
