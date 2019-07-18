@@ -52,7 +52,7 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
     private void getEvents() {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
-        params.put(API_KEY_LOCATION, "sanfrancisco");
+        params.put(API_KEY_LOCATION, "chicago");
         params.put(API_KEY_PARAM, privateToken);
         client.get(API_BASE_URL, params, new JsonHttpResponseHandler(){
             @Override
