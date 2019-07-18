@@ -29,14 +29,13 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
         ButterKnife.bind(this);
-       // ParseUser currentUser = ParseUser.getCurrentUser();
-        // Checks to see if there is already someone logged in so that the user
-        // can persist without logging in again
-        //if (currentUser != null) {
-          //  goToHome();
+        ParseUser currentUser = ParseUser.getCurrentUser();
 
-            // Takes user to different screen if they want to create new account
-        //} else {
+            if (currentUser != null) {
+                goToHome();
+
+
+            } else {
             btnSignUp.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -52,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
                     login(username, password);
                 }
             });
-        //}
+        }
 
     }
 
