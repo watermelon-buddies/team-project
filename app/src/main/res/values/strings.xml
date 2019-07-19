@@ -2,4 +2,7 @@
     <string name="app_name">buckit</string>
     <string name="logo_description">Logo of application</string>
     <string name="interest">Because you expressed interest in</string>
+    <string name="google_maps_api_key">AIzaSyCgppKjKEpuscDM2_DzrjBPL0OdltG2CJQ</string>
+    <string name="intent_scheme">oauth</string>
+    <string name="intent_host">cprest</string>
 </resources>
