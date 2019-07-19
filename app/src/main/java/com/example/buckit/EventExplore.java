@@ -11,8 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -37,25 +35,27 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.wenchao.cardstack.CardStack;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
 import cz.msebera.android.httpclient.Header;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
-
-import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
-
 @RuntimePermissions
-public class EventExplore extends AppCompatActivity {
+public class EventExplore extends AppCompatActivity implements CardStack.CardEventListener {
+
 
     public final static String API_BASE_URL = "https://www.eventbriteapi.com/v3/events/search";
     public final static String API_KEY_PARAM = "token";
     public final static String privateToken = "NTGHZITV2KGOOD67X3DX";
+    public final static String API_KEY_LOCATION = "location.address";
+
     public final static String API_KEY_LATITUDE = "location.latitude";
     public final static String API_KEY_LONGITUDE = "location.longitude";
 
@@ -72,14 +72,11 @@ public class EventExplore extends AppCompatActivity {
      * returned in Activity.onActivityResult
      */
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+    public CardStack rvEvents;
+    public SwipeCardAdapter swipe_card_adapter;
+    HashMap<Integer, Event> eventsList;
 
 
-
-
-    public RecyclerView rvEvents;
-    public EventCardAdapter adapter;
-    ArrayList<Event> eventsList;
-    Event event;
 
     BottomNavigationView bottomNavigationView;
 
@@ -87,8 +84,8 @@ public class EventExplore extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         Toolbar toolbar = findViewById(R.id.toolbar);
+        getEvents();
         setSupportActionBar(toolbar);
 
         if (TextUtils.isEmpty(getResources().getString(R.string.google_maps_api_key))) {
@@ -102,17 +99,64 @@ public class EventExplore extends AppCompatActivity {
             getEvents();
         }
 
+        eventsList = new HashMap<>();
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         setContentView(R.layout.activity_main);
-        rvEvents = findViewById(R.id.rvEvents);
-        final GridLayoutManager layout = new GridLayoutManager(EventExplore.this, 1);
-        rvEvents.setLayoutManager(layout);
-        eventsList = new ArrayList<>();
-        adapter = new EventCardAdapter(EventExplore.this, eventsList);
-        rvEvents.setAdapter(adapter);
+        rvEvents = (CardStack) findViewById(R.id.rvEvents);
+        rvEvents.setContentResource(R.layout.item_event);
+        rvEvents.setListener(this);
+        swipe_card_adapter = new SwipeCardAdapter(getApplicationContext(),20, eventsList);
+        rvEvents.setAdapter(swipe_card_adapter);
+    }
+
+    private void getEvents() {
+        AsyncHttpClient client = new AsyncHttpClient();
+        RequestParams params = new RequestParams();
+        params.put(API_KEY_LATITUDE, mCurrentLocation.getLatitude());
+        params.put(API_KEY_LONGITUDE, mCurrentLocation.getLongitude());
+        params.put(API_KEY_PARAM, privateToken);
+        client.get(API_BASE_URL, params, new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try{
+                    JSONArray events = response.getJSONArray("events");
+                    for(int i = 0; i < events.length(); i++){
+                        Event currEvent = new Event(events.getJSONObject(i));
+                        eventsList.put(i, currEvent);
+                        swipe_card_adapter.notifyDataSetChanged();
+                    }
+                } catch (JSONException e){
+                    Log.d("Get events", "Failure to retrieve events");
+                }
+            }
+        });
+    }
+
+
+    @Override
+    public boolean swipeEnd(int section, float distance) {
+        return true;
+    }
+
+    @Override
+    public boolean swipeStart(int section, float distance) {
+        return true;
+    }
+
+    @Override
+    public boolean swipeContinue(int section, float distanceX, float distanceY) {
+        return true;
+    }
+
+    @Override
+    public void discarded(int mIndex, int direction) {
 
     }
 
+    @Override
+    public void topCardTapped() {
+
+    }
 
     private boolean isGooglePlayServicesAvailable() {
         // Check that Google Play services is available
@@ -237,40 +281,9 @@ public class EventExplore extends AppCompatActivity {
     }
 
 
-    private void getEvents() {
-        AsyncHttpClient client = new AsyncHttpClient();
-        RequestParams params = new RequestParams();
-        params.put(API_KEY_LATITUDE, mCurrentLocation.getLatitude());
-        params.put(API_KEY_LONGITUDE, mCurrentLocation.getLongitude());
-        params.put(API_KEY_PARAM, privateToken);
-        client.get(API_BASE_URL, params, new JsonHttpResponseHandler(){
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                try{
-                    JSONArray events = response.getJSONArray("events");
-                    for(int i = 0; i < events.length(); i++){
-                        Event currEvent = new Event(events.getJSONObject(i));
-                        eventsList.add(currEvent);
-                        adapter.notifyDataSetChanged();
-                    }
-                } catch (JSONException e){
-                    Log.d("Get events", "Failure to retrieve events");
-                }
-                printEvents();
-            }
-        });
-    }
-
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putParcelable(KEY_LOCATION, mCurrentLocation);
         super.onSaveInstanceState(savedInstanceState);
-    }
-
-
-    private void printEvents(){
-        for(Event event : eventsList){
-            Log.d("Check", event.getTitle() + " " + event.getStartTime() + " " + event.getEndTime() + " " + event.getImageUrl());
-        }
     }
     // Define a DialogFragment that displays the error dialog
     public static class ErrorDialogFragment extends android.support.v4.app.DialogFragment {
@@ -295,4 +308,5 @@ public class EventExplore extends AppCompatActivity {
             return mDialog;
         }
     }
+
 }
