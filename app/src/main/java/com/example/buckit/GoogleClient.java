@@ -1,21 +1,29 @@
 package com.example.buckit;
 
+import android.app.Application;
 import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
 
 import com.codepath.oauth.OAuthBaseClient;
 import com.github.scribejava.apis.GoogleApi20;
 import com.github.scribejava.apis.TwitterApi;
 import com.github.scribejava.core.builder.api.BaseApi;
+import com.google.common.io.Resources;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+
 public class GoogleClient extends OAuthBaseClient {
+
+    Context context;
+
+
     public static final BaseApi REST_API_INSTANCE = GoogleApi20.instance(); // Change this
     public static final String REST_URL = "https://accounts.google.com/"; // Change this, base API URL
     //public static final String REST_CONSUMER_KEY = "4KxocRp2Wh8RZ9cy1KJEjxGVy";       // Change this
     //public static final String REST_CONSUMER_SECRET = "EeyJ4vEZN3al7c0C13bMwAY3pGc2RASrampYtvJvnX1kLDHKJf"; // Change this
-    public static final String REST_CONSUMER_KEY = "293701218628-stj6ibkgecaf1jvkmmqc4ft5k52p48e5.apps.googleusercontent.com";
-    public static final String REST_CONSUMER_SECRET = "k9blesyQzEv87hmjUZgKymth";
+    public final static String REST_CONSUMER_KEY = "";
+    public final static String REST_CONSUMER_SECRET = "";
 
     // Landing page to indicate the OAuth flow worked in case Chrome for Android 25+ blocks navigation back to the app.
     public static final String FALLBACK_URL = "https://codepath.github.io/android-rest-client-template/success.html";
