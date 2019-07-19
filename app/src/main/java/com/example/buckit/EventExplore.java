@@ -5,6 +5,16 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 
 import com.example.buckit.models.Event;
 import com.loopj.android.http.AsyncHttpClient;
@@ -29,8 +39,8 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
     public CardStack rvEvents;
     public SwipeCardAdapter swipe_card_adapter;
     HashMap<Integer, Event> eventsList;
-
     BottomNavigationView bottomNavigationView;
+    Button curr;
 
 
     @Override
@@ -52,7 +62,7 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
     private void getEvents() {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
-        params.put(API_KEY_LOCATION, "chicago");
+        params.put(API_KEY_LOCATION, "newyork");
         params.put(API_KEY_PARAM, privateToken);
         client.get(API_BASE_URL, params, new JsonHttpResponseHandler(){
             @Override
@@ -72,13 +82,18 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
     }
 
 
+
     @Override
     public boolean swipeEnd(int section, float distance) {
-        return true;
+
+        return (distance>200)? true : false;
+
     }
 
     @Override
     public boolean swipeStart(int section, float distance) {
+
+
         return true;
     }
 
@@ -95,5 +110,37 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
     @Override
     public void topCardTapped() {
 
+        onButtonShowPopupWindowClick(findViewById(R.id.rvEvents));
+    }
+
+    public void onButtonShowPopupWindowClick(View view) {
+        ImageView blur = findViewById(R.id.ivBlur);
+        blur.setVisibility(View.VISIBLE);
+        Animation aniFade = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_in);
+        blur.startAnimation(aniFade);
+
+        // inflate the layout of the popup window
+        LayoutInflater inflater = (LayoutInflater)
+                getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(R.layout.popup_window, null);
+
+        // create the popup window
+        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height);
+
+        // show the popup window
+        // which view you pass in doesn't matter, it is only used for the window tolken
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+
+        // dismiss the popup window when touched
+        popupView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                popupWindow.dismiss();
+                return true;
+            }
+        });
     }
 }

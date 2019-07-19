@@ -21,6 +21,7 @@ public class SwipeCardAdapter extends ArrayAdapter<HashMap<Event, Integer>> {
     TextView tvTitle;
     HashMap<Integer, Event> mEvents;
 
+
     public SwipeCardAdapter(Context context, int resource, HashMap<Integer, Event> events) {
         super(context, resource);
         mContext = context;

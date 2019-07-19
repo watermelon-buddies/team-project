@@ -20,8 +20,8 @@
 
     <com.wenchao.cardstack.CardStack
         android:id="@+id/rvEvents"
-        android:layout_width="405dp"
-        android:layout_height="568dp"
+        android:layout_width="400dp"
+        android:layout_height="554dp"
         android:layout_marginTop="8dp"
         android:clipChildren="false"
         android:clipToPadding="false"
@@ -61,5 +61,18 @@
         app:layout_constraintHorizontal_bias="0.454"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/menu_bottom_navigation" />
+
+    <ImageView
+        android:id="@+id/ivBlur"
+        android:layout_width="333dp"
+        android:layout_height="495dp"
+        android:layout_centerHorizontal="true"
+        android:background="#9F0C0C0C"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/rvEvents"
+        app:layout_constraintEnd_toEndOf="@+id/rvEvents"
+        app:layout_constraintStart_toStartOf="@+id/rvEvents"
+        app:layout_constraintTop_toBottomOf="@+id/tvRandom"
+        app:layout_constraintVertical_bias="0.453" />
 
 </android.support.constraint.ConstraintLayout>
