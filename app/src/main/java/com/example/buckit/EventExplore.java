@@ -42,11 +42,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
 import cz.msebera.android.httpclient.Header;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
+
+import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 @RuntimePermissions
 public class EventExplore extends AppCompatActivity implements CardStack.CardEventListener {
 
@@ -85,7 +86,6 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        getEvents();
         setSupportActionBar(toolbar);
 
         if (TextUtils.isEmpty(getResources().getString(R.string.google_maps_api_key))) {
