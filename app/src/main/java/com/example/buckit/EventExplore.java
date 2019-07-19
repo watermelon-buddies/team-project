@@ -16,13 +16,13 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.buckit.models.Event;
@@ -75,6 +75,7 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
     Location mCurrentLocation;
     private long UPDATE_INTERVAL = 60000;  /* 60 secs */
     private long FASTEST_INTERVAL = 5000; /* 5 secs */
+    ImageView blur;
 
 
     /*
@@ -85,9 +86,6 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
     public CardStack rvEvents;
     public SwipeCardAdapter swipe_card_adapter;
     HashMap<Integer, Event> eventsList;
-
-
-
     BottomNavigationView bottomNavigationView;
 
 
@@ -109,9 +107,9 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
         }
 
         eventsList = new HashMap<>();
-        bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
         setContentView(R.layout.activity_main);
-        rvEvents = (CardStack) findViewById(R.id.rvEvents);
+        rvEvents = findViewById(R.id.rvEvents);
         rvEvents.setContentResource(R.layout.item_event);
         rvEvents.setListener(this);
         swipe_card_adapter = new SwipeCardAdapter(getApplicationContext(),20, eventsList);
@@ -146,15 +144,11 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
 
     @Override
     public boolean swipeEnd(int section, float distance) {
-
-        return (distance>200)? true : false;
-
+        return distance > 200;
     }
 
     @Override
     public boolean swipeStart(int section, float distance) {
-
-
         return true;
     }
 
@@ -165,45 +159,61 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
 
     @Override
     public void discarded(int mIndex, int direction) {
-
     }
 
     @Override
     public void topCardTapped() {
-
         onButtonShowPopupWindowClick(findViewById(R.id.rvEvents));
     }
 
     public void onButtonShowPopupWindowClick(View view) {
-        ImageView blur = findViewById(R.id.ivBlur);
-        blur.setVisibility(View.VISIBLE);
-        Animation aniFade = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_in);
-        blur.startAnimation(aniFade);
-
-        // inflate the layout of the popup window
+        addBlur();
         LayoutInflater inflater = (LayoutInflater)
                 getSystemService(LAYOUT_INFLATER_SERVICE);
         View popupView = inflater.inflate(R.layout.popup_window, null);
-
-        // create the popup window
+        final TextView tvSaveEvent = popupView.findViewById(R.id.tvSaveEvent);
+        ImageView ivClose = popupView.findViewById(R.id.ivClose);
+        ivClose.bringToFront();
+        tvSaveEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("OnClick", "Save Event");
+            }
+        });
+        final TextView tvBuckit = popupView.findViewById(R.id.tvBuckit);
+        tvBuckit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("OnClick", "Buck event");
+            }
+        });
         int width = LinearLayout.LayoutParams.WRAP_CONTENT;
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-
         final PopupWindow popupWindow = new PopupWindow(popupView, width, height);
-
-        // show the popup window
-        // which view you pass in doesn't matter, it is only used for the window tolken
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
-
-        // dismiss the popup window when touched
-        popupView.setOnTouchListener(new View.OnTouchListener() {
+        blur.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public void onClick(View v) {
                 popupWindow.dismiss();
-                return true;
+                removeBlur();
             }
         });
     }
+
+    private void addBlur() {
+        blur = findViewById(R.id.ivBlur);
+        blur.setVisibility(View.VISIBLE);
+        Animation aniFade = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_in);
+        blur.startAnimation(aniFade);
+    }
+
+    private void removeBlur(){
+        Animation aniFade = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_out);
+        blur.startAnimation(aniFade);
+        blur.setVisibility(View.INVISIBLE);
+    }
+
+
 
     private boolean isGooglePlayServicesAvailable() {
         // Check that Google Play services is available
@@ -217,7 +227,6 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
             // Get the error dialog from Google Play services
             Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(resultCode, this,
                     CONNECTION_FAILURE_RESOLUTION_REQUEST);
-
             // If Google Play services can provide an error dialog
             if (errorDialog != null) {
                 // Create a new DialogFragment for the error dialog
@@ -225,7 +234,6 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
                 errorFragment.setDialog(errorDialog);
                 errorFragment.show(getSupportFragmentManager(), "Location Updates");
             }
-
             return false;
         }
     }
@@ -241,7 +249,6 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
     @SuppressWarnings({"MissingPermission"})
     @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     public void getMyLocation() {
-
         FusedLocationProviderClient locationClient = getFusedLocationProviderClient(this);
         locationClient.getLastLocation()
                 .addOnSuccessListener(new OnSuccessListener<Location>() {
@@ -322,8 +329,8 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
         Log.d("Location", mCurrentLocation.toString());
         getEvents();
         String msg = "Updated Location: " +
-                Double.toString(location.getLatitude()) + "," +
-                Double.toString(location.getLongitude());
+                location.getLatitude() + "," +
+                location.getLongitude();
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
@@ -332,6 +339,9 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
         savedInstanceState.putParcelable(KEY_LOCATION, mCurrentLocation);
         super.onSaveInstanceState(savedInstanceState);
     }
+
+
+
     // Define a DialogFragment that displays the error dialog
     public static class ErrorDialogFragment extends android.support.v4.app.DialogFragment {
 

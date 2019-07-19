@@ -18,6 +18,17 @@
         android:background="#FDFFFF">
 
 
+        <ImageView
+            android:id="@+id/ivClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginRight="4dp"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:layout_constraintTop_toTopOf="parent"
+            card_view:srcCompat="@drawable/close_icon" />
+
         <TextView
             android:id="@+id/tvTappedEvent"
             android:layout_width="wrap_content"
@@ -27,7 +38,7 @@
             android:fontFamily="@font/francois_one"
             android:foregroundGravity="left"
             android:paddingLeft="20dp"
-            android:paddingTop="15dp"
+            android:paddingTop="20dp"
             android:paddingRight="20dp"
             android:paddingBottom="15dp"
             android:text="Like This Event?"
@@ -35,7 +46,7 @@
             android:textSize="22sp"
             card_view:layout_constraintBottom_toTopOf="@+id/divider"
             card_view:layout_constraintEnd_toEndOf="parent"
-            card_view:layout_constraintHorizontal_bias="0.0"
+            card_view:layout_constraintHorizontal_bias="1.0"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toTopOf="parent" />
 

@@ -32,9 +32,9 @@ public class SwipeCardAdapter extends ArrayAdapter<HashMap<Event, Integer>> {
 
     @Override
     public View getView(int position, final View contentView, ViewGroup parent) {
-        ivEventPicture = (ImageView) contentView.findViewById(R.id.ivEventPicture);
+        ivEventPicture = contentView.findViewById(R.id.ivEventPicture);
         ivEventPicture.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        tvTitle = (TextView) contentView.findViewById(R.id.tvTitle);
+        tvTitle = contentView.findViewById(R.id.tvTitle);
         tvTitle.setText(mEvents.get(position).getTitle());
         Glide.with(mContext)
                 .load(mEvents.get(position).getImageUrl())
