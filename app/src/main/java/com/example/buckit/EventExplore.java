@@ -231,8 +231,10 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
             CalendarProvider provider = new CalendarProvider(getApplicationContext());
             List<Calendar> calendars = provider.getCalendars().getList();
             Log.d("check", calendars.toString());
-            List<me.everything.providers.android.calendar.Event>events = provider.getEvents(3).getList();
+            List<me.everything.providers.android.calendar.Event>events = provider.getEvents(4).getList();
             Log.d("check", "checkity");
+            String date = String.valueOf(provider.getEvent(62).dTStart);
+            Log.d("time", String.valueOf(provider.getEvent(62).dTStart));
 
         }
     }
