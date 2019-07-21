@@ -18,8 +18,9 @@ public class SwipeCardAdapter extends ArrayAdapter<HashMap<Event, Integer>> {
     float alphaValue = 0;
     private Context mContext;
     ImageView ivEventPicture;
-    TextView tvTitle;
+    TextView mtvEventTitle;
     HashMap<Integer, Event> mEvents;
+
 
 
     public SwipeCardAdapter(Context context, int resource, HashMap<Integer, Event> events) {
@@ -27,17 +28,19 @@ public class SwipeCardAdapter extends ArrayAdapter<HashMap<Event, Integer>> {
         mContext = context;
         mEvents = events;
 
+
     }
 
 
     @Override
     public View getView(int position, final View contentView, ViewGroup parent) {
+        Event event = mEvents.get(position);
         ivEventPicture = contentView.findViewById(R.id.ivEventPicture);
-        ivEventPicture.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        tvTitle = contentView.findViewById(R.id.tvTitle);
-        tvTitle.setText(mEvents.get(position).getTitle());
+        TextView tvTitlte = contentView.findViewById(R.id.tvTitle);
+        tvTitlte.setText(event.getTitle());
         Glide.with(mContext)
-                .load(mEvents.get(position).getImageUrl())
+                .load(event.getImageUrl())
+                .fitCenter()
                 .placeholder(R.drawable.grey_placeholder)
                 .into(ivEventPicture);
         return contentView;

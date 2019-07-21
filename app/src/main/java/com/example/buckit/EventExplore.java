@@ -90,6 +90,7 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
     public SwipeCardAdapter swipe_card_adapter;
     HashMap<Integer, Event> eventsList;
     BottomNavigationView bottomNavigationView;
+    public TextView tvEventTitle;
 
 
     @Override
@@ -107,11 +108,11 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
             mCurrentLocation = savedInstanceState.getParcelable(KEY_LOCATION);
             getEvents();
         }
-
         eventsList = new HashMap<>();
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         setContentView(R.layout.activity_main);
         rvEvents = findViewById(R.id.rvEvents);
+        tvEventTitle = findViewById(R.id.tvEventTitle);
         rvEvents.setContentResource(R.layout.item_event);
         rvEvents.setListener(this);
         swipe_card_adapter = new SwipeCardAdapter(getApplicationContext(),20, eventsList);
