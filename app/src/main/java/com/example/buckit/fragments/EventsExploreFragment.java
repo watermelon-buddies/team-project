@@ -13,7 +13,6 @@ import com.example.buckit.R;
 import android.location.Location;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -54,8 +53,8 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
     public CardStack rvEvents;
     public View popupView;
     ImageView blur;
+    ImageView ivClose;
     public SwipeCardAdapter swipe_card_adapter;
-    Location mCurrentLocation;
     Double latitude;
     Double longitude;
     HashMap<Integer, Event> eventsList;
@@ -66,7 +65,7 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.activity_events_explore_fragment, container, false);
+        return inflater.inflate(R.layout.events_explore_fragment, container, false);
     }
 
     @Override
@@ -74,8 +73,9 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
         super.onViewCreated(view, savedInstanceState);
         eventsList = new HashMap<>();
         rvEvents = (CardStack) view.findViewById(R.id.rvEvents);
-        rvEvents.setContentResource(R.layout.item_event);
-        blur = view.findViewById(R.id.ivBlur);
+        rvEvents.setContentResource(R.layout.event_item_view);
+        blur = view.findViewById(R.id.addItemFab);
+        ivClose = view.findViewById(R.id.ivClose);
         rvEvents.setListener(this);
         swipe_card_adapter = new SwipeCardAdapter(getContext().getApplicationContext(),20, eventsList);
         rvEvents.setAdapter(swipe_card_adapter);
@@ -145,7 +145,7 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
         addBlur();
         LayoutInflater inflater = (LayoutInflater)
                 getContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-        popupView = inflater.inflate(R.layout.popup_window, null);
+        popupView = inflater.inflate(R.layout.events_explore_popup_window, null);
         final TextView tvSaveEvent = popupView.findViewById(R.id.tvSaveEvent);
         ImageView ivClose = popupView.findViewById(R.id.ivClose);
         ivClose.bringToFront();
@@ -167,6 +167,13 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
         final PopupWindow popupWindow = new PopupWindow(popupView, width, height);
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
         blur.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+                removeBlur();
+            }
+        });
+        ivClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 popupWindow.dismiss();

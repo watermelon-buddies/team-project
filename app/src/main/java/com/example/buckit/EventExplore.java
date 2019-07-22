@@ -30,9 +30,6 @@ import android.widget.Toast;
 
 import com.example.buckit.adapters.SwipeCardAdapter;
 import com.example.buckit.models.Event;
-import com.example.buckit.utils.ExploreActivityPermissionDispatcher;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -40,9 +37,6 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.loopj.android.http.AsyncHttpClient;
@@ -120,7 +114,7 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
         setContentView(R.layout.activity_main);
         rvEvents = findViewById(R.id.rvEvents);
         tvEventTitle = findViewById(R.id.tvEventTitle);
-        rvEvents.setContentResource(R.layout.item_event);
+        rvEvents.setContentResource(R.layout.event_item_view);
         rvEvents.setListener(this);
         swipe_card_adapter = new SwipeCardAdapter(getApplicationContext(),20, eventsList);
         rvEvents.setAdapter(swipe_card_adapter);
@@ -181,7 +175,7 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
         addBlur();
         LayoutInflater inflater = (LayoutInflater)
                 getSystemService(LAYOUT_INFLATER_SERVICE);
-        View popupView = inflater.inflate(R.layout.popup_window, null);
+        View popupView = inflater.inflate(R.layout.events_explore_popup_window, null);
         final TextView tvSaveEvent = popupView.findViewById(R.id.tvSaveEvent);
         ImageView ivClose = popupView.findViewById(R.id.ivClose);
         ivClose.bringToFront();
@@ -212,7 +206,7 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
     }
 
     private void addBlur() {
-        blur = findViewById(R.id.ivBlur);
+        blur = findViewById(R.id.addItemFab);
         blur.setVisibility(View.VISIBLE);
         Animation aniFade = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_in);
         blur.startAnimation(aniFade);

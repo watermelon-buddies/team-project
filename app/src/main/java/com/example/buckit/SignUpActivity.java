@@ -24,7 +24,7 @@ public class SignUpActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_up);
+        setContentView(R.layout.sign_up_activity);
         ButterKnife.bind(this);
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -31,18 +31,25 @@ import butterknife.Unbinder;
 
 public class BucketListFragment extends Fragment {
 
+    /*
+    Fragment activated when bucket icon on bottom naivation bar is clicked that allows user to see
+    their bucket list ideas, add ideas with categories specified and go to scheduler to book
+    specific time
+     */
+
     @BindView(R.id.rvBucketList)  RecyclerView rvBucketList;
-    @BindView(R.id.fab)  FloatingActionButton fab;
-    @BindView(R.id.swipeContainer)  SwipeRefreshLayout swipeContainer;
+    @BindView(R.id.addItemFab)  FloatingActionButton addItemFab;
+    @BindView(R.id.swipeContainer)  SwipeRefreshLayout bucketRefreshSwipeContainer;
     private Unbinder unbinder;
     ArrayList<Bucketlist> mBucketList;
     BucketListAdapter mBucketAdapter;
     boolean mFirstLoad;
 
+    /* Inflate bucket_list_fragment.xml and bind views using Butterknife */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View bucketListView = inflater.inflate(R.layout.activity_bucket_list_fragment, container, false);
+        View bucketListView = inflater.inflate(R.layout.bucket_list_fragment, container, false);
         unbinder = ButterKnife.bind(this, bucketListView);
         return bucketListView;
     }
@@ -52,10 +59,8 @@ public class BucketListFragment extends Fragment {
         super.onViewCreated(bucketListView, savedInstanceState);
 
         ParseUser currentUser = ParseUser.getCurrentUser();
-
-        // Dial contact's number.
-        // This shows the dialer with the number, allowing you to explicitly initiate the call.
-        fab.setOnClickListener(new View.OnClickListener() {
+        /* addItem floating action button for adding new item to the bucket list */
+        addItemFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showEditDialog();
@@ -65,26 +70,23 @@ public class BucketListFragment extends Fragment {
         mBucketList = new ArrayList<>();
         mBucketAdapter = new BucketListAdapter(getContext(), mBucketList);
         rvBucketList.setAdapter(mBucketAdapter);
-
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                // Your code to refresh the list here.
-                // Make sure you call swipeContainer.setRefreshing(false)
-                // once the network request has completed successfully.
-                populateTimeline();
-                swipeContainer.setRefreshing(false);
-            }
-        });
-
-        swipeContainer.setColorSchemeResources(android.R.color.holo_red_light);
-
-        // associate the LayoutManager with the RecylcerView
+        // associate the LinearLayoutManager with the RecylcerView
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rvBucketList.setLayoutManager(linearLayoutManager);
-        populateTimeline();
+        populateBucket();
+
+        bucketRefreshSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Call populate timeline when swipe to refresh is activated
+                populateBucket();
+                bucketRefreshSwipeContainer.setRefreshing(false);
+            }
+        });
+        bucketRefreshSwipeContainer.setColorSchemeResources(android.R.color.holo_red_light);
     }
 
+    /* Unbind butterknife binded views when fragment is closed*/
     @Override public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
@@ -96,13 +98,8 @@ public class BucketListFragment extends Fragment {
         addToBucketList.show(fm, "fragment_compose_tweet");
     }
 
-    public void onFinishEditDialog(String text) {
-        populateTimeline();
-        // notify the user the operation completed OK
-        Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
-    }
 
-    protected void populateTimeline() {
+    protected void populateBucket() {
         final Bucketlist.Query postQuery = new Bucketlist.Query();
         postQuery.getTop().withUser();
         postQuery.orderByDescending("createdAt");
