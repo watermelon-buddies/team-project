@@ -1,14 +1,18 @@
 package com.example.buckit;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -26,6 +30,7 @@ import android.widget.Toast;
 
 import com.example.buckit.adapters.SwipeCardAdapter;
 import com.example.buckit.models.Event;
+import com.example.buckit.utils.ExploreActivityPermissionDispatcher;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -35,6 +40,9 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.loopj.android.http.AsyncHttpClient;
@@ -46,12 +54,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.time.Instant;
 import java.util.HashMap;
+import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
+import me.everything.providers.android.calendar.Calendar;
+import me.everything.providers.android.calendar.CalendarProvider;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
+import static android.support.v4.content.PermissionChecker.PERMISSION_GRANTED;
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 @RuntimePermissions
 public class EventExplore extends AppCompatActivity implements CardStack.CardEventListener {
@@ -83,14 +96,15 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
     public SwipeCardAdapter swipe_card_adapter;
     HashMap<Integer, Event> eventsList;
     BottomNavigationView bottomNavigationView;
+    public TextView tvEventTitle;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         if (TextUtils.isEmpty(getResources().getString(R.string.google_maps_api_key))) {
             throw new IllegalStateException("You forgot to supply a Google Maps API key");
         }
@@ -101,15 +115,17 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
             mCurrentLocation = savedInstanceState.getParcelable(KEY_LOCATION);
             getEvents();
         }
-
         eventsList = new HashMap<>();
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         setContentView(R.layout.activity_main);
         rvEvents = findViewById(R.id.rvEvents);
+        tvEventTitle = findViewById(R.id.tvEventTitle);
         rvEvents.setContentResource(R.layout.item_event);
         rvEvents.setListener(this);
         swipe_card_adapter = new SwipeCardAdapter(getApplicationContext(),20, eventsList);
         rvEvents.setAdapter(swipe_card_adapter);
+        final int callbackId = 42;
+        checkPermissions(callbackId, Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
     }
 
     private void getEvents() {
@@ -135,7 +151,6 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
             }
         });
     }
-
 
 
     @Override
@@ -209,37 +224,46 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
         blur.setVisibility(View.INVISIBLE);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void checkPermissions(int callbackId, String... permissionsId) {
+        boolean permissions = true;
+        for (String p : permissionsId) {
+            permissions = permissions && ContextCompat.checkSelfPermission(this, p) == PERMISSION_GRANTED;
+        }
 
+        if (!permissions)
+            ActivityCompat.requestPermissions(this, permissionsId, callbackId);
+        else {
+            CalendarProvider provider = new CalendarProvider(getApplicationContext());
+            List<Calendar> calendars = provider.getCalendars().getList();
+            for(Calendar currCal : calendars){
+                if(!currCal.name.equals("Holidays in United States") && !currCal.name.equals("Contacts")){
+                    List<me.everything.providers.android.calendar.Event> events = provider.getEvents(currCal.id).getList();
+                    for(me.everything.providers.android.calendar.Event currEvent : events){
+                        if(currEvent.dTStart >= Instant.now().toEpochMilli()){
+                            // make an arraylist of arraylists
+                            Log.d("check", currEvent.title);
 
-    private boolean isGooglePlayServicesAvailable() {
-        // Check that Google Play services is available
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        // If Google Play services is available
-        if (ConnectionResult.SUCCESS == resultCode) {
-            // In debug mode, log the status
-            Log.d("Location Updates", "Google Play services is available.");
-            return true;
-        } else {
-            // Get the error dialog from Google Play services
-            Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(resultCode, this,
-                    CONNECTION_FAILURE_RESOLUTION_REQUEST);
-            // If Google Play services can provide an error dialog
-            if (errorDialog != null) {
-                // Create a new DialogFragment for the error dialog
-                ErrorDialogFragment errorFragment = new ErrorDialogFragment();
-                errorFragment.setDialog(errorDialog);
-                errorFragment.show(getSupportFragmentManager(), "Location Updates");
+                        }
+                    }
+                }
             }
-            return false;
+            List<me.everything.providers.android.calendar.Event>events = provider.getEvents(4).getList();
+            String date = String.valueOf(provider.getEvent(62).dTStart);
         }
     }
 
-/*    @SuppressLint("NeedOnRequestPermissionsResult")
+
+    @SuppressLint("NeedOnRequestPermissionsResult")
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         ExploreActivityPermissionDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-    }*/
+        if (requestCode == 42 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            CalendarProvider provider = new CalendarProvider(getApplicationContext());
+            List<Calendar> calendars = provider.getCalendars().getList();
+        }
+    }
 
 
     @SuppressWarnings({"MissingPermission"})
@@ -264,7 +288,7 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
                 });
     }
 
- /*   @Override
+    @Override
     protected void onResume() {
         super.onResume();
 
@@ -278,7 +302,7 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
             Toast.makeText(this, "Current location was null, enable GPS on emulator!", Toast.LENGTH_SHORT).show();
         }
         ExploreActivityPermissionDispatcher.startLocationUpdatesWithPermissionCheck(this);
-    }*/
+    }
 
     @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     public void startLocationUpdates() {
@@ -293,15 +317,7 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
 
         SettingsClient settingsClient = LocationServices.getSettingsClient(this);
         settingsClient.checkLocationSettings(locationSettingsRequest);
-        //noinspection MissingPermission
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
         getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest, new LocationCallback() {
