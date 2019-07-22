@@ -19,6 +19,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import com.example.buckit.adapters.SwipeCardAdapter;
 import com.example.buckit.models.Event;
@@ -51,7 +52,8 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
     public final static String API_KEY_LONGITUDE = "location.longitude";
 
     public CardStack rvEvents;
-    public ImageView ivBlur;
+    public View popupView;
+    ImageView blur;
     public SwipeCardAdapter swipe_card_adapter;
     Location mCurrentLocation;
     Double latitude;
@@ -70,11 +72,10 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         eventsList = new HashMap<>();
         rvEvents = (CardStack) view.findViewById(R.id.rvEvents);
         rvEvents.setContentResource(R.layout.item_event);
-        ivBlur = view.findViewById(R.id.ivBlur);
+        blur = view.findViewById(R.id.ivBlur);
         rvEvents.setListener(this);
         swipe_card_adapter = new SwipeCardAdapter(getContext().getApplicationContext(),20, eventsList);
         rvEvents.setAdapter(swipe_card_adapter);
@@ -141,33 +142,49 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
     }
 
     public void onButtonShowPopupWindowClick(View view) {
-        ImageView blur = ivBlur;
-        blur.setVisibility(View.VISIBLE);
-        Animation aniFade = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_in);
-        blur.startAnimation(aniFade);
-
-        // inflate the layout of the popup window
+        addBlur();
         LayoutInflater inflater = (LayoutInflater)
                 getContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-        View popupView = inflater.inflate(R.layout.popup_window, null);
-
-        // create the popup window
+        popupView = inflater.inflate(R.layout.popup_window, null);
+        final TextView tvSaveEvent = popupView.findViewById(R.id.tvSaveEvent);
+        ImageView ivClose = popupView.findViewById(R.id.ivClose);
+        ivClose.bringToFront();
+        tvSaveEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("OnClick", "Save Event");
+            }
+        });
+        final TextView tvBuckit = popupView.findViewById(R.id.tvBuckit);
+        tvBuckit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("OnClick", "Buck event");
+            }
+        });
         int width = LinearLayout.LayoutParams.WRAP_CONTENT;
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-
         final PopupWindow popupWindow = new PopupWindow(popupView, width, height);
-
-        // show the popup window
-        // which view you pass in doesn't matter, it is only used for the window tolken
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
-
-        // dismiss the popup window when touched
-        popupView.setOnTouchListener(new View.OnTouchListener() {
+        blur.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public void onClick(View v) {
                 popupWindow.dismiss();
-                return true;
+                removeBlur();
             }
         });
     }
+
+    private void addBlur() {
+        blur.setVisibility(View.VISIBLE);
+        Animation aniFade = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_in);
+        blur.startAnimation(aniFade);
+    }
+
+    private void removeBlur(){
+        Animation aniFade = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_out);
+        blur.startAnimation(aniFade);
+        blur.setVisibility(View.INVISIBLE);
+    }
+
 }
