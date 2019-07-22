@@ -63,6 +63,7 @@ import permissions.dispatcher.RuntimePermissions;
 
 import static android.support.v4.content.PermissionChecker.PERMISSION_GRANTED;
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
+
 @RuntimePermissions
 public class EventExplore extends AppCompatActivity implements CardStack.CardEventListener {
 
@@ -119,7 +120,7 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
         tvEventTitle = findViewById(R.id.tvEventTitle);
         rvEvents.setContentResource(R.layout.item_event);
         rvEvents.setListener(this);
-        swipe_card_adapter = new SwipeCardAdapter(getApplicationContext(),20, eventsList);
+        swipe_card_adapter = new SwipeCardAdapter(getApplicationContext(), 20, eventsList);
         rvEvents.setAdapter(swipe_card_adapter);
         final int callbackId = 42;
         checkPermissions(callbackId, Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
@@ -132,17 +133,17 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
         params.put(API_KEY_LATITUDE, mCurrentLocation.getLatitude());
         params.put(API_KEY_LONGITUDE, mCurrentLocation.getLongitude());
         params.put(API_KEY_PARAM, privateToken);
-        client.get(API_BASE_URL, params, new JsonHttpResponseHandler(){
+        client.get(API_BASE_URL, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                try{
+                try {
                     JSONArray events = response.getJSONArray("events");
-                    for(int i = 0; i < events.length(); i++){
+                    for (int i = 0; i < events.length(); i++) {
                         Event currEvent = new Event(events.getJSONObject(i));
                         eventsList.put(i, currEvent);
                         swipe_card_adapter.notifyDataSetChanged();
                     }
-                } catch (JSONException e){
+                } catch (JSONException e) {
                     Log.d("Get events", "Failure to retrieve events");
                 }
             }
@@ -211,12 +212,12 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
     private void addBlur() {
         blur = findViewById(R.id.ivBlur);
         blur.setVisibility(View.VISIBLE);
-        Animation aniFade = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_in);
+        Animation aniFade = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
         blur.startAnimation(aniFade);
     }
 
-    private void removeBlur(){
-        Animation aniFade = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_out);
+    private void removeBlur() {
+        Animation aniFade = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
         blur.startAnimation(aniFade);
         blur.setVisibility(View.INVISIBLE);
     }
@@ -233,11 +234,11 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
         else {
             CalendarProvider provider = new CalendarProvider(getApplicationContext());
             List<Calendar> calendars = provider.getCalendars().getList();
-            for(Calendar currCal : calendars){
-                if(!currCal.name.equals("Holidays in United States") && !currCal.name.equals("Contacts")){
+            for (Calendar currCal : calendars) {
+                if (!currCal.name.equals("Holidays in United States") && !currCal.name.equals("Contacts")) {
                     List<me.everything.providers.android.calendar.Event> events = provider.getEvents(currCal.id).getList();
-                    for(me.everything.providers.android.calendar.Event currEvent : events){
-                        if(currEvent.dTStart >= Instant.now().toEpochMilli()){
+                    for (me.everything.providers.android.calendar.Event currEvent : events) {
+                        if (currEvent.dTStart >= Instant.now().toEpochMilli()) {
                             // make an arraylist of arraylists
                             Log.d("check", currEvent.title);
 
@@ -245,7 +246,7 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
                     }
                 }
             }
-            List<me.everything.providers.android.calendar.Event>events = provider.getEvents(4).getList();
+            List<me.everything.providers.android.calendar.Event> events = provider.getEvents(4).getList();
             String date = String.valueOf(provider.getEvent(62).dTStart);
         }
     }
@@ -348,7 +349,6 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
         savedInstanceState.putParcelable(KEY_LOCATION, mCurrentLocation);
         super.onSaveInstanceState(savedInstanceState);
     }
-
 
 
     // Define a DialogFragment that displays the error dialog

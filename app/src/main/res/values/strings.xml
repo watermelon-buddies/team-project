@@ -1,9 +1,8 @@
 <resources>
     <string name="app_name">buckit</string>
-    <string name="tapped_event">                Like This Event?</string>
     <string name="save_event">Save for later</string>
     <string name="schedule_event">Buck it now</string>
-
+    <string name="holiday_cal">Holidays in United States</string>
     <string name="logo_description">Logo of application</string>
     <string name="interest">Because you expressed interest in</string>
     <string name="google_maps_api_key">AIzaSyCgppKjKEpuscDM2_DzrjBPL0OdltG2CJQ</string>

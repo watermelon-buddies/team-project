@@ -15,20 +15,15 @@ import java.util.HashMap;
 public class SwipeCardAdapter extends ArrayAdapter<HashMap<Event, Integer>> {
 
 
-    float alphaValue = 0;
     private Context mContext;
     ImageView ivEventPicture;
-    TextView mtvEventTitle;
     HashMap<Integer, Event> mEvents;
-
 
 
     public SwipeCardAdapter(Context context, int resource, HashMap<Integer, Event> events) {
         super(context, resource);
         mContext = context;
         mEvents = events;
-
-
     }
 
 
