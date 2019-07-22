@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".fragments.EventsExploreFragment">
+
+    <com.wenchao.cardstack.CardStack
+        android:id="@+id/rvEvents"
+        android:layout_width="400dp"
+        android:layout_height="554dp"
+        android:layout_marginTop="8dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:padding="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvRandom" />
+
+    <TextView
+        android:id="@+id/tvRandom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:fontFamily="sans-serif-light"
+        android:foregroundGravity="top"
+        android:gravity="top"
+        android:text="Events Near You"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/rvEvents"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <ImageView
+        android:id="@+id/ivBlur"
+        android:layout_width="333dp"
+        android:layout_height="495dp"
+        android:layout_centerHorizontal="true"
+        android:background="#9F0C0C0C"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/rvEvents"
+        app:layout_constraintEnd_toEndOf="@+id/rvEvents"
+        app:layout_constraintStart_toStartOf="@+id/rvEvents"
+        app:layout_constraintTop_toBottomOf="@+id/tvRandom"
+        app:layout_constraintVertical_bias="0.453" />
+
+</android.support.constraint.ConstraintLayout>

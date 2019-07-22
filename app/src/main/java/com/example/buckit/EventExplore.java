@@ -28,8 +28,11 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.buckit.adapters.SwipeCardAdapter;
 import com.example.buckit.models.Event;
 import com.example.buckit.utils.ExploreActivityPermissionDispatcher;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -256,7 +259,7 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        ExploreActivityPermissionDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+/*      ExploreActivityPermissionDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);*/
         if (requestCode == 42 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             CalendarProvider provider = new CalendarProvider(getApplicationContext());
             List<Calendar> calendars = provider.getCalendars().getList();
@@ -286,21 +289,6 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
                 });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        // Display the connection status
-
-        if (mCurrentLocation != null) {
-            Toast.makeText(this, "GPS location was found!", Toast.LENGTH_SHORT).show();
-            LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
-        } else {
-            Toast.makeText(this, "Current location was null, enable GPS on emulator!", Toast.LENGTH_SHORT).show();
-        }
-        ExploreActivityPermissionDispatcher.startLocationUpdatesWithPermissionCheck(this);
-    }
 
     @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     public void startLocationUpdates() {

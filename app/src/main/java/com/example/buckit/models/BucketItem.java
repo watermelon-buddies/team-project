@@ -7,17 +7,14 @@ import com.parse.ParseUser;
 
 import org.json.JSONArray;
 
-
-@ParseClassName("bucket_list")
-public class Bucketlist extends ParseObject {
+@ParseClassName("bucket_item")
+public class BucketItem extends ParseObject {
 
     public static final String KEY_NAME = "list_name";
     public static final String KEY_USER = "user";
-/*    public static final String KEY_ELEMENTS = "elements";*/
+    public static final String KEY_ELEMENTS = "elements";
 
-    public Bucketlist(){
-
-    }
+    public BucketItem(){ }
 
     public String getName() {
         return getString(KEY_NAME);
@@ -35,7 +32,7 @@ public class Bucketlist extends ParseObject {
         put(KEY_USER, user);
     }
 
-/*    public JSONArray getElements() { return getJSONArray(KEY_ELEMENTS);}*/
+    public JSONArray getElements() { return getJSONArray(KEY_ELEMENTS);}
 
 //    public String getRelativeTimeAgo(String created) {
 //        String postFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";

@@ -3,6 +3,7 @@ package com.example.buckit.utils;
 import android.support.v4.app.ActivityCompat;
 
 import com.example.buckit.EventExplore;
+import com.example.buckit.activities.HomeActivity;
 
 import java.lang.String;
         import permissions.dispatcher.PermissionUtils;
@@ -27,7 +28,7 @@ public final class ExploreActivityPermissionDispatcher {
         }
     }
 
-    public static void startLocationUpdatesWithPermissionCheck(EventExplore target) {
+    public static void startLocationUpdatesWithPermissionCheck(HomeActivity target) {
         if (PermissionUtils.hasSelfPermissions(target, PERMISSION_STARTLOCATIONUPDATES)) {
             target.startLocationUpdates();
         } else {
@@ -35,7 +36,7 @@ public final class ExploreActivityPermissionDispatcher {
         }
     }
 
-    public static void onRequestPermissionsResult(EventExplore target, int requestCode,
+    public static void onRequestPermissionsResult(HomeActivity target, int requestCode,
                                                   int[] grantResults) {
         switch (requestCode) {
             case REQUEST_GETMYLOCATION:

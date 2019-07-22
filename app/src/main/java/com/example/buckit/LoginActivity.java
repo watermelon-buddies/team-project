@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.buckit.activities.HomeActivity;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -56,7 +57,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void goToHome() {
-        final Intent intent = new Intent(LoginActivity.this, EventExplore.class);
+        final Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
         startActivity(intent);
         // Finish so user can't go back to home screen
         finish();
