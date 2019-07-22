@@ -5,9 +5,11 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -49,6 +51,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 
@@ -93,6 +96,7 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
     public TextView tvEventTitle;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -144,9 +148,6 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
             }
         });
     }
-
-
-
 
 
     @Override
@@ -220,6 +221,7 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
         blur.setVisibility(View.INVISIBLE);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void checkPermissions(int callbackId, String... permissionsId) {
         boolean permissions = true;
         for (String p : permissionsId) {
@@ -231,12 +233,20 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
         else {
             CalendarProvider provider = new CalendarProvider(getApplicationContext());
             List<Calendar> calendars = provider.getCalendars().getList();
-            Log.d("check", calendars.toString());
-            List<me.everything.providers.android.calendar.Event>events = provider.getEvents(4).getList();
-            Log.d("check", "checkity");
-            String date = String.valueOf(provider.getEvent(62).dTStart);
-            Log.d("time", String.valueOf(provider.getEvent(62).dTStart));
+            for(Calendar currCal : calendars){
+                if(!currCal.name.equals("Holidays in United States") && !currCal.name.equals("Contacts")){
+                    List<me.everything.providers.android.calendar.Event> events = provider.getEvents(currCal.id).getList();
+                    for(me.everything.providers.android.calendar.Event currEvent : events){
+                        if(currEvent.dTStart >= Instant.now().toEpochMilli()){
+                            // make an arraylist of arraylists
+                            Log.d("check", currEvent.title);
 
+                        }
+                    }
+                }
+            }
+            List<me.everything.providers.android.calendar.Event>events = provider.getEvents(4).getList();
+            String date = String.valueOf(provider.getEvent(62).dTStart);
         }
     }
 
@@ -304,15 +314,7 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
 
         SettingsClient settingsClient = LocationServices.getSettingsClient(this);
         settingsClient.checkLocationSettings(locationSettingsRequest);
-        //noinspection MissingPermission
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
         getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest, new LocationCallback() {
