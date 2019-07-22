@@ -1,4 +1,4 @@
-package com.example.buckit;
+package com.example.buckit.adapters;
 
 import android.content.Context;
 import android.view.View;
@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.buckit.R;
 import com.example.buckit.models.Event;
 
 import java.util.HashMap;
@@ -33,11 +34,11 @@ public class SwipeCardAdapter extends ArrayAdapter<HashMap<Event, Integer>> {
     @Override
     public View getView(int position, final View contentView, ViewGroup parent) {
         ivEventPicture = contentView.findViewById(R.id.ivEventPicture);
-        ivEventPicture.setScaleType(ImageView.ScaleType.CENTER_CROP);
         tvTitle = contentView.findViewById(R.id.tvTitle);
         tvTitle.setText(mEvents.get(position).getTitle());
         Glide.with(mContext)
                 .load(mEvents.get(position).getImageUrl())
+                .fitCenter()
                 .placeholder(R.drawable.grey_placeholder)
                 .into(ivEventPicture);
         return contentView;

@@ -13,17 +13,20 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/eventConstraint"
         android:orientation="vertical">
 
         <ImageView
             android:id="@+id/ivEventPicture"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:paddingBottom="10dp"
             card_view:layout_constraintBottom_toBottomOf="parent"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintHorizontal_bias="0.0"
             card_view:layout_constraintStart_toStartOf="parent"
-            card_view:layout_constraintTop_toTopOf="parent"
+            card_view:layout_constraintTop_toBottomOf="@+id/tvTitle"
             card_view:layout_constraintVertical_bias="1.0"
             card_view:srcCompat="@android:color/holo_blue_bright" />
 
@@ -41,12 +44,10 @@
             android:text="TextView"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
-            card_view:layout_constraintBottom_toBottomOf="@+id/ivEventPicture"
             card_view:layout_constraintEnd_toEndOf="parent"
-            card_view:layout_constraintHorizontal_bias="0.1"
+            card_view:layout_constraintHorizontal_bias="0.0"
             card_view:layout_constraintStart_toStartOf="parent"
-            card_view:layout_constraintTop_toTopOf="@+id/ivEventPicture"
-            card_view:layout_constraintVertical_bias="1.0" />
+            card_view:layout_constraintTop_toTopOf="@+id/eventConstraint" />
 
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>

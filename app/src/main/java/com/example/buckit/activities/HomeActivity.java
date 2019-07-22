@@ -1,6 +1,7 @@
-package com.example.buckit;
+package com.example.buckit.activities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -9,23 +10,27 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.TextView;
+import android.view.MenuItem;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.widget.Toast;
 
-import com.example.buckit.adapters.SwipeCardAdapter;
-import com.example.buckit.models.Event;
+import com.example.buckit.EventExplore;
+import com.example.buckit.R;
+import com.example.buckit.fragments.BucketListFragment;
+import com.example.buckit.fragments.EventsExploreFragment;
+import com.example.buckit.fragments.SchedulerFragment;
+import com.example.buckit.utils.ExploreActivityPermissionDispatcher;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -35,43 +40,27 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-import com.wenchao.cardstack.CardStack;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-
-import cz.msebera.android.httpclient.Header;
 import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.RuntimePermissions;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
-@RuntimePermissions
-public class EventExplore extends AppCompatActivity implements CardStack.CardEventListener {
 
+public class HomeActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
+    private BottomNavigationView bottomNavigationView;
 
-    public final static String API_BASE_URL = "https://www.eventbriteapi.com/v3/events/search";
-    public final static String API_KEY_PARAM = "token";
-    public final static String privateToken = "NTGHZITV2KGOOD67X3DX";
-    public final static String API_KEY_LOCATION = "location.address";
-
-    public final static String API_KEY_LATITUDE = "location.latitude";
-    public final static String API_KEY_LONGITUDE = "location.longitude";
 
     private final static String KEY_LOCATION = "location";
 
     private LocationRequest mLocationRequest;
-    Location mCurrentLocation;
+    public Location mCurrentLocation;
     private long UPDATE_INTERVAL = 60000;  /* 60 secs */
     private long FASTEST_INTERVAL = 5000; /* 5 secs */
-    ImageView blur;
 
 
     /*
@@ -79,17 +68,57 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
      * returned in Activity.onActivityResult
      */
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
-    public CardStack rvEvents;
-    public SwipeCardAdapter swipe_card_adapter;
-    HashMap<Integer, Event> eventsList;
-    BottomNavigationView bottomNavigationView;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_home);
+
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
+
+        bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+
+        final FragmentManager fragmentManager = getSupportFragmentManager();
+            // handle navigation selection
+            bottomNavigationView.setOnNavigationItemSelectedListener(
+                    new BottomNavigationView.OnNavigationItemSelectedListener() {
+                        @Override
+                        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                            Fragment fragment;
+                            switch (item.getItemId()) {
+                                case R.id.action_bucket:
+                                    fragment = new BucketListFragment();
+                                    break;
+                                case R.id.action_schedule:
+                                    fragment = new SchedulerFragment();
+                                    break;
+                                case R.id.action_events:
+                                    Bundle bundle = new Bundle();
+                                    bundle.putDouble("lat", mCurrentLocation.getLatitude());
+                                    bundle.putDouble("long", mCurrentLocation.getLongitude());
+                                    fragment = new EventsExploreFragment();
+                                    fragment.setArguments(bundle);
+                                    break;
+                                default:
+                                    fragment = new SchedulerFragment();
+                                    break;
+                            }
+                            fragmentManager.beginTransaction().replace(R.id.flmain, fragment).commit();
+                            return true;
+                        }
+                    });
+
+
+        // Set default selection
+        bottomNavigationView.setSelectedItemId(R.id.action_schedule);
 
         if (TextUtils.isEmpty(getResources().getString(R.string.google_maps_api_key))) {
             throw new IllegalStateException("You forgot to supply a Google Maps API key");
@@ -99,117 +128,67 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
             // Since KEY_LOCATION was found in the Bundle, we can be sure that mCurrentLocation
             // is not null.
             mCurrentLocation = savedInstanceState.getParcelable(KEY_LOCATION);
-            getEvents();
         }
 
-        eventsList = new HashMap<>();
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
-        setContentView(R.layout.activity_main);
-        rvEvents = findViewById(R.id.rvEvents);
-        rvEvents.setContentResource(R.layout.item_event);
-        rvEvents.setListener(this);
-        swipe_card_adapter = new SwipeCardAdapter(getApplicationContext(),20, eventsList);
-        rvEvents.setAdapter(swipe_card_adapter);
     }
-
-    private void getEvents() {
-        AsyncHttpClient client = new AsyncHttpClient();
-        RequestParams params = new RequestParams();
-        params.put(API_KEY_LOCATION, "newyork");
-        params.put(API_KEY_LATITUDE, mCurrentLocation.getLatitude());
-        params.put(API_KEY_LONGITUDE, mCurrentLocation.getLongitude());
-        params.put(API_KEY_PARAM, privateToken);
-        client.get(API_BASE_URL, params, new JsonHttpResponseHandler(){
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                try{
-                    JSONArray events = response.getJSONArray("events");
-                    for(int i = 0; i < events.length(); i++){
-                        Event currEvent = new Event(events.getJSONObject(i));
-                        eventsList.put(i, currEvent);
-                        swipe_card_adapter.notifyDataSetChanged();
-                    }
-                } catch (JSONException e){
-                    Log.d("Get events", "Failure to retrieve events");
-                }
-            }
-        });
-    }
-
 
 
     @Override
-    public boolean swipeEnd(int section, float distance) {
-        return distance > 200;
+    public void onBackPressed() {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 
-    @Override
-    public boolean swipeStart(int section, float distance) {
+/*    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.home, menu);
         return true;
     }
 
     @Override
-    public boolean swipeContinue(int section, float distanceX, float distanceY) {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }*/
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_home) {
+            // Handle the camera action
+        } else if (id == R.id.nav_gallery) {
+
+        } else if (id == R.id.nav_slideshow) {
+
+        } else if (id == R.id.nav_tools) {
+
+        } else if (id == R.id.nav_share) {
+
+        } else if (id == R.id.nav_send) {
+
+        }
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-    @Override
-    public void discarded(int mIndex, int direction) {
-    }
-
-    @Override
-    public void topCardTapped() {
-        onButtonShowPopupWindowClick(findViewById(R.id.rvEvents));
-    }
-
-    public void onButtonShowPopupWindowClick(View view) {
-        addBlur();
-        LayoutInflater inflater = (LayoutInflater)
-                getSystemService(LAYOUT_INFLATER_SERVICE);
-        View popupView = inflater.inflate(R.layout.popup_window, null);
-        final TextView tvSaveEvent = popupView.findViewById(R.id.tvSaveEvent);
-        ImageView ivClose = popupView.findViewById(R.id.ivClose);
-        ivClose.bringToFront();
-        tvSaveEvent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("OnClick", "Save Event");
-            }
-        });
-        final TextView tvBuckit = popupView.findViewById(R.id.tvBuckit);
-        tvBuckit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("OnClick", "Buck event");
-            }
-        });
-        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        final PopupWindow popupWindow = new PopupWindow(popupView, width, height);
-        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
-        blur.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-                removeBlur();
-            }
-        });
-    }
-
-    private void addBlur() {
-        blur = findViewById(R.id.ivBlur);
-        blur.setVisibility(View.VISIBLE);
-        Animation aniFade = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_in);
-        blur.startAnimation(aniFade);
-    }
-
-    private void removeBlur(){
-        Animation aniFade = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_out);
-        blur.startAnimation(aniFade);
-        blur.setVisibility(View.INVISIBLE);
-    }
-
-
 
     private boolean isGooglePlayServicesAvailable() {
         // Check that Google Play services is available
@@ -223,28 +202,31 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
             // Get the error dialog from Google Play services
             Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(resultCode, this,
                     CONNECTION_FAILURE_RESOLUTION_REQUEST);
+
             // If Google Play services can provide an error dialog
             if (errorDialog != null) {
                 // Create a new DialogFragment for the error dialog
-                ErrorDialogFragment errorFragment = new ErrorDialogFragment();
+                EventExplore.ErrorDialogFragment errorFragment = new EventExplore.ErrorDialogFragment();
                 errorFragment.setDialog(errorDialog);
                 errorFragment.show(getSupportFragmentManager(), "Location Updates");
             }
+
             return false;
         }
     }
 
-/*    @SuppressLint("NeedOnRequestPermissionsResult")
+    @SuppressLint("NeedOnRequestPermissionsResult")
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         ExploreActivityPermissionDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-    }*/
+    }
 
 
     @SuppressWarnings({"MissingPermission"})
     @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     public void getMyLocation() {
+
         FusedLocationProviderClient locationClient = getFusedLocationProviderClient(this);
         locationClient.getLastLocation()
                 .addOnSuccessListener(new OnSuccessListener<Location>() {
@@ -264,7 +246,7 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
                 });
     }
 
- /*   @Override
+    @Override
     protected void onResume() {
         super.onResume();
 
@@ -278,7 +260,7 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
             Toast.makeText(this, "Current location was null, enable GPS on emulator!", Toast.LENGTH_SHORT).show();
         }
         ExploreActivityPermissionDispatcher.startLocationUpdatesWithPermissionCheck(this);
-    }*/
+    }
 
     @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     public void startLocationUpdates() {
@@ -323,10 +305,9 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
 
         mCurrentLocation = location;
         Log.d("Location", mCurrentLocation.toString());
-        getEvents();
         String msg = "Updated Location: " +
-                location.getLatitude() + "," +
-                location.getLongitude();
+                Double.toString(location.getLatitude()) + "," +
+                Double.toString(location.getLongitude());
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
@@ -335,9 +316,6 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
         savedInstanceState.putParcelable(KEY_LOCATION, mCurrentLocation);
         super.onSaveInstanceState(savedInstanceState);
     }
-
-
-
     // Define a DialogFragment that displays the error dialog
     public static class ErrorDialogFragment extends android.support.v4.app.DialogFragment {
 
@@ -362,4 +340,7 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
         }
     }
 
+    public Location getmCurrentLocation() {
+        return mCurrentLocation;
+    }
 }
