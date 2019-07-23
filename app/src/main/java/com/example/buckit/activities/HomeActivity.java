@@ -28,7 +28,7 @@ import android.widget.Toast;
 
 import com.example.buckit.EventExplore;
 import com.example.buckit.R;
-import com.example.buckit.fragments.BucketListFragment;
+import com.example.buckit.fragments.BucketListCurrentFragment;
 import com.example.buckit.fragments.EventsExploreFragment;
 import com.example.buckit.fragments.SchedulerFragment;
 import com.example.buckit.utils.ExploreActivityPermissionDispatcher;
@@ -95,7 +95,7 @@ public class HomeActivity extends AppCompatActivity
                             Fragment fragment;
                             switch (item.getItemId()) {
                                 case R.id.action_bucket:
-                                    fragment = new BucketListFragment();
+                                    fragment = new BucketListCurrentFragment();
                                     break;
                                 case R.id.action_schedule:
                                     fragment = new SchedulerFragment();

@@ -23,4 +23,11 @@
     <string name="menu_tools">Tools</string>
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
+
+    <string name="category_prompt">Choose a category</string>
+    <string-array name="category_names">
+        <item>Health and Fitness</item>
+        <item>Learning</item>
+        <item>Travel</item>
+    </string-array>
 </resources>
