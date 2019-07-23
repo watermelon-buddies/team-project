@@ -1,19 +1,14 @@
 package com.example.buckit.fragments;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.example.buckit.R;
-
-import android.location.Location;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -21,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.example.buckit.R;
 import com.example.buckit.adapters.SwipeCardAdapter;
 import com.example.buckit.models.Event;
 import com.loopj.android.http.AsyncHttpClient;
@@ -34,31 +30,37 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import cz.msebera.android.httpclient.Header;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
-import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
+import static com.example.buckit.activities.HomeActivity.LAT_KEY;
+import static com.example.buckit.activities.HomeActivity.LONG_KEY;
 import static com.parse.Parse.getApplicationContext;
 
 
 public class EventsExploreFragment extends Fragment implements CardStack.CardEventListener {
 
+    /* Fragment in which the user is able to explore events happening nearby, customized
+    by the interests expressed in their bucketlist.
+     */
+
+
     public final static String API_BASE_URL = "https://www.eventbriteapi.com/v3/events/search";
     public final static String API_KEY_PARAM = "token";
-    public final static String privateToken = "NTGHZITV2KGOOD67X3DX";
-    public final static String API_KEY_LOCATION = "location.address";
-
+    public final static String PRIVATE_TOKEN = getApplicationContext().getResources().getString(R.string.token);
     public final static String API_KEY_LATITUDE = "location.latitude";
     public final static String API_KEY_LONGITUDE = "location.longitude";
-
-    public CardStack rvEvents;
     public View popupView;
-    ImageView blur;
     public SwipeCardAdapter swipe_card_adapter;
-    Location mCurrentLocation;
-    Double latitude;
-    Double longitude;
-    HashMap<Integer, Event> eventsList;
+    public Double latitude;
+    public Double longitude;
+    public HashMap<Integer, Event> eventsList;
+    @BindView(R.id.rvEvents) public CardStack rvEvents;
+    @BindView(R.id.ivBlur) public ImageView blur;
+    private Unbinder unbinder;
 
 
 
@@ -66,32 +68,40 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.activity_events_explore_fragment, container, false);
+        View eventExploreView = inflater.inflate(R.layout.activity_events_explore_fragment, container, false);
+        unbinder = ButterKnife.bind(this, eventExploreView);
+        return eventExploreView;
     }
 
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+    // Sets cardstack view and sets adapter. We get user location from home activity to create event
+    // request to Eventbrite API
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         eventsList = new HashMap<>();
-        rvEvents = (CardStack) view.findViewById(R.id.rvEvents);
         rvEvents.setContentResource(R.layout.item_event);
-        blur = view.findViewById(R.id.ivBlur);
         rvEvents.setListener(this);
         swipe_card_adapter = new SwipeCardAdapter(getContext().getApplicationContext(),20, eventsList);
         rvEvents.setAdapter(swipe_card_adapter);
         if (getArguments() != null){
-            latitude = getArguments().getDouble("lat");
-            longitude = getArguments().getDouble("long");
+            latitude = getArguments().getDouble(LAT_KEY);
+            longitude = getArguments().getDouble(LONG_KEY);
             getEvents();
         }
     }
 
+    // Sends request specifying location for events. Result list is used to create event types
     private void getEvents() {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
         params.put(API_KEY_LATITUDE, latitude);
         params.put(API_KEY_LONGITUDE, longitude);
-        params.put(API_KEY_PARAM, privateToken);
+        params.put(API_KEY_PARAM, PRIVATE_TOKEN);
         client.get(API_BASE_URL, params, new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -111,17 +121,14 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
 
 
 
+    // Makes sure swipe only discards card if user swiped it enough to prevent accidental swipes
     @Override
     public boolean swipeEnd(int section, float distance) {
-
         return (distance>200)? true : false;
-
     }
 
     @Override
     public boolean swipeStart(int section, float distance) {
-
-
         return true;
     }
 
@@ -135,37 +142,23 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
 
     }
 
+    // If user taps on event, popup window is created revealing options to save event for
+    // later or put it in their calendar
     @Override
     public void topCardTapped() {
-
         onButtonShowPopupWindowClick(rvEvents);
     }
 
+
     public void onButtonShowPopupWindowClick(View view) {
-        addBlur();
         LayoutInflater inflater = (LayoutInflater)
                 getContext().getSystemService(LAYOUT_INFLATER_SERVICE);
         popupView = inflater.inflate(R.layout.popup_window, null);
-        final TextView tvSaveEvent = popupView.findViewById(R.id.tvSaveEvent);
-        ImageView ivClose = popupView.findViewById(R.id.ivClose);
-        ivClose.bringToFront();
-        tvSaveEvent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("OnClick", "Save Event");
-            }
-        });
-        final TextView tvBuckit = popupView.findViewById(R.id.tvBuckit);
-        tvBuckit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("OnClick", "Buck event");
-            }
-        });
         int width = LinearLayout.LayoutParams.WRAP_CONTENT;
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
         final PopupWindow popupWindow = new PopupWindow(popupView, width, height);
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+        addBlur();
         blur.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -173,8 +166,31 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
                 removeBlur();
             }
         });
+        TextView tvSaveEvent = popupView.findViewById(R.id.tvSaveEvent);
+        ImageView ivClose = popupView.findViewById(R.id.ivClose);
+        TextView tvBuckit = popupView.findViewById(R.id.tvBuckit);
+        setListeners(tvSaveEvent, ivClose, tvBuckit);
     }
 
+    private void setListeners(TextView tvSaveEvent, ImageView ivClose, TextView tvBuckit) {
+        ivClose.bringToFront();
+        tvSaveEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("OnClick", "Save Event");
+            }
+        });
+        tvBuckit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("OnClick", "Buck event");
+            }
+        });
+
+
+    }
+
+    // Blur options in the back and disable
     private void addBlur() {
         blur.setVisibility(View.VISIBLE);
         Animation aniFade = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_in);

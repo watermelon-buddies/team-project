@@ -9,7 +9,9 @@
     <string name="google_maps_api_key">AIzaSyCgppKjKEpuscDM2_DzrjBPL0OdltG2CJQ</string>
     <string name="intent_scheme">oauth</string>
     <string name="intent_host">cprest</string>
-
+    <string name="event_title_heading">Title of Event</string>
+    <string name="invitees_bolded_prompt">Who</string>
+    <string name="add_invitees">do you want to do this with?</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Beamlak Ashenafi</string>

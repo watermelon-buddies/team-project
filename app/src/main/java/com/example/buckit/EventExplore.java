@@ -30,9 +30,6 @@ import android.widget.Toast;
 
 import com.example.buckit.adapters.SwipeCardAdapter;
 import com.example.buckit.models.Event;
-import com.example.buckit.utils.ExploreActivityPermissionDispatcher;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -40,9 +37,6 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.loopj.android.http.AsyncHttpClient;
@@ -75,10 +69,8 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
     public final static String API_KEY_PARAM = "token";
     public final static String privateToken = "NTGHZITV2KGOOD67X3DX";
     public final static String API_KEY_LOCATION = "location.address";
-
     public final static String API_KEY_LATITUDE = "location.latitude";
     public final static String API_KEY_LONGITUDE = "location.longitude";
-
     private final static String KEY_LOCATION = "location";
 
     private LocationRequest mLocationRequest;

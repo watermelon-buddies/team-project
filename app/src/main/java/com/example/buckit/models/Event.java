@@ -5,6 +5,8 @@ import org.json.JSONObject;
 
 public class Event {
 
+    // Gets event JSON Object and stores it accordingly
+
     public String title;
     public String startTime;
     public String endTime;
