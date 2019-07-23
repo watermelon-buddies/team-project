@@ -38,7 +38,7 @@ public class BucketListAdapter extends RecyclerView.Adapter<BucketListAdapter.Vi
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
-        View postView = inflater.inflate(R.layout.item_bucket, parent, false);
+        View postView = inflater.inflate(R.layout.bucket_list_item_view, parent, false);
 
         ViewHolder viewHolder = new ViewHolder(postView);
         return viewHolder;

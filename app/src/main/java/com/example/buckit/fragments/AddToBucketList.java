@@ -3,7 +3,6 @@ package com.example.buckit.fragments;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -18,18 +17,9 @@ import android.widget.Toast;
 
 import com.example.buckit.R;
 import com.example.buckit.models.Bucketlist;
-import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.parse.ParseException;
-import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.File;
-
-import cz.msebera.android.httpclient.Header;
 
 public class AddToBucketList extends DialogFragment {
 
@@ -55,7 +45,7 @@ public class AddToBucketList extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.activity_add_to_bucket_list, container);
+            return inflater.inflate(R.layout.bucket_list_add_fragment, container);
             }
 
     public interface EditNameDialogListener {

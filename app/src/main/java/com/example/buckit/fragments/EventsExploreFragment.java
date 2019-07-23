@@ -1,5 +1,6 @@
 package com.example.buckit.fragments;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,15 +31,18 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import cz.msebera.android.httpclient.Header;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
-import static com.example.buckit.activities.HomeActivity.LAT_KEY;
-import static com.example.buckit.activities.HomeActivity.LONG_KEY;
 import static com.parse.Parse.getApplicationContext;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+import com.example.buckit.R;
+
+import android.location.Location;
+import android.util.Log;
+import android.view.Gravity;
 
 
 public class EventsExploreFragment extends Fragment implements CardStack.CardEventListener {
@@ -54,6 +58,7 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
     public final static String API_KEY_LATITUDE = "location.latitude";
     public final static String API_KEY_LONGITUDE = "location.longitude";
     public View popupView;
+    ImageView ivClose;
     public SwipeCardAdapter swipe_card_adapter;
     public Double latitude;
     public Double longitude;
@@ -124,11 +129,15 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
     // Makes sure swipe only discards card if user swiped it enough to prevent accidental swipes
     @Override
     public boolean swipeEnd(int section, float distance) {
+
         return (distance>200)? true : false;
+
     }
 
     @Override
     public boolean swipeStart(int section, float distance) {
+
+
         return true;
     }
 
@@ -151,6 +160,7 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
 
 
     public void onButtonShowPopupWindowClick(View view) {
+        addBlur();
         LayoutInflater inflater = (LayoutInflater)
                 getContext().getSystemService(LAYOUT_INFLATER_SERVICE);
         popupView = inflater.inflate(R.layout.popup_window, null);
@@ -180,6 +190,7 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
                 Log.d("OnClick", "Save Event");
             }
         });
+        final TextView tvBuckit = popupView.findViewById(R.id.tvBuckit);
         tvBuckit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
