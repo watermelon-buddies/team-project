@@ -13,16 +13,24 @@ import com.example.buckit.models.Event;
 
 import java.util.HashMap;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 public class SwipeCardAdapter extends ArrayAdapter<HashMap<Event, Integer>> {
 
+    /* Called in order to fill in information in each card of event explorer
+     */
 
-    float alphaValue = 0;
-    private Context mContext;
-    ImageView ivEventPicture;
-    TextView tvTitle;
+
+    Context mContext;
     HashMap<Integer, Event> mEvents;
+    @BindView(R.id.ivEventPicture) ImageView ivEventPicture;
+    @BindView(R.id.tvTitle) TextView tvTitle;
+    private Unbinder unbinder;
 
 
+    // Events are contained in a hashmap in which the key is their index.
     public SwipeCardAdapter(Context context, int resource, HashMap<Integer, Event> events) {
         super(context, resource);
         mContext = context;
@@ -31,10 +39,10 @@ public class SwipeCardAdapter extends ArrayAdapter<HashMap<Event, Integer>> {
     }
 
 
+    // Sets content by getting information from event in hashmap
     @Override
     public View getView(int position, final View contentView, ViewGroup parent) {
-        ivEventPicture = contentView.findViewById(R.id.ivEventPicture);
-        tvTitle = contentView.findViewById(R.id.tvTitle);
+        unbinder = ButterKnife.bind(this, contentView);
         tvTitle.setText(mEvents.get(position).getTitle());
         Glide.with(mContext)
                 .load(mEvents.get(position).getImageUrl())

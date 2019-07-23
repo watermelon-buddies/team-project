@@ -69,10 +69,8 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
     public final static String API_KEY_PARAM = "token";
     public final static String privateToken = "NTGHZITV2KGOOD67X3DX";
     public final static String API_KEY_LOCATION = "location.address";
-
     public final static String API_KEY_LATITUDE = "location.latitude";
     public final static String API_KEY_LONGITUDE = "location.longitude";
-
     private final static String KEY_LOCATION = "location";
 
     private LocationRequest mLocationRequest;

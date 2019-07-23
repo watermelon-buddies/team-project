@@ -9,21 +9,18 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
-import android.support.design.widget.NavigationView;
-import android.support.v4.widget.DrawerLayout;
-
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.buckit.EventExplore;
@@ -47,6 +44,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import permissions.dispatcher.NeedsPermission;
@@ -65,19 +63,27 @@ public class HomeActivity extends AppCompatActivity
 
     private LocationRequest mLocationRequest;
     public Location mCurrentLocation;
+    public ArrayList<ArrayList> userEvents;
     private long UPDATE_INTERVAL = 1000000;  /* 1000 secs */
     private long FASTEST_INTERVAL = 500000; /* 500 secs */
+    private final static long EPOCH_MILLI_MONTH = 62L * 24L * 60L * 60L * 1000L;
+    public final static String LAT_KEY = "lat";
+    public final static String LONG_KEY = "long";
+    final private static int calendarCallbackId = 42;
+    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+
 
     /* HomeActivity after sucessfully logging in that contains BucketListFragment,
     EventsExploreFragment and SchedulerFragment
     *
     * */
     @Override
+    @RequiresApi(api = Build.VERSION_CODES.O)
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
-        ButterKnife.bind(this);
+        getCalendarEvents(calendarCallbackId, Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, leftDrawer, toolbar, R.string.navigation_drawer_open,
@@ -102,8 +108,8 @@ public class HomeActivity extends AppCompatActivity
                                     break;
                                 case R.id.action_events:
                                     Bundle bundle = new Bundle();
-                                    bundle.putDouble("lat", mCurrentLocation.getLatitude());
-                                    bundle.putDouble("long", mCurrentLocation.getLongitude());
+                                    bundle.putDouble(LAT_KEY, mCurrentLocation.getLatitude());
+                                    bundle.putDouble(LONG_KEY, mCurrentLocation.getLongitude());
                                     fragment = new EventsExploreFragment();
                                     fragment.setArguments(bundle);
                                     break;
@@ -189,6 +195,38 @@ public class HomeActivity extends AppCompatActivity
         }
         leftDrawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void getCalendarEvents(int callbackId, String... permissionsId) {
+        userEvents = new ArrayList<>();
+        long today = new Date().getTime();
+        long nextMonth = today + EPOCH_MILLI_MONTH;
+        boolean permissions = true;
+        for (String p : permissionsId) {
+            permissions = permissions && ContextCompat.checkSelfPermission(this, p) == PERMISSION_GRANTED;
+        }
+        if (!permissions)
+            ActivityCompat.requestPermissions(this, permissionsId, callbackId);
+        else {
+            CalendarProvider provider = new CalendarProvider(getApplicationContext());
+            List<Calendar> calendars = provider.getCalendars().getList();
+            for (Calendar currCal : calendars) {
+                if (!currCal.name.equals("Holidays in United States") && !currCal.name.equals("Contacts")) {
+                    for (me.everything.providers.android.calendar.Event currEvent : provider.getEvents(currCal.id).getList()) {
+                        // Checks events are happening within the range of two months
+                        if ((currEvent.dTStart) >= today && (currEvent.dTStart) <= nextMonth) {
+                            ArrayList<Long> currEventTimeRange = new ArrayList<>();
+                            currEventTimeRange.add(currEvent.dTStart);
+                            currEventTimeRange.add(currEvent.dTend);
+                            userEvents.add(currEventTimeRange);
+                        }
+                    }
+                }
+            }
+            Log.d("Check", String.valueOf(userEvents.size()));
+        }
     }
 
 
