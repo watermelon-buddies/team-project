@@ -205,7 +205,7 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
     }
 
     private void addBlur() {
-        blur = findViewById(R.id.addItemFab);
+        blur = findViewById(R.id.ivBlur);
         blur.setVisibility(View.VISIBLE);
         Animation aniFade = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
         blur.startAnimation(aniFade);

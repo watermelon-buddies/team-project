@@ -1,6 +1,5 @@
 package com.example.buckit.fragments;
 
-import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -31,20 +30,15 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import cz.msebera.android.httpclient.Header;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 import static com.example.buckit.activities.HomeActivity.LAT_KEY;
 import static com.example.buckit.activities.HomeActivity.LONG_KEY;
 import static com.parse.Parse.getApplicationContext;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-import com.example.buckit.R;
-
-import android.location.Location;
-import android.util.Log;
-import android.view.Gravity;
 
 
 public class EventsExploreFragment extends Fragment implements CardStack.CardEventListener {

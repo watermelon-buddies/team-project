@@ -12,19 +12,40 @@
     <string name="event_title_heading">Title of Event</string>
     <string name="invitees_bolded_prompt">Who</string>
     <string name="add_invitees">do you want to do this with?</string>
+    <string name="location_bolded_prompt">Where</string>
+    <string name="add_location">do you want to do it</string>
+    <string name="add_location_prompt">Add a location (optional)</string>
+    <string name="time_bolded_prompt">When</string>
+    <string name="add_time">do you want to meet?</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Beamlak Ashenafi</string>
     <string name="nav_header_subtitle">I came, I saw, I conquered</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
-
+    <string name="add_friends_button">Add Friends</string>
+    <string name="recent_friends">Recents</string>
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
     <string name="menu_tools">Tools</string>
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
+
+    <string name="mon">Mon</string>
+    <string name="tue">Tue</string>
+    <string name="wed">Wed</string>
+    <string name="thur">Thur</string>
+    <string name="fri">Fri</string>
+    <string name="sat">Sat</string>
+    <string name="sun">Sun</string>
+    <string name="select_days">Select Days</string>
+    <string name="select_times">Select Times</string>
+    <string name="morning">Morning</string>
+    <string name="afternoon">Afternoon</string>
+    <string name="evening">Evening</string>
+    <string name="night">Night</string>
+    <string name="send_invite">Send Invite</string>
 
 
     <string name="image_blur_description">Blur background</string>

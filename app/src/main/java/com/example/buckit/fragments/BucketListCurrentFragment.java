@@ -59,7 +59,7 @@ public class BucketListCurrentFragment extends Fragment {
      */
 
     @BindView(R.id.rvBucketList)  RecyclerView rvBucketList;
-    @BindView(R.id.addItemFab)  FloatingActionButton addItemFab;
+    @BindView(R.id.ivBlur)  FloatingActionButton addItemFab;
     @BindView(R.id.swipeContainer)  SwipeRefreshLayout bucketRefreshSwipeContainer;
     @BindView(R.id.ivBlurBucket) ImageView ivBlurBucket;
     private Unbinder unbinder;
