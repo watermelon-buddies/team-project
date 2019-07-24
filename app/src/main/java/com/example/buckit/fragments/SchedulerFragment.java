@@ -11,12 +11,16 @@ import android.widget.Button;
 
 import com.example.buckit.R;
 
+import java.util.ArrayList;
+
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 public class SchedulerFragment extends Fragment {
 
     private Unbinder unbinder;
+    private ArrayList<Button> schedulerButtons;
+
 
     @Nullable
     @Override
@@ -29,130 +33,61 @@ public class SchedulerFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View schedulerView, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(schedulerView, savedInstanceState);
-        Button btn1 = schedulerView.findViewById(R.id.btnRecent1);
-        btn1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(v.isSelected()){
-                    v.setSelected(false);
-                } else {
-                    v.setSelected(true);
-                }
-            }
-        });
-        Button btn2 = schedulerView.findViewById(R.id.btnRecent2);
-        btn2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(v.isSelected()){
-                    v.setSelected(false);
-                } else {
-                    v.setSelected(true);
-                }
-            }
-        });
-        Button btn3 = schedulerView.findViewById(R.id.btnRecent3);
-        btn3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(v.isSelected()){
-                    v.setSelected(false);
-                } else {
-                    v.setSelected(true);
-                }
-            }
-        });
-        Button btn4 = schedulerView.findViewById(R.id.btnRecent4);
-        btn4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(v.isSelected()){
-                    v.setSelected(false);
-                } else {
-                    v.setSelected(true);
-                }
-            }
-        });
-        Button btnMonday = schedulerView.findViewById(R.id.btnMonday);
-        btnMonday.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(v.isSelected()){
-                    v.setSelected(false);
-                } else {
-                    v.setSelected(true);
-                }
-            }
-        });
-        Button btnTuesday = schedulerView.findViewById(R.id.btnTuesday);
-        btnTuesday.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(v.isSelected()){
-                    v.setSelected(false);
-                } else {
-                    v.setSelected(true);
-                }
-            }
-        });
-        Button btnWednesday = schedulerView.findViewById(R.id.btnWednesday);
-        btnWednesday.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(v.isSelected()){
-                    v.setSelected(false);
-                } else {
-                    v.setSelected(true);
-                }
-            }
-        });
-        Button btnThursday = schedulerView.findViewById(R.id.btnThursday);
-        btnThursday.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(v.isSelected()){
-                    v.setSelected(false);
-                } else {
-                    v.setSelected(true);
-                }
-            }
-        });
-        Button btnFriday = schedulerView.findViewById(R.id.btnFriday);
-        btnFriday.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(v.isSelected()){
-                    v.setSelected(false);
-                } else {
-                    v.setSelected(true);
-                }
-            }
-        });
-        Button btnSaturday = schedulerView.findViewById(R.id.btnSaturday);
-        btnSaturday.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(v.isSelected()){
-                    v.setSelected(false);
-                } else {
-                    v.setSelected(true);
-                }
-            }
-        });
-        Button btnSunday = schedulerView.findViewById(R.id.btnSunday);
-        btnSunday.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(v.isSelected()){
-                    v.setSelected(false);
-                } else {
-                    v.setSelected(true);
-                }
-            }
-        });
+        createButtonArray(schedulerView);
+        addListeners();
     }
 
-    @Override public void onDestroyView() {
+    private void addListeners() {
+        for (Button btn : schedulerButtons) {
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (v.isSelected()) {
+                        v.setSelected(false);
+                    } else {
+                        v.setSelected(true);
+                    }
+                }
+            });
+        }
+    }
+
+    private void createButtonArray(View schedulerView) {
+        schedulerButtons = new ArrayList<>();
+        Button btnRecent1 = schedulerView.findViewById(R.id.btnRecent1);
+        Button btnRecent2 = schedulerView.findViewById(R.id.btnRecent2);
+        Button btnRecent3 = schedulerView.findViewById(R.id.btnRecent3);
+        Button btnRecent4 = schedulerView.findViewById(R.id.btnRecent4);
+        Button btnMonday = schedulerView.findViewById(R.id.btnMonday);
+        Button btnTuesday = schedulerView.findViewById(R.id.btnTuesday);
+        Button btnWednesday = schedulerView.findViewById(R.id.btnWednesday);
+        Button btnThursday = schedulerView.findViewById(R.id.btnThursday);
+        Button btnFriday = schedulerView.findViewById(R.id.btnFriday);
+        Button btnSaturday = schedulerView.findViewById(R.id.btnSaturday);
+        Button btnSunday = schedulerView.findViewById(R.id.btnSunday);
+        Button btnMorning = schedulerView.findViewById(R.id.btnMorning);
+        Button btnAfternoon = schedulerView.findViewById(R.id.btnAfternoon);
+        Button btnEvening = schedulerView.findViewById(R.id.btnEvening);
+        Button btnNight = schedulerView.findViewById(R.id.btnNight);
+        schedulerButtons.add(btnRecent1);
+        schedulerButtons.add(btnRecent2);
+        schedulerButtons.add(btnRecent3);
+        schedulerButtons.add(btnRecent4);
+        schedulerButtons.add(btnMonday);
+        schedulerButtons.add(btnTuesday);
+        schedulerButtons.add(btnWednesday);
+        schedulerButtons.add(btnThursday);
+        schedulerButtons.add(btnFriday);
+        schedulerButtons.add(btnSaturday);
+        schedulerButtons.add(btnSunday);
+        schedulerButtons.add(btnMorning);
+        schedulerButtons.add(btnAfternoon);
+        schedulerButtons.add(btnEvening);
+        schedulerButtons.add(btnNight);
+    }
+
+    @Override
+    public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
     }
