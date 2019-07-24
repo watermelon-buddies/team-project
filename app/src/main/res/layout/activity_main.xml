@@ -65,7 +65,7 @@
         app:menu="@menu/menu_bottom_navigation" />
 
     <ImageView
-        android:id="@+id/addItemFab"
+        android:id="@+id/ivBlur"
         android:layout_width="333dp"
         android:layout_height="495dp"
         android:layout_centerHorizontal="true"

@@ -1,83 +1,479 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/tvEventTitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:fontFamily="sans-serif-medium"
-        android:text="@string/event_title_heading"
-        android:textColor="#0A0808"
-        android:textSize="21sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/common_google_signin_btn_text_dark_pressed">
 
-    <TextView
-        android:id="@+id/tvInviteesBoldedPrompt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:text="@string/invitees_bolded_prompt"
-        android:textColor="#1F1111"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvEventTitle" />
+        <Button
+            android:id="@+id/btnSaturday"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/button_oval"
+            android:text="@string/sat"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@+id/btnWednesday"
+            app:layout_constraintStart_toStartOf="@+id/btnTuesday"
+            app:layout_constraintTop_toBottomOf="@+id/btnWednesday" />
 
-    <TextView
-        android:id="@+id/tvAddInvitees"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
-        android:layout_marginLeft="6dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:text="@string/add_invitees"
-        android:textColor="#1F1111"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/tvInviteesBoldedPrompt"
-        app:layout_constraintTop_toBottomOf="@+id/tvEventTitle" />
+        <Button
+            android:id="@+id/btnSunday"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/button_oval"
+            android:text="@string/sun"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@+id/btnThursday"
+            app:layout_constraintStart_toStartOf="@+id/btnWednesday"
+            app:layout_constraintTop_toBottomOf="@+id/btnWednesday" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floatingActionButton11"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:tint="@android:color/white"
-        app:backgroundTint="@android:color/holo_blue_bright"
-        app:srcCompat="@android:drawable/ic_input_add"
-        tools:layout_editor_absoluteX="24dp"
-        tools:layout_editor_absoluteY="134dp" />
+        <TextView
+            android:id="@+id/tvEventTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/event_title_heading"
+            android:textColor="#0A0808"
+            android:textSize="21sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/Add Friends"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginTop="8dp"
-        android:text="TextView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/floatingActionButton11" />
+        <TextView
+            android:id="@+id/tvLocationBoldedPrompt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:text="@string/location_bolded_prompt"
+            android:textColor="#1F1111"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/add_friends" />
 
-</android.support.constraint.ConstraintLayout>
+        <TextView
+            android:id="@+id/tvTimePromptBolded"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="36dp"
+            android:text="@string/time_bolded_prompt"
+            android:textColor="#1F1111"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/etLocation" />
+
+        <TextView
+            android:id="@+id/tvInviteesBoldedPrompt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:text="@string/invitees_bolded_prompt"
+            android:textColor="#1F1111"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvEventTitle" />
+
+        <TextView
+            android:id="@+id/tvAddInvitees"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:text="@string/add_invitees"
+            android:textColor="#1F1111"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvInviteesBoldedPrompt"
+            app:layout_constraintTop_toBottomOf="@+id/tvEventTitle" />
+
+        <TextView
+            android:id="@+id/tvAddLocation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:text="@string/add_invitees"
+            android:textColor="#1F1111"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvLocationBoldedPrompt"
+            app:layout_constraintTop_toBottomOf="@+id/add_friends" />
+
+        <TextView
+            android:id="@+id/tvAddTime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:text="@string/add_time"
+            android:textColor="#1F1111"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvTimePromptBolded"
+            app:layout_constraintTop_toBottomOf="@+id/etLocation" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/floatingActionButton11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="26dp"
+            android:layout_marginLeft="26dp"
+            android:layout_marginTop="36dp"
+            android:clickable="true"
+            android:tint="@android:color/white"
+            app:backgroundTint="@android:color/holo_blue_bright"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvAddInvitees"
+            app:srcCompat="@android:drawable/ic_input_add" />
+
+        <Button
+            android:id="@+id/btnRecent4"
+            android:layout_width="59dp"
+            android:layout_height="57dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="36dp"
+            android:background="@drawable/button_round_purple"
+            android:color="#12DECB"
+            android:padding="15dp"
+            android:text="TC"
+            android:textColor="#FCF9F9"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@+id/btnRecent3"
+            app:layout_constraintTop_toBottomOf="@+id/tvAddInvitees" />
+
+        <Button
+            android:id="@+id/btnRecent3"
+            android:layout_width="59dp"
+            android:layout_height="57dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="36dp"
+            android:background="@drawable/button_round_mustard"
+            android:color="#12DECB"
+            android:padding="15dp"
+            android:text="BL"
+            android:textColor="#FCF9F9"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@+id/btnRecent2"
+            app:layout_constraintTop_toBottomOf="@+id/tvAddInvitees" />
+
+        <Button
+            android:id="@+id/btnRecent2"
+            android:layout_width="59dp"
+            android:layout_height="57dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="36dp"
+            android:background="@drawable/button_round_pink"
+            android:color="#12DECB"
+            android:padding="15dp"
+            android:text="SA"
+            android:textColor="#FCF9F9"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@+id/btnRecent1"
+            app:layout_constraintTop_toBottomOf="@+id/tvAddInvitees" />
+
+        <Button
+            android:id="@+id/btnRecent1"
+            android:layout_width="59dp"
+            android:layout_height="57dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="36dp"
+            android:background="@drawable/button_round_green"
+            android:color="#12DECB"
+            android:padding="15dp"
+            android:text="MS"
+            android:textColor="#FCF9F9"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@+id/floatingActionButton11"
+            app:layout_constraintTop_toBottomOf="@+id/tvAddInvitees" />
+
+        <TextView
+            android:id="@+id/add_friends"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/add_friends_button"
+            android:textColor="#B3AEAE"
+            app:layout_constraintEnd_toEndOf="@+id/floatingActionButton11"
+            app:layout_constraintStart_toStartOf="@+id/floatingActionButton11"
+            app:layout_constraintTop_toBottomOf="@+id/floatingActionButton11" />
+
+        <TextView
+            android:id="@+id/tvRecents"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:text="@string/recent_friends"
+            android:textColor="#B6B2B2"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toStartOf="@+id/btnRecent4"
+            app:layout_constraintStart_toEndOf="@+id/btnRecent1"
+            app:layout_constraintTop_toBottomOf="@+id/tvAddInvitees" />
+
+        <TextView
+            android:id="@+id/tvSelectDays"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="28dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:text="@string/select_days"
+            android:textColor="#B6B2B2"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvAddTime" />
+
+        <TextView
+            android:id="@+id/tvSelectTimes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:text="@string/select_times"
+            android:textColor="#B6B2B2"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnSaturday" />
+
+        <EditText
+            android:id="@+id/etLocation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginRight="24dp"
+            android:background="@null"
+            android:ems="10"
+            android:hint="@string/add_location_prompt"
+            android:inputType="textPersonName"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvAddLocation" />
+
+        <Button
+            android:id="@+id/btnMonday"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/button_oval"
+            android:text="@string/mon"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvSelectDays" />
+
+        <Button
+            android:id="@+id/btnMorning"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/button_oval"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="@string/morning"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvSelectTimes" />
+
+        <Button
+            android:id="@+id/btnSend"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginTop="60dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/button_submit"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="@string/send_invite"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="#F7F5F5"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnEvening" />
+
+        <Button
+            android:id="@+id/btnNight"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/button_oval"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="@string/night"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="16sp"
+            app:layout_constraintStart_toEndOf="@+id/btnEvening"
+            app:layout_constraintTop_toBottomOf="@+id/tvSelectTimes" />
+
+        <Button
+            android:id="@+id/btnEvening"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/button_oval"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="@string/evening"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="16sp"
+            app:layout_constraintStart_toEndOf="@+id/btnAfternoon"
+            app:layout_constraintTop_toBottomOf="@+id/tvSelectTimes" />
+
+        <Button
+            android:id="@+id/btnAfternoon"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/button_oval"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="@string/afternoon"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="16sp"
+            app:layout_constraintStart_toEndOf="@+id/btnMorning"
+            app:layout_constraintTop_toBottomOf="@+id/tvSelectTimes" />
+
+        <Button
+            android:id="@+id/btnFriday"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/button_oval"
+            android:text="@string/fri"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@+id/btnTuesday"
+            app:layout_constraintStart_toStartOf="@+id/btnMonday"
+            app:layout_constraintTop_toBottomOf="@+id/btnTuesday" />
+
+        <Button
+            android:id="@+id/btnTuesday"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/button_oval"
+            android:text="@string/tue"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="16sp"
+            app:layout_constraintStart_toEndOf="@+id/btnMonday"
+            app:layout_constraintTop_toBottomOf="@+id/tvSelectDays" />
+
+        <Button
+            android:id="@+id/btnWednesday"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/button_oval"
+            android:text="@string/wed"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="16sp"
+            app:layout_constraintStart_toEndOf="@+id/btnTuesday"
+            app:layout_constraintTop_toBottomOf="@+id/tvSelectDays" />
+
+        <Button
+            android:id="@+id/btnThursday"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginRight="24dp"
+            android:background="@drawable/button_oval"
+            android:text="@string/thur"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.272"
+            app:layout_constraintStart_toEndOf="@+id/btnWednesday"
+            app:layout_constraintTop_toBottomOf="@+id/tvSelectDays" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</ScrollView>

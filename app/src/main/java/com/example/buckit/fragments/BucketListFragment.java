@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.buckit.adapters.BucketListAdapter;
 import com.example.buckit.R;
@@ -38,7 +37,7 @@ public class BucketListFragment extends Fragment {
      */
 
     @BindView(R.id.rvBucketList)  RecyclerView rvBucketList;
-    @BindView(R.id.addItemFab)  FloatingActionButton addItemFab;
+    @BindView(R.id.ivBlur)  FloatingActionButton addItemFab;
     @BindView(R.id.swipeContainer)  SwipeRefreshLayout bucketRefreshSwipeContainer;
     private Unbinder unbinder;
     ArrayList<Bucketlist> mBucketList;

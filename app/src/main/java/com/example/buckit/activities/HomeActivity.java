@@ -3,16 +3,18 @@ package com.example.buckit.activities;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -23,14 +25,11 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.buckit.EventExplore;
 import com.example.buckit.R;
 import com.example.buckit.fragments.BucketListFragment;
 import com.example.buckit.fragments.EventsExploreFragment;
 import com.example.buckit.fragments.SchedulerFragment;
 import com.example.buckit.utils.ExploreActivityPermissionDispatcher;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -45,9 +44,14 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
+import me.everything.providers.android.calendar.Calendar;
+import me.everything.providers.android.calendar.CalendarProvider;
 import permissions.dispatcher.NeedsPermission;
 
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
 public class HomeActivity extends AppCompatActivity
@@ -263,17 +267,15 @@ public class HomeActivity extends AppCompatActivity
 
         if (mCurrentLocation != null) {
             Toast.makeText(this, "GPS location was found!", Toast.LENGTH_SHORT).show();
-            LatLng latLng = new LatLng(mCurrentLocation.getLatitude(),
-                    mCurrentLocation.getLongitude());
+            LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
         } else {
-            Toast.makeText(this, "Current location was null, enable GPS on emulator!",
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Current location was null, enable GPS on emulator!", Toast.LENGTH_SHORT).show();
         }
         ExploreActivityPermissionDispatcher.startLocationUpdatesWithPermissionCheck(this);
     }
 
-    @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION})
+    @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     public void startLocationUpdates() {
         mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
@@ -286,12 +288,15 @@ public class HomeActivity extends AppCompatActivity
 
         SettingsClient settingsClient = LocationServices.getSettingsClient(this);
         settingsClient.checkLocationSettings(locationSettingsRequest);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
         //noinspection MissingPermission
-        if (ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
             return;
         }
         getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest, new LocationCallback() {
@@ -324,7 +329,6 @@ public class HomeActivity extends AppCompatActivity
         savedInstanceState.putParcelable(KEY_LOCATION, mCurrentLocation);
         super.onSaveInstanceState(savedInstanceState);
     }
-
     // Define a DialogFragment that displays the error dialog
     public static class ErrorDialogFragment extends android.support.v4.app.DialogFragment {
 
