@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.READ_CALENDAR"/>
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -18,23 +18,26 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".fragments.AddToBucketList"></activity>
+        <activity android:name=".fragments.BucketListAchievedFragment"></activity>
+        <activity android:name=".fragments.BucketListTabbed" />
+        <activity android:name=".fragments.AddToBucketList" />
         <activity
             android:name=".activities.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity android:name=".fragments.SchedulerFragment" />
-        <activity android:name=".fragments.BucketListFragment" />
+        <activity android:name=".fragments.BucketListCurrentFragment" />
         <activity android:name=".fragments.EventsExploreFragment" />
         <activity android:name=".EventExplore" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".LoginActivity">
-                <intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.fileprovider"

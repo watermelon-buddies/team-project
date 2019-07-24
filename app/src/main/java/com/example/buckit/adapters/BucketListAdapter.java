@@ -1,14 +1,20 @@
 package com.example.buckit.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.buckit.R;
 import com.example.buckit.models.Bucketlist;
@@ -17,6 +23,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
+
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 public class BucketListAdapter extends RecyclerView.Adapter<BucketListAdapter.ViewHolder> {
 
@@ -79,7 +87,7 @@ public class BucketListAdapter extends RecyclerView.Adapter<BucketListAdapter.Vi
 
     }
 
-    // getRelativeTimeAgo("Mon Apr 01 21:16:23 +0000 2014");
+/*    // getRelativeTimeAgo("Mon Apr 01 21:16:23 +0000 2014");
     public static String getRelativeTimeAgo(String rawJsonDate) {
         String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
         SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
@@ -94,7 +102,7 @@ public class BucketListAdapter extends RecyclerView.Adapter<BucketListAdapter.Vi
             e.printStackTrace();
         }
         return relativeDate;
-    }
+    }*/
 
     @Override
     public int getItemCount() {
@@ -115,7 +123,7 @@ public class BucketListAdapter extends RecyclerView.Adapter<BucketListAdapter.Vi
 
     // create the viewholder class
 
-    public class ViewHolder extends RecyclerView.ViewHolder /*implements View.OnClickListener*/{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             public TextView tvBucketDescription;
             public ImageView ivCategoryImage;
 
@@ -127,22 +135,10 @@ public class BucketListAdapter extends RecyclerView.Adapter<BucketListAdapter.Vi
 
         }
 
-/*        @Override
+        @Override
         public void onClick(View v) {
-            // gets item position
-            int position = getAdapterPosition();
-            // make sure the position is valid, i.e. actually exists in the view
-            if (position != RecyclerView.NO_POSITION) {
-                // get the movie at the position, this won't work if the class is static
-                Post post = mPosts.get(position);
-                // create intent for the new activity
-                Intent details = new Intent(mContext, PostDetails.class);
-                // serialize the movie using parceler, use its short name as a key
-                details.putExtra("POST", post);
-                Toast.makeText(mContext.getApplicationContext(), "Detail of post by "+post.getUser().getUsername(), Toast.LENGTH_SHORT).show();
-                mContext.startActivity(details);
+
             }
 
-        }*/
-    }
+        }
 }

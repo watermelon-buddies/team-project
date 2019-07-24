@@ -23,10 +23,9 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.example.buckit.R;
-import com.example.buckit.fragments.BucketListFragment;
+import com.example.buckit.fragments.BucketListCurrentFragment;
 import com.example.buckit.fragments.EventsExploreFragment;
 import com.example.buckit.fragments.SchedulerFragment;
 import com.example.buckit.utils.ExploreActivityPermissionDispatcher;
@@ -37,9 +36,6 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -47,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import butterknife.BindView;
 import me.everything.providers.android.calendar.Calendar;
 import me.everything.providers.android.calendar.CalendarProvider;
 import permissions.dispatcher.NeedsPermission;
@@ -56,16 +53,19 @@ import static com.google.android.gms.location.LocationServices.getFusedLocationP
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private BottomNavigationView bottomNavigationView;
 
+    @BindView(R.id.drawer_layout) DrawerLayout leftDrawer;
+    @BindView(R.id.bottom_navigation) BottomNavigationView bottomNavigationView;
+    @BindView(R.id.nav_view) NavigationView leftDrawerNavigationView;
+    @BindView(R.id.toolbar) Toolbar toolbar;
 
     private final static String KEY_LOCATION = "location";
 
     private LocationRequest mLocationRequest;
     public Location mCurrentLocation;
     public ArrayList<ArrayList> userEvents;
-    private long UPDATE_INTERVAL = 60000;  /* 60 secs */
-    private long FASTEST_INTERVAL = 5000;
+    private long UPDATE_INTERVAL = 1000000;  /* 1000 secs */
+    private long FASTEST_INTERVAL = 500000; /* 500 secs */
     private final static long EPOCH_MILLI_MONTH = 62L * 24L * 60L * 60L * 1000L;
     public final static String LAT_KEY = "lat";
     public final static String LONG_KEY = "long";
@@ -73,9 +73,10 @@ public class HomeActivity extends AppCompatActivity
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
 
-//     Define a request code to send to Google Play services This code is
-//     returned in Activity.onActivityResult
-
+    /* HomeActivity after sucessfully logging in that contains BucketListFragment,
+    EventsExploreFragment and SchedulerFragment
+    *
+    * */
     @Override
     @RequiresApi(api = Build.VERSION_CODES.O)
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,43 +85,43 @@ public class HomeActivity extends AppCompatActivity
         getCalendarEvents(calendarCallbackId, Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
+                this, leftDrawer, toolbar, R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close);
+        leftDrawer.addDrawerListener(toggle);
         toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
-        bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        leftDrawerNavigationView.setNavigationItemSelectedListener(this);
+
         final FragmentManager fragmentManager = getSupportFragmentManager();
-        // handle navigation selection
-        bottomNavigationView.setOnNavigationItemSelectedListener(
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        Fragment fragment;
-                        switch (item.getItemId()) {
-                            case R.id.action_bucket:
-                                fragment = new BucketListFragment();
-                                break;
-                            case R.id.action_schedule:
-                                fragment = new SchedulerFragment();
-                                break;
-                            case R.id.action_events:
-                                Bundle bundle = new Bundle();
-                                bundle.putDouble(LAT_KEY, mCurrentLocation.getLatitude());
-                                bundle.putDouble(LONG_KEY, mCurrentLocation.getLongitude());
-                                fragment = new EventsExploreFragment();
-                                fragment.setArguments(bundle);
-                                break;
-                            default:
-                                fragment = new SchedulerFragment();
-                                break;
+            // handle navigation selection
+            bottomNavigationView.setOnNavigationItemSelectedListener(
+                    new BottomNavigationView.OnNavigationItemSelectedListener() {
+                        @Override
+                        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                            Fragment fragment;
+                            switch (item.getItemId()) {
+                                case R.id.action_bucket:
+                                    fragment = new BucketListCurrentFragment();
+                                    break;
+                                case R.id.action_schedule:
+                                    fragment = new SchedulerFragment();
+                                    break;
+                                case R.id.action_events:
+                                    Bundle bundle = new Bundle();
+                                    bundle.putDouble(LAT_KEY, mCurrentLocation.getLatitude());
+                                    bundle.putDouble(LONG_KEY, mCurrentLocation.getLongitude());
+                                    fragment = new EventsExploreFragment();
+                                    fragment.setArguments(bundle);
+                                    break;
+                                default:
+                                    fragment = new SchedulerFragment();
+                                    break;
+                            }
+                            fragmentManager.beginTransaction().replace(R.id.flmain,
+                                    fragment).commit();
+                            return true;
                         }
-                        fragmentManager.beginTransaction().replace(R.id.flmain, fragment).commit();
-                        return true;
-                    }
-                });
+                    });
 
 
         // Set default selection
@@ -141,13 +142,13 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (leftDrawer.isDrawerOpen(GravityCompat.START)) {
+            leftDrawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
     }
+    /* TODO Check for need of other option on task bar*/
 
 /*    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -177,6 +178,8 @@ public class HomeActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        /* TODO Change the navigation items and select to which activity they lead to */
+
         if (id == R.id.nav_home) {
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
@@ -190,8 +193,7 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_send) {
 
         }
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        leftDrawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
@@ -263,19 +265,11 @@ public class HomeActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
-        // Display the connection status
-
-        if (mCurrentLocation != null) {
-            Toast.makeText(this, "GPS location was found!", Toast.LENGTH_SHORT).show();
-            LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
-        } else {
-            Toast.makeText(this, "Current location was null, enable GPS on emulator!", Toast.LENGTH_SHORT).show();
-        }
         ExploreActivityPermissionDispatcher.startLocationUpdatesWithPermissionCheck(this);
     }
 
-    @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
+    @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION})
     public void startLocationUpdates() {
         mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
@@ -289,17 +283,14 @@ public class HomeActivity extends AppCompatActivity
         SettingsClient settingsClient = LocationServices.getSettingsClient(this);
         settingsClient.checkLocationSettings(locationSettingsRequest);
         //noinspection MissingPermission
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest, new LocationCallback() {
+        getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest,
+                new LocationCallback() {
                     @Override
                     public void onLocationResult(LocationResult locationResult) {
                         onLocationChanged(locationResult.getLastLocation());
@@ -318,10 +309,6 @@ public class HomeActivity extends AppCompatActivity
 
         mCurrentLocation = location;
         Log.d("Location", mCurrentLocation.toString());
-        String msg = "Updated Location: " +
-                Double.toString(location.getLatitude()) + "," +
-                Double.toString(location.getLongitude());
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
 
