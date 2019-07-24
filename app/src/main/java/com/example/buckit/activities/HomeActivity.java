@@ -3,6 +3,7 @@ package com.example.buckit.activities;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -44,6 +45,7 @@ import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import me.everything.providers.android.calendar.Calendar;
 import me.everything.providers.android.calendar.CalendarProvider;
 import permissions.dispatcher.NeedsPermission;
@@ -82,6 +84,7 @@ public class HomeActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        ButterKnife.bind(this);
         getCalendarEvents(calendarCallbackId, Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

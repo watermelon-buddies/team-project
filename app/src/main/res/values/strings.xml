@@ -31,7 +31,20 @@
     <string name="menu_tools">Tools</string>
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
-
+    <string name="mon">Mon</string>
+    <string name="tue">Tue</string>
+    <string name="wed">Wed</string>
+    <string name="thur">Thur</string>
+    <string name="fri">Fri</string>
+    <string name="sat">Sat</string>
+    <string name="sun">Sun</string>
+    <string name="select_days">Select Days</string>
+    <string name="select_times">Select Times</string>
+    <string name="morning">Morning</string>
+    <string name="afternoon">Afternoon</string>
+    <string name="evening">Evening</string>
+    <string name="night">Night</string>
+    <string name="send_invite">Send Invite</string>
     <string name="category_prompt">Choose a category</string>
     <string-array name="category_names">
         <item>Health and Fitness</item>
