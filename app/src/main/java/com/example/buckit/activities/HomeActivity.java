@@ -5,14 +5,18 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -26,6 +30,7 @@ import android.widget.Toast;
 import com.example.buckit.EventExplore;
 import com.example.buckit.R;
 import com.example.buckit.fragments.BucketListCurrentFragment;
+import com.example.buckit.fragments.BucketListTabbed;
 import com.example.buckit.fragments.EventsExploreFragment;
 import com.example.buckit.fragments.SchedulerFragment;
 import com.example.buckit.utils.ExploreActivityPermissionDispatcher;
@@ -45,10 +50,16 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import me.everything.providers.android.calendar.Calendar;
+import me.everything.providers.android.calendar.CalendarProvider;
 import permissions.dispatcher.NeedsPermission;
 
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
 public class HomeActivity extends AppCompatActivity
@@ -70,7 +81,6 @@ public class HomeActivity extends AppCompatActivity
     public final static String LAT_KEY = "lat";
     public final static String LONG_KEY = "long";
     final private static int calendarCallbackId = 42;
-    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
 
     /* HomeActivity after sucessfully logging in that contains BucketListFragment,
@@ -82,6 +92,7 @@ public class HomeActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        ButterKnife.bind(this);
         getCalendarEvents(calendarCallbackId, Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -101,7 +112,7 @@ public class HomeActivity extends AppCompatActivity
                             Fragment fragment;
                             switch (item.getItemId()) {
                                 case R.id.action_bucket:
-                                    fragment = new BucketListCurrentFragment();
+                                    fragment = new BucketListTabbed();
                                     break;
                                 case R.id.action_schedule:
                                     fragment = new SchedulerFragment();
@@ -114,7 +125,7 @@ public class HomeActivity extends AppCompatActivity
                                     fragment.setArguments(bundle);
                                     break;
                                 default:
-                                    fragment = new SchedulerFragment();
+                                    fragment = new BucketListTabbed();
                                     break;
                             }
                             fragmentManager.beginTransaction().replace(R.id.flmain,
@@ -125,7 +136,7 @@ public class HomeActivity extends AppCompatActivity
 
 
         // Set default selection
-        bottomNavigationView.setSelectedItemId(R.id.action_schedule);
+        bottomNavigationView.setSelectedItemId(R.id.action_bucket);
 
         if (TextUtils.isEmpty(getResources().getString(R.string.google_maps_api_key))) {
             throw new IllegalStateException("You forgot to supply a Google Maps API key");
@@ -180,17 +191,13 @@ public class HomeActivity extends AppCompatActivity
 
         /* TODO Change the navigation items and select to which activity they lead to */
 
-        if (id == R.id.nav_home) {
+        if (id == R.id.nav_profile) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_view_friends) {
 
         } else if (id == R.id.nav_tools) {
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_logout) {
 
         }
         leftDrawer.closeDrawer(GravityCompat.START);
@@ -211,7 +218,7 @@ public class HomeActivity extends AppCompatActivity
             ActivityCompat.requestPermissions(this, permissionsId, callbackId);
         else {
             CalendarProvider provider = new CalendarProvider(getApplicationContext());
-            List<Calendar> calendars = provider.getCalendars().getList();
+            List<me.everything.providers.android.calendar.Calendar> calendars = provider.getCalendars().getList();
             for (Calendar currCal : calendars) {
                 if (!currCal.name.equals("Holidays in United States") && !currCal.name.equals("Contacts")) {
                     for (me.everything.providers.android.calendar.Event currEvent : provider.getEvents(currCal.id).getList()) {
@@ -264,17 +271,6 @@ public class HomeActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-
-        // Display the connection status
-
-        if (mCurrentLocation != null) {
-            Toast.makeText(this, "GPS location was found!", Toast.LENGTH_SHORT).show();
-            LatLng latLng = new LatLng(mCurrentLocation.getLatitude(),
-                    mCurrentLocation.getLongitude());
-        } else {
-            Toast.makeText(this, "Current location was null, enable GPS on emulator!",
-                    Toast.LENGTH_SHORT).show();
-        }
         ExploreActivityPermissionDispatcher.startLocationUpdatesWithPermissionCheck(this);
     }
 
@@ -294,9 +290,9 @@ public class HomeActivity extends AppCompatActivity
         settingsClient.checkLocationSettings(locationSettingsRequest);
         //noinspection MissingPermission
         if (ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                Manifest.permission.ACCESS_FINE_LOCATION) != PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PERMISSION_GRANTED) {
             return;
         }
         getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest,

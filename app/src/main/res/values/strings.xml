@@ -26,6 +26,13 @@
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
 
+
+    <string name="image_blur_description">Blur background</string>
+    <string name="first_tab_description">Current Bucket</string>
+    <string name="second_tab_description">Achieved Bucket</string>
+    <string name="bucket_item_hint">What do you want to do?</string>
+    <string name="date_format">MM/DD/YYYY</string>
+    <string name="button_add_to_bucket_description">Add to Bucket List</string>
     <string name="category_prompt">Choose a category</string>
     <string-array name="category_names">
         <item>Health and Fitness</item>

@@ -7,12 +7,20 @@ import com.parse.ParseUser;
 
 import org.json.JSONArray;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 @ParseClassName("bucket_list")
 public class Bucketlist extends ParseObject {
 
     public static final String KEY_NAME = "list_name";
     public static final String KEY_USER = "user";
+    public static final String KEY_DEADLINE = "deadline";
+    public static final String KEY_ACHIEVED = "achieved";
+    public static final String KEY_CATEGORY = "category";
 /*    public static final String KEY_ELEMENTS = "elements";*/
 
     public Bucketlist(){
@@ -35,24 +43,27 @@ public class Bucketlist extends ParseObject {
         put(KEY_USER, user);
     }
 
+    public Boolean getAchieved () {return getBoolean(KEY_ACHIEVED); }
+
+    public void setAchieved (Boolean achieved) { put (KEY_ACHIEVED, achieved); }
+
+    public String getCategory() { return getString(KEY_CATEGORY); }
+
+    public void setCategory(String category) { put(KEY_CATEGORY, category); }
+
+    public Date getDeadline () {return getDate(KEY_DEADLINE); }
+
+    public void setDeadline (Date deadline) {put (KEY_DEADLINE, deadline); }
+
 /*    public JSONArray getElements() { return getJSONArray(KEY_ELEMENTS);}*/
 
-//    public String getRelativeTimeAgo(String created) {
-//        String postFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
-//        SimpleDateFormat sf = new SimpleDateFormat(postFormat, Locale.ENGLISH);
-//        sf.setLenient(true);
-//
-//        String relativeDate = "";
-//        try {
-//            long dateMillis = sf.parse(created).getTime();
-//            relativeDate = DateUtils.getRelativeTimeSpanString(dateMillis,
-//                    System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS).toString();
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return relativeDate;
-//    }
+    public String changeDateToSimpleFormat(String strDate) throws ParseException {
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+        Date d = (Date)formatter.parse(strDate);
+
+        SimpleDateFormat fmtOut = new SimpleDateFormat("MM/dd/yyyy");
+        return fmtOut.format(d);
+    }
 
     public static class Query extends ParseQuery<Bucketlist> {
 

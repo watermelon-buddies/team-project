@@ -4,13 +4,18 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import com.example.buckit.R;
@@ -25,18 +30,13 @@ import butterknife.Unbinder;
 
 public class BucketListTabbed extends Fragment {
 
-    @BindView(R.id.rvBucketList)
-    RecyclerView rvBucketList;
-    @BindView(R.id.addItemFab)
-    FloatingActionButton addItemFab;
-    @BindView(R.id.swipeContainer)
-    SwipeRefreshLayout bucketRefreshSwipeContainer;
     private Unbinder unbinder;
-    ArrayList<Bucketlist> mBucketList;
-    BucketListAdapter mBucketAdapter;
-    ImageView blur;
-    public View popupView;
-    boolean mFirstLoad;
+    @BindView(R.id.btnAchievedBucketTab) Button btnAchievedBucket;
+    @BindView(R.id.btnCurrentBucketTab) Button btnCurrentBucket;
+    @BindView(R.id.vdTab) View vdTab;
+    @BindView(R.id.hdAchievedTab) View hdAchievedTab;
+    @BindView(R.id.hdCurrentTab) View hdCurrentTab;
+    Fragment fragment;
 
     @Nullable
     @Override
@@ -49,6 +49,28 @@ public class BucketListTabbed extends Fragment {
     @Override
     public void onViewCreated(@NonNull final View bucketListView, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(bucketListView, savedInstanceState);
+        final FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        fragment = new BucketListCurrentFragment();
+        fragmentManager.beginTransaction().replace(R.id.flBucket, fragment).commit();
+        btnAchievedBucket.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragment = new BucketListAchievedFragment();
+                fragmentManager.beginTransaction().replace(R.id.flBucket,
+                        fragment).commit();
+                hdCurrentTab.setVisibility(View.INVISIBLE);
+                hdAchievedTab.setVisibility(View.VISIBLE);
+            }
+        });
+        btnCurrentBucket.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragment = new BucketListCurrentFragment();
+                fragmentManager.beginTransaction().replace(R.id.flBucket, fragment).commit();
+                hdCurrentTab.setVisibility(View.VISIBLE);
+                hdAchievedTab.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
     /* Unbind butterknife binded views when fragment is closed*/

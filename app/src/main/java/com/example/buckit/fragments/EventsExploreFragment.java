@@ -34,6 +34,8 @@ import java.util.HashMap;
 import cz.msebera.android.httpclient.Header;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
+import static com.example.buckit.activities.HomeActivity.LAT_KEY;
+import static com.example.buckit.activities.HomeActivity.LONG_KEY;
 import static com.parse.Parse.getApplicationContext;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -73,7 +75,7 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View eventExploreView = inflater.inflate(R.layout.activity_events_explore_fragment, container, false);
+        View eventExploreView = inflater.inflate(R.layout.events_explore_fragment, container, false);
         unbinder = ButterKnife.bind(this, eventExploreView);
         return eventExploreView;
     }
@@ -89,7 +91,7 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         eventsList = new HashMap<>();
-        rvEvents.setContentResource(R.layout.item_event);
+        rvEvents.setContentResource(R.layout.event_item_view);
         rvEvents.setListener(this);
         swipe_card_adapter = new SwipeCardAdapter(getContext().getApplicationContext(),20, eventsList);
         rvEvents.setAdapter(swipe_card_adapter);
@@ -163,11 +165,11 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
         addBlur();
         LayoutInflater inflater = (LayoutInflater)
                 getContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-        popupView = inflater.inflate(R.layout.popup_window, null);
+        popupView = inflater.inflate(R.layout.events_explore_popup_window, null);
         int width = LinearLayout.LayoutParams.WRAP_CONTENT;
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
         final PopupWindow popupWindow = new PopupWindow(popupView, width, height);
-        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 50);
         addBlur();
         blur.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -190,7 +192,6 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
                 Log.d("OnClick", "Save Event");
             }
         });
-        final TextView tvBuckit = popupView.findViewById(R.id.tvBuckit);
         tvBuckit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
