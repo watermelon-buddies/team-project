@@ -3,6 +3,7 @@ package com.example.buckit;
 import android.app.Application;
 
 import com.example.buckit.models.Bucketlist;
+import com.example.buckit.models.UserInvite;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
@@ -17,6 +18,7 @@ public class ParseApp extends Application {
     public void onCreate() {
         super.onCreate();
         ParseObject.registerSubclass(Bucketlist.class);
+        ParseObject.registerSubclass(UserInvite.class);
         final Parse.Configuration configuration = new Parse.Configuration.Builder(this)
                 .applicationId("fbu-buckit")
                 .clientKey("buckist2019")

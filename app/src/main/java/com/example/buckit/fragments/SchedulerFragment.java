@@ -10,8 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.example.buckit.R;
+import com.example.buckit.models.UserInvite;
+import com.parse.ParseException;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.time.DayOfWeek;
 import java.util.ArrayList;
@@ -19,6 +25,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
@@ -30,6 +37,9 @@ public class SchedulerFragment extends Fragment {
     private ArrayList<String> meetTimes;
     private Button btnSend;
     private HashMap<String, Integer> userEvents;
+    @BindView(R.id.tvEventTitle) TextView tvEventTitle;
+    @BindView(R.id.etLocation) EditText etLocation;
+
 
 
     @Nullable
@@ -68,7 +78,6 @@ public class SchedulerFragment extends Fragment {
                 Log.d("bigcheck", String.valueOf(meetTimes.size()));
                 /*TODO: Bug control*/
             }
-
         }
     }
 
@@ -126,8 +135,6 @@ public class SchedulerFragment extends Fragment {
 
 
 
-
-
     private void addListeners() {
         for (Button btn : schedulerButtons) {
             btn.setOnClickListener(new View.OnClickListener() {
@@ -136,6 +143,7 @@ public class SchedulerFragment extends Fragment {
                     if(v.getId() == btnSend.getId()){
                         constructCalendarList();
                         removeBusyTimes();
+                        sendInvite();
                     }
                     if (v.isSelected()) {
                         v.setSelected(false);
@@ -147,12 +155,31 @@ public class SchedulerFragment extends Fragment {
         }
     }
 
+    private void sendInvite(){
+        UserInvite newInvite = new UserInvite();
+        newInvite.setTitle(tvEventTitle.getText().toString());
+        newInvite.setLocation(etLocation.getText().toString());
+        newInvite.setCreator(ParseUser.getCurrentUser());
+        newInvite.setMeetTimes(meetTimes);
+        newInvite.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if(e == null){
+                    Log.d("InviteCheck", "Post created successfully");
+                } else{
+                    Log.d("InviteCheck", "Post error");
+                }
+            }
+        });
+
+
+    }
+
     @TargetApi(26)
         public Date getNextWeekday(DayOfWeek day){
         Calendar cal = Calendar.getInstance();
         cal.setTime(cal.getTime());
         int today = cal.get(Calendar.DAY_OF_WEEK);
-        int dayGoal = day.getValue();
         int daysToAdd = (day.getValue() - today + 7) % 7;
         cal.add(Calendar.DAY_OF_YEAR, daysToAdd + 1);
         return cal.getTime();
