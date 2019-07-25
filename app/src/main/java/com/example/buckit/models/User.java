@@ -4,9 +4,6 @@ import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseUser;
-
-import org.json.JSONArray;
 
 @ParseClassName("user")
 public class User extends ParseObject {
@@ -15,6 +12,7 @@ public class User extends ParseObject {
     public static final String KEY_PROFILE_PICTURE= "profilePic";
     public static final String KEY_CATEGORIES_SELECTED = "catSelected";
     public static final String KEY_EVENTS_RSVP = "eventsRSVP";
+    public static final String KEY_USERNAME = "username";
 
     public User(){ }
 
@@ -53,15 +51,15 @@ public class User extends ParseObject {
     }
 
 
-    public static class Query extends ParseQuery<Bucketlist> {
+    public static class Query extends ParseQuery<User> {
 
 
         public Query() {
-            super(Bucketlist.class);
+            super(User.class);
         }
 
         public Query getTop(){
-            setLimit(20);
+            setLimit(4);
             return this;
         }
 

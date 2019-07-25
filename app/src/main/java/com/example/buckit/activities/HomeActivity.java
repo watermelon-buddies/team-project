@@ -2,6 +2,7 @@ package com.example.buckit.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.example.buckit.LoginActivity;
 import com.example.buckit.R;
 import com.example.buckit.fragments.BucketListTabbed;
 import com.example.buckit.fragments.EventsExploreFragment;
@@ -37,6 +39,7 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.parse.ParseUser;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -183,9 +186,13 @@ public class HomeActivity extends AppCompatActivity
 
         /* TODO Change the navigation items and select to which activity they lead to */
 
-//        if (id == R.id.nav_profile) {
-//            // Handle the camera action
-//        } else if (id == R.id.nav_view_friends) {
+        if (id == R.id.nav_logout) {
+            ParseUser.logOut();
+            Intent logoutIntent = new Intent(HomeActivity.this, LoginActivity.class);
+            startActivity(logoutIntent);
+            finish();
+       }
+        //else if (id == R.id.nav_view_friends) {
 //
 //        } else if (id == R.id.nav_tools) {
 //
