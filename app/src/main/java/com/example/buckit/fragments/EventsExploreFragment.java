@@ -22,13 +22,18 @@ import com.example.buckit.models.Event;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.parse.ParseUser;
 import com.wenchao.cardstack.CardStack;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,13 +53,16 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
      */
 
 
-    public final static String API_BASE_URL = "https://www.eventbriteapi.com/v3/events/search";
+    public final static String API_BASE_URL = "https://www.eventbriteapi.com/v3/";
     public final static String API_KEY_PARAM = "token";
     public final static String PRIVATE_TOKEN = getApplicationContext().getResources().getString(R.string.token);
     public final static String API_KEY_LATITUDE = "location.latitude";
     public final static String API_KEY_LONGITUDE = "location.longitude";
+    public final static String API_KEY_AREA_RADIUS = "location.within";
+    public final static String API_KEY_LOCATION = "location.address";
+    public final static String API_KEY_CATEGORY = "categories";
+    public final static String KEY_SELECTED_CATEGORIES = "catSelected";
     public View popupView;
-    ImageView ivClose;
     public SwipeCardAdapter swipe_card_adapter;
     public Double latitude;
     public Double longitude;
@@ -84,6 +92,7 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ParseUser user = ParseUser.getCurrentUser();
         eventsList = new HashMap<>();
         rvEvents.setContentResource(R.layout.event_item_view);
         rvEvents.setListener(this);
@@ -92,35 +101,56 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
         if (getArguments() != null){
             latitude = getArguments().getDouble(LAT_KEY);
             longitude = getArguments().getDouble(LONG_KEY);
-            getEvents();
+            getEvents(user);
         }
     }
 
     // Sends request specifying location for events. Result list is used to create event types
-    private void getEvents() {
-        AsyncHttpClient client = new AsyncHttpClient();
-        RequestParams params = new RequestParams();
-        params.put(API_KEY_LATITUDE, latitude);
-        params.put(API_KEY_LONGITUDE, longitude);
-        params.put(API_KEY_PARAM, PRIVATE_TOKEN);
-        client.get(API_BASE_URL, params, new JsonHttpResponseHandler(){
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                try{
-                    JSONArray events = response.getJSONArray("events");
-                    for(int i = 0; i < events.length(); i++){
-                        Event currEvent = new Event(events.getJSONObject(i));
-                        eventsList.put(i, currEvent);
-                        swipe_card_adapter.notifyDataSetChanged();
+    private void getEvents(ParseUser user) {
+        ArrayList<String> categories = (ArrayList<String>) user.get(KEY_SELECTED_CATEGORIES);
+        final int[] position = {0};
+        for (int i = 0;i < categories.size(); i++) {
+            AsyncHttpClient client = new AsyncHttpClient();
+            RequestParams params = new RequestParams();
+            String url = API_BASE_URL + "events/search";
+            params.put(API_KEY_AREA_RADIUS, "20mi");
+            params.put(API_KEY_LATITUDE, latitude);
+            params.put(API_KEY_LONGITUDE, longitude);
+            params.put(API_KEY_PARAM, PRIVATE_TOKEN);
+            Log.d("Events", "Loading category "+categories.get(i));
+            params.put(API_KEY_CATEGORY, categories.get(i));
+            client.get(url, params, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    try {
+                        JSONArray events = response.getJSONArray("events");
+                        for (int j = 0; j < events.length(); j++) {
+                            Event currEvent = new Event(events.getJSONObject(j));
+                            eventsList.put(position[0], currEvent);
+                            position[0]++;
+                            swipe_card_adapter.notifyDataSetChanged();;
+                        }
+                    } catch (JSONException e) {
+                        Log.d("Get events", "Failure to retrieve events");
                     }
-                } catch (JSONException e){
-                    Log.d("Get events", "Failure to retrieve events");
                 }
-            }
-        });
+            });
+        }
     }
 
-
+    public static JSONArray shuffleJsonArray (JSONArray array) throws JSONException {
+        // Implementing Fisher–Yates shuffle
+        Random rnd = new Random();
+        for (int i = array.length() - 1; i >= 0; i--)
+        {
+            int j = rnd.nextInt(i + 1);
+            // Simple swap
+            Object object = array.get(j);
+            array.put(j, array.get(i));
+            array.put(i, object);
+        }
+        return array;
+    }
 
     // Makes sure swipe only discards card if user swiped it enough to prevent accidental swipes
     @Override
@@ -174,6 +204,13 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
         });
         TextView tvSaveEvent = popupView.findViewById(R.id.tvSaveEvent);
         ImageView ivClose = popupView.findViewById(R.id.ivClose);
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+                removeBlur();
+            }
+        });
         TextView tvBuckit = popupView.findViewById(R.id.tvBuckit);
         setListeners(tvSaveEvent, ivClose, tvBuckit);
     }

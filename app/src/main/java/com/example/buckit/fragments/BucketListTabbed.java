@@ -1,5 +1,6 @@
 package com.example.buckit.fragments;
 
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -33,9 +34,6 @@ public class BucketListTabbed extends Fragment {
     private Unbinder unbinder;
     @BindView(R.id.btnAchievedBucketTab) Button btnAchievedBucket;
     @BindView(R.id.btnCurrentBucketTab) Button btnCurrentBucket;
-    @BindView(R.id.vdTab) View vdTab;
-    @BindView(R.id.hdAchievedTab) View hdAchievedTab;
-    @BindView(R.id.hdCurrentTab) View hdCurrentTab;
     Fragment fragment;
 
     @Nullable
@@ -58,8 +56,10 @@ public class BucketListTabbed extends Fragment {
                 fragment = new BucketListAchievedFragment();
                 fragmentManager.beginTransaction().replace(R.id.flBucket,
                         fragment).commit();
-                hdCurrentTab.setVisibility(View.INVISIBLE);
-                hdAchievedTab.setVisibility(View.VISIBLE);
+                btnCurrentBucket.setBackgroundColor(Color.WHITE);
+                btnCurrentBucket.setTextColor(getResources().getColor(R.color.bright_blue));
+                btnAchievedBucket.setBackgroundColor(getResources().getColor(R.color.bright_blue));
+                btnAchievedBucket.setTextColor(Color.WHITE);
             }
         });
         btnCurrentBucket.setOnClickListener(new View.OnClickListener() {
@@ -67,8 +67,10 @@ public class BucketListTabbed extends Fragment {
             public void onClick(View v) {
                 fragment = new BucketListCurrentFragment();
                 fragmentManager.beginTransaction().replace(R.id.flBucket, fragment).commit();
-                hdCurrentTab.setVisibility(View.VISIBLE);
-                hdAchievedTab.setVisibility(View.INVISIBLE);
+                btnAchievedBucket.setBackgroundColor(Color.WHITE);
+                btnAchievedBucket.setTextColor(getResources().getColor(R.color.bright_blue));
+                btnCurrentBucket.setBackgroundColor(getResources().getColor(R.color.bright_blue));
+                btnCurrentBucket.setTextColor(Color.WHITE);
             }
         });
     }

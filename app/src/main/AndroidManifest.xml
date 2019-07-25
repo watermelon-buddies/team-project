@@ -18,13 +18,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".fragments.BucketListAchievedFragment"></activity>
+        <activity android:name=".activities.ViewFriendsActvitiy"></activity>
+        <activity android:name=".fragments.BucketListAchievedFragment" />
         <activity android:name=".fragments.BucketListTabbed" />
         <activity android:name=".fragments.AddToBucketList" />
         <activity
             android:name=".activities.HomeActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".fragments.SchedulerFragment" />
         <activity android:name=".fragments.BucketListCurrentFragment" />
         <activity android:name=".fragments.EventsExploreFragment" />
@@ -50,6 +50,7 @@
                 android:name="com.google.android.gms.version"
                 android:value="@integer/google_play_services_version" />
         </provider>
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

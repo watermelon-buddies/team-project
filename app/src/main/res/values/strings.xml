@@ -56,8 +56,10 @@
     <string name="button_add_to_bucket_description">Add to Bucket List</string>
     <string name="category_prompt">Choose a category</string>
     <string-array name="category_names">
-        <item>Health and Fitness</item>
-        <item>Learning</item>
-        <item>Travel</item>
+        <item>Film &amp; Media</item>
+        <item>Food &amp; Drink</item>
+        <item>Holiday</item>
+        <item>Music</item>
+        <item>Travel &amp; Outdoor</item>
     </string-array>
 </resources>

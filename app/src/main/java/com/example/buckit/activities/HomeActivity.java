@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.design.shape.RoundedCornerTreatment;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -26,12 +27,15 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.example.buckit.R;
 import com.example.buckit.fragments.BucketListCurrentFragment;
 import com.example.buckit.fragments.BucketListTabbed;
 import com.example.buckit.fragments.EventsExploreFragment;
 import com.example.buckit.fragments.SchedulerFragment;
+import com.example.buckit.models.User;
 import com.example.buckit.utils.ExploreActivityPermissionDispatcher;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -42,6 +46,7 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.parse.ParseUser;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -54,6 +59,7 @@ import me.everything.providers.android.calendar.CalendarProvider;
 import permissions.dispatcher.NeedsPermission;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import static com.example.buckit.models.User.KEY_PROFILE_PICTURE;
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
 public class HomeActivity extends AppCompatActivity
@@ -75,6 +81,7 @@ public class HomeActivity extends AppCompatActivity
     public final static String LAT_KEY = "lat";
     public final static String LONG_KEY = "long";
     final private static int calendarCallbackId = 42;
+    ParseUser currentUser;
 
 
     /* HomeActivity after sucessfully logging in that contains BucketListFragment,
@@ -87,6 +94,8 @@ public class HomeActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
+        currentUser = ParseUser.getCurrentUser();
+
         getCalendarEvents(calendarCallbackId, Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -94,6 +103,7 @@ public class HomeActivity extends AppCompatActivity
                 this, leftDrawer, toolbar, R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
         leftDrawer.addDrawerListener(toggle);
+
         toggle.syncState();
         leftDrawerNavigationView.setNavigationItemSelectedListener(this);
 
@@ -122,7 +132,7 @@ public class HomeActivity extends AppCompatActivity
                                     fragment.setArguments(bundle);
                                     break;
                                 default:
-                                    fragment = new BucketListTabbed();
+                                    fragment = new SchedulerFragment();
                                     break;
                             }
                             fragmentManager.beginTransaction().replace(R.id.flmain,
@@ -133,7 +143,7 @@ public class HomeActivity extends AppCompatActivity
 
 
         // Set default selection
-        bottomNavigationView.setSelectedItemId(R.id.action_bucket);
+        bottomNavigationView.setSelectedItemId(R.id.action_schedule);
 
         if (TextUtils.isEmpty(getResources().getString(R.string.google_maps_api_key))) {
             throw new IllegalStateException("You forgot to supply a Google Maps API key");
@@ -151,6 +161,10 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         if (leftDrawer.isDrawerOpen(GravityCompat.START)) {
+            ImageView ivUserProfilePic = findViewById(R.id.ivUserProfilePic);
+            Glide.with(this)
+                    .load(currentUser.getParseFile(KEY_PROFILE_PICTURE).getUrl())
+                    .into(ivUserProfilePic);
             leftDrawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();

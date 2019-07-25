@@ -10,8 +10,11 @@
         android:id="@+id/btnCurrentBucketTab"
         android:layout_width="203dp"
         android:layout_height="49dp"
-        android:background="#40C4FF"
+        android:background="@color/bright_blue"
         android:text="@string/first_tab_description"
+        android:textColor="@color/cardview_light_background"
+        app:layout_constraintEnd_toStartOf="@+id/btnAchievedBucketTab"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -19,53 +22,23 @@
         android:id="@+id/btnAchievedBucketTab"
         android:layout_width="204dp"
         android:layout_height="50dp"
-        android:background="#40C4FF"
+        android:background="@color/cardview_light_background"
         android:text="@string/second_tab_description"
+        android:textColor="@color/bright_blue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <View
-        android:id="@+id/hdCurrentTab"
-        android:layout_width="0dp"
-        android:layout_height="2dp"
-        android:background="@color/colorPrimaryDark"
-        app:layout_constraintEnd_toStartOf="@+id/btnAchievedBucketTab"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnCurrentBucketTab"
-        tools:visibility="visible" />
-
-    <View
-        android:id="@+id/hdAchievedTab"
-        android:layout_width="0dp"
-        android:layout_height="2dp"
-        android:background="@color/colorPrimaryDark"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/btnAchievedBucketTab"
-        app:layout_constraintTop_toBottomOf="@+id/btnAchievedBucketTab" />
 
     <FrameLayout
         android:id="@+id/flBucket"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/hdCurrentTab">
+        app:layout_constraintTop_toBottomOf="@+id/btnCurrentBucketTab">
 
     </FrameLayout>
-
-    <View
-        android:id="@+id/vdTab"
-        android:layout_width="2dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="1dp"
-        android:layout_marginLeft="1dp"
-        android:background="@color/colorPrimaryDark"
-        app:layout_constraintBottom_toBottomOf="@+id/btnCurrentBucketTab"
-        app:layout_constraintStart_toEndOf="@+id/btnCurrentBucketTab"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
 
 </android.support.constraint.ConstraintLayout>
 
