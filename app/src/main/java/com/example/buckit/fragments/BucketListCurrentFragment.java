@@ -28,10 +28,19 @@ import android.widget.Toast;
 import com.example.buckit.R;
 import com.example.buckit.adapters.BucketListAdapter;
 import com.example.buckit.models.Bucketlist;
+import com.example.buckit.models.User;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.parse.FindCallback;
+import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -42,8 +51,13 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import cz.msebera.android.httpclient.Header;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
+import static com.example.buckit.fragments.EventsExploreFragment.API_BASE_URL;
+import static com.example.buckit.fragments.EventsExploreFragment.API_KEY_PARAM;
+import static com.example.buckit.fragments.EventsExploreFragment.KEY_SELECTED_CATEGORIES;
+import static com.example.buckit.fragments.EventsExploreFragment.PRIVATE_TOKEN;
 import static com.parse.Parse.getApplicationContext;
 
 public class BucketListCurrentFragment extends Fragment {
@@ -62,13 +76,14 @@ public class BucketListCurrentFragment extends Fragment {
     ArrayList<Bucketlist> mBucketList;
     BucketListAdapter mBucketAdapter;
     public View popupView;
+    ParseACL acl;
     boolean mFirstLoad;
 
     /* Inflate bucket_list_fragment.xml and bind views using Butterknife */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View bucketListView = inflater.inflate(R.layout.bucket_list_current_fragment, container, false);
+        View bucketListView = inflater.inflate(R.layout.bucket_list_current, container, false);
         unbinder = ButterKnife.bind(this, bucketListView);
         return bucketListView;
     }
@@ -78,6 +93,26 @@ public class BucketListCurrentFragment extends Fragment {
         super.onViewCreated(bucketListView, savedInstanceState);
 
         ParseUser currentUser = ParseUser.getCurrentUser();
+        acl = new ParseACL(currentUser);
+        acl.setPublicReadAccess(true);
+        currentUser.setACL(acl);
+        JSONArray categories = currentUser.getJSONArray(KEY_SELECTED_CATEGORIES);
+        if (categories == null){
+            ArrayList<String> catEmptyList = new ArrayList<>();
+            currentUser.put(KEY_SELECTED_CATEGORIES, catEmptyList);
+            currentUser.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e == null) {
+                        Log.d("Home Activity", "Create a new post success!");
+                    } else {
+                        Log.d("Home Activity", "Failed in creating a post!");
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+
         /* addItem floating action button for adding new item to the bucket list */
         addItemFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,7 +142,9 @@ public class BucketListCurrentFragment extends Fragment {
                         try {
                             addItemToBucketList(description, user, deadline, category);
                         } catch (java.text.ParseException e) {
-                            Log.d("date", "Can't find date");
+                           e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                         popupWindow.dismiss();
                         populateBucket();
@@ -137,13 +174,53 @@ public class BucketListCurrentFragment extends Fragment {
         bucketRefreshSwipeContainer.setColorSchemeResources(android.R.color.holo_red_light);
     }
 
-    private void addItemToBucketList(final String description, ParseUser user, String deadline, String category) throws java.text.ParseException {
+    private void addItemToBucketList(final String description, final ParseUser user, String deadline, final String category) throws java.text.ParseException, JSONException {
         final Bucketlist newItem = new Bucketlist();
         newItem.setName(description);
         newItem.setUser(user);
         newItem.setAchieved(false);
         Date date = changeDateToParseFormat(deadline);
         newItem.setCategory(category);
+        JSONArray categories = user.getJSONArray(KEY_SELECTED_CATEGORIES);
+        AsyncHttpClient client = new AsyncHttpClient();
+        RequestParams params = new RequestParams();
+        String url = API_BASE_URL + "categories/";
+        params.put(API_KEY_PARAM, PRIVATE_TOKEN);
+        boolean exists = false;
+        client.get(url, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    JSONArray categories = response.getJSONArray("categories");
+                    for (int i = 0; i < categories.length(); i++){
+                        JSONObject catObject = categories.getJSONObject(i);
+                        Log.d("ID", catObject.toString());
+                        Log.d("ID", catObject.getString("name"));
+                        Log.d("ID", catObject.getString("id"));
+                        Log.d("ID", category);
+                       if (catObject.getString("name").equals(category) ){
+                            Log.d("ID", catObject.getString("id"));
+                            user.add(KEY_SELECTED_CATEGORIES, catObject.getString("id"));
+                            user.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(ParseException e) {
+                                    if (e == null) {
+                                        Log.d("Home Activity", "Create a new post success!");
+                                    } else {
+                                        Log.d("Home Activity", "Failed in creating a post!");
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                            return;
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         newItem.setDeadline(date);
         Toast.makeText(getContext(), "Added item to bucket list", Toast.LENGTH_LONG);
         /* TODO - Change to snackbar compared to toast */

@@ -40,22 +40,18 @@
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <FrameLayout
-        android:id="@+id/flFab"
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/addItemFab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/swipeContainer"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/swipeContainer"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:tint="@android:color/white"
+        app:backgroundTint="@android:color/holo_blue_bright"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@android:drawable/ic_input_add" />
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/ivBlur"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:backgroundTint="@color/cardview_dark_background"
-            android:src="@android:drawable/ic_input_add"
-            app:fabSize="normal" tools:targetApi="lollipop" />
-    </FrameLayout>
 </android.support.constraint.ConstraintLayout>
