@@ -43,8 +43,8 @@ import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -68,7 +68,7 @@ public class HomeActivity extends AppCompatActivity
 
     private LocationRequest mLocationRequest;
     public Location mCurrentLocation;
-    public ArrayList<ArrayList> userEvents;
+    public HashMap<String, Integer> userEvents;
     private long UPDATE_INTERVAL = 1000000;  /* 1000 secs */
     private long FASTEST_INTERVAL = 500000; /* 500 secs */
     private final static long EPOCH_MILLI_MONTH = 62L * 24L * 60L * 60L * 1000L;
@@ -109,7 +109,10 @@ public class HomeActivity extends AppCompatActivity
                                     fragment = new BucketListTabbed();
                                     break;
                                 case R.id.action_schedule:
+                                    Bundle userCal = new Bundle();
+                                    userCal.putSerializable("userEvents", userEvents);
                                     fragment = new SchedulerFragment();
+                                    fragment.setArguments(userCal);
                                     break;
                                 case R.id.action_events:
                                     Bundle bundle = new Bundle();
@@ -201,7 +204,7 @@ public class HomeActivity extends AppCompatActivity
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void getCalendarEvents(int callbackId, String... permissionsId) {
-        userEvents = new ArrayList<>();
+        userEvents = new HashMap<String, Integer>();
         long today = new Date().getTime();
         long nextMonth = today + EPOCH_MILLI_MONTH;
         boolean permissions = true;
@@ -218,10 +221,11 @@ public class HomeActivity extends AppCompatActivity
                     for (me.everything.providers.android.calendar.Event currEvent : provider.getEvents(currCal.id).getList()) {
                         // Checks events are happening within the range of two months
                         if ((currEvent.dTStart) >= today && (currEvent.dTStart) <= nextMonth) {
-                            ArrayList<Long> currEventTimeRange = new ArrayList<>();
-                            currEventTimeRange.add(currEvent.dTStart);
-                            currEventTimeRange.add(currEvent.dTend);
-                            userEvents.add(currEventTimeRange);
+                            Long timeOfEvent = ((currEvent.dTend - currEvent.dTStart) / 1000) / 60;
+                            Integer rangeIn15MinIntervals = Math.toIntExact(timeOfEvent) / 15;
+                            String normalDate = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new java.util.Date(currEvent.dTStart));
+                            Log.d("check", normalDate + " " + String.valueOf(rangeIn15MinIntervals));
+                            userEvents.put(normalDate, rangeIn15MinIntervals);
                         }
                     }
                 }
