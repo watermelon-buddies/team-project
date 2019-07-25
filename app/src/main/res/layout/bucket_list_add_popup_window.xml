@@ -4,16 +4,16 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:foreground="?android:attr/selectableItemBackground"
     android:outlineAmbientShadowColor="#009B2D2D"
     card_view:cardCornerRadius="5dp"
     card_view:cardElevation="@dimen/card_elevation"
-    card_view:cardUseCompatPadding="true">
+    card_view:cardUseCompatPadding="true" tools:targetApi="p">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="#FDFFFF">
 
         <DatePicker
@@ -23,7 +23,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="24dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:calendarViewShown="false"
@@ -31,7 +31,7 @@
             android:visibility="visible"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintStart_toStartOf="parent"
-            card_view:layout_constraintTop_toBottomOf="@+id/etDate" />
+            card_view:layout_constraintTop_toBottomOf="@+id/spinnerCategory" />
 
         <EditText
             android:id="@+id/etItemDescription"
@@ -44,12 +44,13 @@
             android:layout_marginRight="8dp"
             android:ems="10"
             android:gravity="center"
-            android:hint="What do you want to do?"
+            android:hint="@string/bucket_item_hint"
             android:inputType="textPersonName"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintHorizontal_bias="0.0"
             card_view:layout_constraintStart_toStartOf="parent"
-            card_view:layout_constraintTop_toTopOf="parent" />
+            card_view:layout_constraintTop_toTopOf="parent"
+            android:importantForAutofill="no" />
 
         <Spinner
             android:id="@+id/spinnerCategory"
@@ -77,29 +78,12 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
-            android:text="Choose your category"
+            android:text="@string/category_prompt"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textStyle="bold"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toBottomOf="@+id/etItemDescription" />
-
-        <EditText
-            android:id="@+id/etDate"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:ems="10"
-            android:gravity="center"
-            android:hint="MM/DD/YYYY"
-            android:inputType="date"
-            card_view:layout_constraintEnd_toEndOf="parent"
-            card_view:layout_constraintStart_toStartOf="parent"
-            card_view:layout_constraintTop_toBottomOf="@+id/spinnerCategory" />
 
         <Button
             android:id="@+id/btnBuckIt"
@@ -107,25 +91,14 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
+            android:layout_marginTop="32dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
-            android:layout_marginBottom="16dp"
-            android:text="Buck It!"
-            android:visibility="gone"
+            android:text="@string/button_add_to_bucket_description"
+            android:visibility="visible"
             card_view:layout_constraintBottom_toBottomOf="parent"
             card_view:layout_constraintEnd_toEndOf="parent"
-            card_view:layout_constraintStart_toStartOf="parent" />
-
-        <Button
-            android:id="@+id/btnGetDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:text="Get Date"
-            android:visibility="visible"
-            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toBottomOf="@+id/dpCalendar" />
 
     </android.support.constraint.ConstraintLayout>

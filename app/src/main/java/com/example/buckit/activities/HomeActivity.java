@@ -5,6 +5,8 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Binder;
+import android.os.Build;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
@@ -27,6 +29,7 @@ import android.view.MenuItem;
 
 import com.example.buckit.R;
 import com.example.buckit.fragments.BucketListCurrentFragment;
+import com.example.buckit.fragments.BucketListTabbed;
 import com.example.buckit.fragments.EventsExploreFragment;
 import com.example.buckit.fragments.SchedulerFragment;
 import com.example.buckit.utils.ExploreActivityPermissionDispatcher;
@@ -72,7 +75,6 @@ public class HomeActivity extends AppCompatActivity
     public final static String LAT_KEY = "lat";
     public final static String LONG_KEY = "long";
     final private static int calendarCallbackId = 42;
-    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
 
     /* HomeActivity after sucessfully logging in that contains BucketListFragment,
@@ -104,7 +106,7 @@ public class HomeActivity extends AppCompatActivity
                             Fragment fragment;
                             switch (item.getItemId()) {
                                 case R.id.action_bucket:
-                                    fragment = new BucketListCurrentFragment();
+                                    fragment = new BucketListTabbed();
                                     break;
                                 case R.id.action_schedule:
                                     fragment = new SchedulerFragment();
@@ -117,7 +119,7 @@ public class HomeActivity extends AppCompatActivity
                                     fragment.setArguments(bundle);
                                     break;
                                 default:
-                                    fragment = new SchedulerFragment();
+                                    fragment = new BucketListTabbed();
                                     break;
                             }
                             fragmentManager.beginTransaction().replace(R.id.flmain,
@@ -128,7 +130,7 @@ public class HomeActivity extends AppCompatActivity
 
 
         // Set default selection
-        bottomNavigationView.setSelectedItemId(R.id.action_schedule);
+        bottomNavigationView.setSelectedItemId(R.id.action_bucket);
 
         if (TextUtils.isEmpty(getResources().getString(R.string.google_maps_api_key))) {
             throw new IllegalStateException("You forgot to supply a Google Maps API key");
@@ -183,17 +185,13 @@ public class HomeActivity extends AppCompatActivity
 
         /* TODO Change the navigation items and select to which activity they lead to */
 
-        if (id == R.id.nav_home) {
+        if (id == R.id.nav_profile) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_view_friends) {
 
         } else if (id == R.id.nav_tools) {
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_logout) {
 
         }
         leftDrawer.closeDrawer(GravityCompat.START);
@@ -214,7 +212,7 @@ public class HomeActivity extends AppCompatActivity
             ActivityCompat.requestPermissions(this, permissionsId, callbackId);
         else {
             CalendarProvider provider = new CalendarProvider(getApplicationContext());
-            List<Calendar> calendars = provider.getCalendars().getList();
+            List<me.everything.providers.android.calendar.Calendar> calendars = provider.getCalendars().getList();
             for (Calendar currCal : calendars) {
                 if (!currCal.name.equals("Holidays in United States") && !currCal.name.equals("Contacts")) {
                     for (me.everything.providers.android.calendar.Event currEvent : provider.getEvents(currCal.id).getList()) {
@@ -267,7 +265,6 @@ public class HomeActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-
         ExploreActivityPermissionDispatcher.startLocationUpdatesWithPermissionCheck(this);
     }
 
@@ -287,9 +284,9 @@ public class HomeActivity extends AppCompatActivity
         settingsClient.checkLocationSettings(locationSettingsRequest);
         //noinspection MissingPermission
         if (ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                Manifest.permission.ACCESS_FINE_LOCATION) != PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PERMISSION_GRANTED) {
             return;
         }
         getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest,
@@ -318,32 +315,5 @@ public class HomeActivity extends AppCompatActivity
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putParcelable(KEY_LOCATION, mCurrentLocation);
         super.onSaveInstanceState(savedInstanceState);
-    }
-    // Define a DialogFragment that displays the error dialog
-    public static class ErrorDialogFragment extends android.support.v4.app.DialogFragment {
-
-        // Global field to contain the error dialog
-        private Dialog mDialog;
-
-        // Default constructor. Sets the dialog field to null
-        public ErrorDialogFragment() {
-            super();
-            mDialog = null;
-        }
-
-        // Set the dialog to display
-        public void setDialog(Dialog dialog) {
-            mDialog = dialog;
-        }
-
-        // Return a Dialog to the DialogFragment.
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            return mDialog;
-        }
-    }
-
-    public Location getmCurrentLocation() {
-        return mCurrentLocation;
     }
 }

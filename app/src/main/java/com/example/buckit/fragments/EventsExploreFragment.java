@@ -163,7 +163,7 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
         int width = LinearLayout.LayoutParams.WRAP_CONTENT;
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
         final PopupWindow popupWindow = new PopupWindow(popupView, width, height);
-        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 50);
         addBlur();
         blur.setOnClickListener(new View.OnClickListener() {
             @Override
