@@ -1,15 +1,12 @@
 package com.example.buckit.fragments;
 
-import android.content.Context;
-import android.content.DialogInterface;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -19,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -29,8 +25,8 @@ import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.buckit.adapters.BucketListAdapter;
 import com.example.buckit.R;
+import com.example.buckit.adapters.BucketListAdapter;
 import com.example.buckit.models.Bucketlist;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -59,7 +55,7 @@ public class BucketListCurrentFragment extends Fragment {
      */
 
     @BindView(R.id.rvBucketList)  RecyclerView rvBucketList;
-    @BindView(R.id.ivBlur)  FloatingActionButton addItemFab;
+    @BindView(R.id.addItemFab)  FloatingActionButton addItemFab;
     @BindView(R.id.swipeContainer)  SwipeRefreshLayout bucketRefreshSwipeContainer;
     @BindView(R.id.ivBlurBucket) ImageView ivBlurBucket;
     private Unbinder unbinder;

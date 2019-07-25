@@ -77,11 +77,20 @@ public class SchedulerFragment extends Fragment {
         for(int i = 0; i < meetTimes.size(); i++){
             String currTime = meetTimes.get(i);
             if(userEvents.containsKey(currTime)){
-                for(int j = 0; j < userEvents.get(currTime); j++){
-                    meetTimes.remove(i + j);
-                    i--;
+                for(int j = 0; j < userEvents.get(currTime) - 1; j++){
+                    meetTimes.remove(i);
+
                 }
+                if(i == meetTimes.size()){
+                    meetTimes.add("break");
+                } else {
+                    meetTimes.set(i, "break");
+                }
+
             }
+        }
+        for(String time : meetTimes){
+            Log.d("check", time);
         }
         Log.d("after remove", String.valueOf(meetTimes.size()));
     }
