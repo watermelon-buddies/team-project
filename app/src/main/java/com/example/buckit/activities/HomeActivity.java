@@ -33,7 +33,6 @@ import com.example.buckit.R;
 import com.example.buckit.fragments.BucketListTabbed;
 import com.example.buckit.fragments.EventsExploreFragment;
 import com.example.buckit.fragments.SchedulerFragment;
-import com.example.buckit.fragments.ViewFriendsFragment;
 import com.example.buckit.utils.ExploreActivityPermissionDispatcher;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -211,10 +210,11 @@ public class HomeActivity extends AppCompatActivity
             finish();
        }
         else if (id == R.id.nav_view_friends) {
-            startActivity(new Intent(HomeActivity.this, ViewFriendsFragment.class));
+            startActivity(new Intent(HomeActivity.this, ViewFriends.class));
         } else if (id == R.id.nav_tools) {
 
        } else if (id == R.id.nav_profile) {
+            startActivity(new Intent(HomeActivity.this, ViewProfile.class));
 
         }
         leftDrawer.closeDrawer(GravityCompat.START);

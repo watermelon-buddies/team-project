@@ -19,13 +19,14 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity android:name=".fragments.AddFriendsActivity"></activity>
-        <activity android:name=".fragments.ViewFriendsFragment" />
+        <activity android:name=".activities.ViewFriends"></activity>
+        <activity android:name=".activities.ViewProfile"></activity>
         <activity android:name=".fragments.BucketListAchievedFragment" />
         <activity android:name=".fragments.BucketListTabbed" />
         <activity android:name=".fragments.AddToBucketList" />
         <activity
             android:name=".activities.HomeActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".fragments.SchedulerFragment" />
         <activity android:name=".fragments.BucketListCurrentFragment" />
         <activity android:name=".fragments.EventsExploreFragment" />

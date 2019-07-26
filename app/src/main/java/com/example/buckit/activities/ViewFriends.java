@@ -1,4 +1,4 @@
-package com.example.buckit.fragments;
+package com.example.buckit.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -58,7 +58,6 @@ public class ViewFriendsFragment extends AppCompatActivity {
     TextView btnAddFriends;
     @BindView(R.id.rvFriendsList)
     RecyclerView rvFriendsList;
-    public View popupView;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -18,7 +18,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.example.buckit.R;
-import com.example.buckit.models.Bucketlist;
 import com.example.buckit.models.User;
 import com.parse.ParseException;
 import com.parse.ParseUser;

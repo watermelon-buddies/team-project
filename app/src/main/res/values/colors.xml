@@ -12,6 +12,8 @@
     <color name="pastel_purple">#BB6BD9</color>
     <color name="dark_purple">#502D5C</color>
     <color name="standard_blue">#56CCF2</color>
+    <color name="selected_blue">#387FA7</color>
     <color name="grey">#696969</color>
     <color name="bright_blue">#33b5e5</color>
+    <color name="light_grey">#FBFBFB</color>
 </resources>
