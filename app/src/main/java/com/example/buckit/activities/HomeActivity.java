@@ -27,8 +27,8 @@ import android.view.View;
 import android.view.ViewStub;
 import android.widget.ImageView;
 
-import com.example.buckit.LoginActivity;
 import com.bumptech.glide.Glide;
+import com.example.buckit.LoginActivity;
 import com.example.buckit.R;
 import com.example.buckit.fragments.BucketListTabbed;
 import com.example.buckit.fragments.EventsExploreFragment;
@@ -133,7 +133,7 @@ public class HomeActivity extends AppCompatActivity
                                     fragment.setArguments(bundle);
                                     break;
                                 default:
-                                    fragment = new BucketListTabbed();
+                                    fragment = new SchedulerFragment();
                                     break;
                             }
                             fragmentManager.beginTransaction().replace(R.id.flmain,
@@ -144,7 +144,7 @@ public class HomeActivity extends AppCompatActivity
 
 
         // Set default selection
-        bottomNavigationView.setSelectedItemId(R.id.action_bucket);
+        bottomNavigationView.setSelectedItemId(R.id.action_schedule);
 
         if (TextUtils.isEmpty(getResources().getString(R.string.google_maps_api_key))) {
             throw new IllegalStateException("You forgot to supply a Google Maps API key");
@@ -157,6 +157,7 @@ public class HomeActivity extends AppCompatActivity
         }
 
     }
+
 
 
     @Override
@@ -339,4 +340,5 @@ public class HomeActivity extends AppCompatActivity
         savedInstanceState.putParcelable(KEY_LOCATION, mCurrentLocation);
         super.onSaveInstanceState(savedInstanceState);
     }
+
 }

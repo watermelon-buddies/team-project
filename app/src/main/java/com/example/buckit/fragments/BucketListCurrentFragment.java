@@ -28,7 +28,6 @@ import android.widget.Toast;
 import com.example.buckit.R;
 import com.example.buckit.adapters.BucketListAdapter;
 import com.example.buckit.models.Bucketlist;
-import com.example.buckit.models.User;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
