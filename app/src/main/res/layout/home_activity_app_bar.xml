@@ -74,5 +74,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_notifications" />
 
+    <FrameLayout
+        android:id="@+id/flProfile"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/flmain"
+        app:layout_constraintStart_toStartOf="@+id/flmain"
+        app:layout_constraintTop_toTopOf="@+id/flmain">
+
+    </FrameLayout>
+
 
 </android.support.constraint.ConstraintLayout>
