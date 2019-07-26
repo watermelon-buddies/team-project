@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.support.design.shape.RoundedCornerTreatment;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -24,6 +23,8 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewStub;
 import android.widget.ImageView;
 
 import com.example.buckit.LoginActivity;
@@ -32,7 +33,7 @@ import com.example.buckit.R;
 import com.example.buckit.fragments.BucketListTabbed;
 import com.example.buckit.fragments.EventsExploreFragment;
 import com.example.buckit.fragments.SchedulerFragment;
-import com.example.buckit.models.User;
+import com.example.buckit.fragments.ViewFriendsFragment;
 import com.example.buckit.utils.ExploreActivityPermissionDispatcher;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -89,7 +90,10 @@ public class HomeActivity extends AppCompatActivity
     @RequiresApi(api = Build.VERSION_CODES.O)
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activities_drawrer_main);
+        ViewStub stub = (ViewStub) findViewById(R.id.layout_stub);
+        stub.setLayoutResource(R.layout.home_activity_content);
+        View inflated = stub.inflate();
         ButterKnife.bind(this);
         currentUser = ParseUser.getCurrentUser();
 
@@ -129,7 +133,7 @@ public class HomeActivity extends AppCompatActivity
                                     fragment.setArguments(bundle);
                                     break;
                                 default:
-                                    fragment = new SchedulerFragment();
+                                    fragment = new BucketListTabbed();
                                     break;
                             }
                             fragmentManager.beginTransaction().replace(R.id.flmain,
@@ -140,7 +144,7 @@ public class HomeActivity extends AppCompatActivity
 
 
         // Set default selection
-        bottomNavigationView.setSelectedItemId(R.id.action_schedule);
+        bottomNavigationView.setSelectedItemId(R.id.action_bucket);
 
         if (TextUtils.isEmpty(getResources().getString(R.string.google_maps_api_key))) {
             throw new IllegalStateException("You forgot to supply a Google Maps API key");
@@ -206,7 +210,7 @@ public class HomeActivity extends AppCompatActivity
             finish();
        }
         else if (id == R.id.nav_view_friends) {
-
+            startActivity(new Intent(HomeActivity.this, ViewFriendsFragment.class));
         } else if (id == R.id.nav_tools) {
 
        } else if (id == R.id.nav_profile) {

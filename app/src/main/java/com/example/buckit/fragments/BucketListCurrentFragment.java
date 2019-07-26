@@ -91,28 +91,6 @@ public class BucketListCurrentFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull final View bucketListView, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(bucketListView, savedInstanceState);
-
-        ParseUser currentUser = ParseUser.getCurrentUser();
-        acl = new ParseACL(currentUser);
-        acl.setPublicReadAccess(true);
-        currentUser.setACL(acl);
-        JSONArray categories = currentUser.getJSONArray(KEY_SELECTED_CATEGORIES);
-        if (categories == null){
-            ArrayList<String> catEmptyList = new ArrayList<>();
-            currentUser.put(KEY_SELECTED_CATEGORIES, catEmptyList);
-            currentUser.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if (e == null) {
-                        Log.d("Home Activity", "Create a new post success!");
-                    } else {
-                        Log.d("Home Activity", "Failed in creating a post!");
-                        e.printStackTrace();
-                    }
-                }
-            });
-        }
-
         /* addItem floating action button for adding new item to the bucket list */
         addItemFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -194,10 +172,6 @@ public class BucketListCurrentFragment extends Fragment {
                     JSONArray categories = response.getJSONArray("categories");
                     for (int i = 0; i < categories.length(); i++){
                         JSONObject catObject = categories.getJSONObject(i);
-                        Log.d("ID", catObject.toString());
-                        Log.d("ID", catObject.getString("name"));
-                        Log.d("ID", catObject.getString("id"));
-                        Log.d("ID", category);
                        if (catObject.getString("name").equals(category) ){
                             Log.d("ID", catObject.getString("id"));
                             user.add(KEY_SELECTED_CATEGORIES, catObject.getString("id"));

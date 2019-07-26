@@ -136,6 +136,29 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
                 }
             });
         }
+        AsyncHttpClient client = new AsyncHttpClient();
+        RequestParams params = new RequestParams();
+        String url = API_BASE_URL + "events/search";
+        params.put(API_KEY_AREA_RADIUS, user.getString("eventRadius"));
+        params.put(API_KEY_LATITUDE, latitude);
+        params.put(API_KEY_LONGITUDE, longitude);
+        params.put(API_KEY_PARAM, PRIVATE_TOKEN);
+        client.get(url, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    JSONArray events = response.getJSONArray("events");
+                    for (int j = 0; j < events.length(); j++) {
+                        Event currEvent = new Event(events.getJSONObject(j));
+                        eventsList.put(position[0], currEvent);
+                        position[0]++;
+                        swipe_card_adapter.notifyDataSetChanged();;
+                    }
+                } catch (JSONException e) {
+                    Log.d("Get events", "Failure to retrieve events");
+                }
+            }
+        });
     }
 
     public static JSONArray shuffleJsonArray (JSONArray array) throws JSONException {

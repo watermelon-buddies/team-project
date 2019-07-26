@@ -17,9 +17,12 @@ import com.example.buckit.R;
 import com.example.buckit.models.User;
 import com.example.buckit.models.UserInvite;
 import com.parse.FindCallback;
+import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+
+import org.json.JSONArray;
 
 import java.time.DayOfWeek;
 import java.util.ArrayList;
@@ -31,6 +34,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+
+import static com.example.buckit.fragments.EventsExploreFragment.KEY_SELECTED_CATEGORIES;
 
 @TargetApi(26)
 public class SchedulerFragment extends Fragment {
@@ -67,6 +72,27 @@ public class SchedulerFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View schedulerView, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(schedulerView, savedInstanceState);
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        ParseACL acl = new ParseACL(currentUser);
+        acl.setPublicReadAccess(true);
+        currentUser.setACL(acl);
+        JSONArray categories = currentUser.getJSONArray(KEY_SELECTED_CATEGORIES);
+        if (categories == null){
+            ArrayList<String> catEmptyList = new ArrayList<>();
+            currentUser.put(KEY_SELECTED_CATEGORIES, catEmptyList);
+            catEmptyList.add("103");
+            currentUser.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e == null) {
+                        Log.d("Home Activity", "Create a new post success!");
+                    } else {
+                        Log.d("Home Activity", "Failed in creating a post!");
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
         createButtonArray(schedulerView);
         btnSend = schedulerView.findViewById(R.id.btnSend);
         schedulerButtons.add(btnSend);

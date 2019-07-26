@@ -2,6 +2,7 @@ package com.example.buckit.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.design.shape.RoundedCornerTreatment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,21 +10,25 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.buckit.R;
 import com.example.buckit.models.Bucketlist;
 import com.example.buckit.models.User;
 
 import java.util.List;
 
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
+
 public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.ViewHolder> {
 
     private List<User> mFriendsList;
+    private Context mContext;
 
-    public FriendsListAdapter(List<User> items) {
+    public FriendsListAdapter(List<User> items, Context context) {
         mFriendsList = items;
+        mContext = context;
     }
 
-    RecyclerView rvPost;
     User friend;
 
 
@@ -44,7 +49,13 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         // get data according to position
 
         friend = mFriendsList.get(position);
-        holder.tvBucketDescription.setText(friend.getObjectId());
+        holder.tvUsername.setText(friend.getUsername());
+        if (friend.getProfilePic() != null){
+            Glide.with(mContext)
+                    .load(friend.getProfilePic().getUrl())
+                    .into(holder.ivProfilePicture);
+        }
+
 
 
                 /*Bitmap takenImage = null;
@@ -110,14 +121,13 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     // create the viewholder class
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView tvBucketDescription;
-        public ImageView ivCategoryImage;
+        public TextView tvUsername;
+        public ImageView ivProfilePicture;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ivCategoryImage = itemView.findViewById(R.id.ivCategoryImage);
-            tvBucketDescription = itemView.findViewById(R.id.tvBucketDescription);
-
+            ivProfilePicture = itemView.findViewById(R.id.ivProfilePicture);
+            tvUsername = itemView.findViewById(R.id.tvUsername);
 
         }
 
