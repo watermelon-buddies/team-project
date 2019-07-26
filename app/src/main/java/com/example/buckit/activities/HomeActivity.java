@@ -204,13 +204,13 @@ public class HomeActivity extends AppCompatActivity
             startActivity(logoutIntent);
             finish();
        }
-        //else if (id == R.id.nav_view_friends) {
-//
-//        } else if (id == R.id.nav_tools) {
-//
-//        } else if (id == R.id.nav_logout) {
-//
-//        }
+        else if (id == R.id.nav_view_friends) {
+
+        } else if (id == R.id.nav_tools) {
+
+       } else if (id == R.id.nav_profile) {
+
+        }
         leftDrawer.closeDrawer(GravityCompat.START);
         return true;
     }
