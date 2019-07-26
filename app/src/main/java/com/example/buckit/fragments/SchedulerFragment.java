@@ -14,7 +14,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.buckit.R;
+import com.example.buckit.models.User;
 import com.example.buckit.models.UserInvite;
+import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -24,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,8 +40,14 @@ public class SchedulerFragment extends Fragment {
     private ArrayList<String> meetTimes;
     private Button btnSend;
     private HashMap<String, Integer> userEvents;
+    private ArrayList<User> recentUsers = new ArrayList<>();
+    private ParseUser userToInvite;
     @BindView(R.id.tvEventTitle) TextView tvEventTitle;
     @BindView(R.id.etLocation) EditText etLocation;
+    @BindView (R.id.btnRecent0) Button btnRecent0;
+    @BindView (R.id.btnRecent1) Button btnRecent1;
+    @BindView (R.id.btnRecent2) Button btnRecent2;
+    @BindView (R.id.btnRecent3) Button btnRecent3;
 
 
 
@@ -61,7 +70,45 @@ public class SchedulerFragment extends Fragment {
         createButtonArray(schedulerView);
         btnSend = schedulerView.findViewById(R.id.btnSend);
         schedulerButtons.add(btnSend);
+        getRecentUsers();
         addListeners();
+    }
+
+    private void getRecentUsers(){
+        User.Query userQuery = new User.Query();
+        userQuery.getTop();
+        userQuery.findInBackground(new FindCallback<User>() {
+            @Override
+            public void done(List<User> objects, ParseException e) {
+                if(e == null){
+                    for(int i = 0; i < objects.size(); i++){
+                        Log.d("Find Users", objects.get(i).getUsername());
+                        recentUsers.add(objects.get(i));
+                    }
+                    setButtons();
+                } else {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void addUserInvite(){
+        /* TODO: make this an array of users or make only one selectable*/
+        if(btnRecent0.isSelected()){
+            userToInvite = recentUsers.get(0);
+        }
+    }
+
+    private void setButtons(){
+        String initialsUser0 = recentUsers.get(0).getUsername().substring(0,2);
+        String initialsUser1 = recentUsers.get(1).getUsername().substring(0,2);
+        String initialsUser2 = recentUsers.get(2).getUsername().substring(0,2);
+        String initialsUser3 = recentUsers.get(3).getUsername().substring(0,2);
+        btnRecent0.setText(initialsUser0);
+        btnRecent1.setText(initialsUser1);
+        btnRecent2.setText(initialsUser2);
+        btnRecent3.setText(initialsUser3);
     }
 
     private void constructCalendarList() {
@@ -87,8 +134,9 @@ public class SchedulerFragment extends Fragment {
             String currTime = meetTimes.get(i);
             if(userEvents.containsKey(currTime)){
                 for(int j = 0; j < userEvents.get(currTime) - 1; j++){
-                    meetTimes.remove(i);
-
+                    if(i < meetTimes.size()){
+                        meetTimes.remove(i);
+                    }
                 }
                 if(i == meetTimes.size()){
                     meetTimes.add("break");
@@ -156,11 +204,13 @@ public class SchedulerFragment extends Fragment {
     }
 
     private void sendInvite(){
+        addUserInvite();
         UserInvite newInvite = new UserInvite();
         newInvite.setTitle(tvEventTitle.getText().toString());
         newInvite.setLocation(etLocation.getText().toString());
         newInvite.setCreator(ParseUser.getCurrentUser());
         newInvite.setMeetTimes(meetTimes);
+        newInvite.setInvited(userToInvite);
         newInvite.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -187,10 +237,6 @@ public class SchedulerFragment extends Fragment {
 
     private void createButtonArray(View schedulerView) {
         schedulerButtons = new ArrayList<>();
-        Button btnRecent1 = schedulerView.findViewById(R.id.btnRecent1);
-        Button btnRecent2 = schedulerView.findViewById(R.id.btnRecent2);
-        Button btnRecent3 = schedulerView.findViewById(R.id.btnRecent3);
-        Button btnRecent4 = schedulerView.findViewById(R.id.btnRecent4);
         Button btnMonday = schedulerView.findViewById(R.id.btnMonday);
         Button btnTuesday = schedulerView.findViewById(R.id.btnTuesday);
         Button btnWednesday = schedulerView.findViewById(R.id.btnWednesday);
@@ -202,10 +248,10 @@ public class SchedulerFragment extends Fragment {
         Button btnAfternoon = schedulerView.findViewById(R.id.btnAfternoon);
         Button btnEvening = schedulerView.findViewById(R.id.btnEvening);
         Button btnNight = schedulerView.findViewById(R.id.btnNight);
+        schedulerButtons.add(btnRecent0);
         schedulerButtons.add(btnRecent1);
         schedulerButtons.add(btnRecent2);
         schedulerButtons.add(btnRecent3);
-        schedulerButtons.add(btnRecent4);
         schedulerButtons.add(btnMonday);
         schedulerButtons.add(btnTuesday);
         schedulerButtons.add(btnWednesday);

@@ -2,11 +2,11 @@ package com.example.buckit.models;
 
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
-@ParseClassName("user")
-public class User extends ParseObject {
+@ParseClassName("_User")
+public class User extends ParseUser {
 
     public static final String KEY_FRIENDS = "friends";
     public static final String KEY_PROFILE_PICTURE= "profilePic";
@@ -50,6 +50,8 @@ public class User extends ParseObject {
         put(KEY_EVENTS_RSVP, events);
     }
 
+    public String getUsername() { return getString(KEY_USERNAME); }
+
 
     public static class Query extends ParseQuery<User> {
 
@@ -63,9 +65,5 @@ public class User extends ParseObject {
             return this;
         }
 
-        public Query withUser(){
-            include("user");
-            return this;
-        }
     }
 }

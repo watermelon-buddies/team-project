@@ -177,7 +177,7 @@
             app:srcCompat="@android:drawable/ic_input_add" />
 
         <Button
-            android:id="@+id/btnRecent4"
+            android:id="@+id/btnRecent3"
             android:layout_width="59dp"
             android:layout_height="57dp"
             android:layout_marginStart="12dp"
@@ -187,22 +187,6 @@
             android:color="#12DECB"
             android:padding="15dp"
             android:text="TC"
-            android:textColor="#FCF9F9"
-            android:textSize="18sp"
-            app:layout_constraintStart_toEndOf="@+id/btnRecent3"
-            app:layout_constraintTop_toBottomOf="@+id/tvAddInvitees" />
-
-        <Button
-            android:id="@+id/btnRecent3"
-            android:layout_width="59dp"
-            android:layout_height="57dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginTop="36dp"
-            android:background="@drawable/button_round_mustard"
-            android:color="#12DECB"
-            android:padding="15dp"
-            android:text="BL"
             android:textColor="#FCF9F9"
             android:textSize="18sp"
             app:layout_constraintStart_toEndOf="@+id/btnRecent2"
@@ -215,10 +199,10 @@
             android:layout_marginStart="12dp"
             android:layout_marginLeft="12dp"
             android:layout_marginTop="36dp"
-            android:background="@drawable/button_round_pink"
+            android:background="@drawable/button_round_mustard"
             android:color="#12DECB"
             android:padding="15dp"
-            android:text="SA"
+            android:text="BL"
             android:textColor="#FCF9F9"
             android:textSize="18sp"
             app:layout_constraintStart_toEndOf="@+id/btnRecent1"
@@ -226,6 +210,22 @@
 
         <Button
             android:id="@+id/btnRecent1"
+            android:layout_width="59dp"
+            android:layout_height="57dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="36dp"
+            android:background="@drawable/button_round_pink"
+            android:color="#12DECB"
+            android:padding="15dp"
+            android:text="SA"
+            android:textColor="#FCF9F9"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@+id/btnRecent0"
+            app:layout_constraintTop_toBottomOf="@+id/tvAddInvitees" />
+
+        <Button
+            android:id="@+id/btnRecent0"
             android:layout_width="59dp"
             android:layout_height="57dp"
             android:layout_marginStart="24dp"
@@ -263,8 +263,8 @@
             android:text="@string/recent_friends"
             android:textColor="#B6B2B2"
             android:textSize="12sp"
-            app:layout_constraintEnd_toStartOf="@+id/btnRecent4"
-            app:layout_constraintStart_toEndOf="@+id/btnRecent1"
+            app:layout_constraintEnd_toStartOf="@+id/btnRecent3"
+            app:layout_constraintStart_toEndOf="@+id/btnRecent0"
             app:layout_constraintTop_toBottomOf="@+id/tvAddInvitees" />
 
         <TextView
