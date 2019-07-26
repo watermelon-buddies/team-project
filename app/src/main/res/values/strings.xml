@@ -51,6 +51,7 @@
     <string name="events_coming_up">Events Coming Up</string>
     <string name="accept">ACCEPT</string>
     <string name="decline">DECLINE</string>
+    <string name="select_meet_time">Select Time To Meet</string>
 
 
     <string name="image_blur_description">Blur background</string>

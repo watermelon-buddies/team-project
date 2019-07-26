@@ -3,6 +3,8 @@ package com.example.buckit.activities;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.example.buckit.R;
 
@@ -14,9 +16,11 @@ import java.util.HashMap;
 
 public class SelectTime extends AppCompatActivity {
 
-    ArrayList<String> creatorMeetTimes;
+    ArrayList<String> finalMeetTimes;
     private HashMap<String, Integer> userEvents;
     JSONArray sentTimes;
+    ListView lvMeetTimes;
+    ArrayAdapter<String> meetTimesAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,39 +33,43 @@ public class SelectTime extends AppCompatActivity {
             e.printStackTrace();
         }
         userEvents = (HashMap<String, Integer>) getIntent().getSerializableExtra("userCal");
-        creatorMeetTimes = new ArrayList<>();
+        finalMeetTimes = new ArrayList<>();
         for(int i = 0; i < sentTimes.length(); i++){
             try {
-                creatorMeetTimes.add(sentTimes.getString(i));
+                finalMeetTimes.add(sentTimes.getString(i));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
         findMeetTimes();
+        meetTimesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, finalMeetTimes);
+        lvMeetTimes = findViewById(R.id.lvMeetTimes);
+        lvMeetTimes.setAdapter(meetTimesAdapter);
+
     }
 
     private void findMeetTimes(){
-        Log.d("beforeRemove", String.valueOf(creatorMeetTimes.size()));
-        for(int i = 0; i < creatorMeetTimes.size(); i++){
-            String currTime = creatorMeetTimes.get(i);
+        Log.d("beforeRemove", String.valueOf(finalMeetTimes.size()));
+        for(int i = 0; i < finalMeetTimes.size(); i++){
+            String currTime = finalMeetTimes.get(i);
             if(userEvents.containsKey(currTime)){
                 for(int j = 0; j < userEvents.get(currTime) - 1; j++){
-                    if(i < creatorMeetTimes.size()){
-                        creatorMeetTimes.remove(i);
+                    if(i < finalMeetTimes.size()){
+                        finalMeetTimes.remove(i);
                     }
                 }
-                if(i == creatorMeetTimes.size()){
-                    creatorMeetTimes.add("break");
+                if(i == finalMeetTimes.size()){
+                    finalMeetTimes.add("break");
                 } else {
-                    creatorMeetTimes.set(i, "break");
+                    finalMeetTimes.set(i, "break");
                 }
 
             }
         }
-        for(String time : creatorMeetTimes){
+        for(String time : finalMeetTimes){
             Log.d("check", time);
         }
-        Log.d("after remove", String.valueOf(creatorMeetTimes.size()));
+        Log.d("after remove", String.valueOf(finalMeetTimes.size()));
     }
 
 }
