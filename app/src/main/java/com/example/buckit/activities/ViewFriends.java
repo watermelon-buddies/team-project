@@ -1,4 +1,4 @@
-package com.example.buckit.fragments;
+package com.example.buckit.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -21,12 +21,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class ViewFriendsFragment extends AppCompatActivity {
+public class ViewFriends extends AppCompatActivity {
 
     Unbinder unbinder;
     ArrayList<User> mFriendsList;
     FriendsListAdapter mFriendsAdapter;
-    @BindView(R.id.rvFriendsList)
+    @BindView(R.id.rvPendingInvites)
     RecyclerView rvFriendsList;
 
     protected void onCreate(Bundle savedInstanceState) {

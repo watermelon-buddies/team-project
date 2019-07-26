@@ -2,7 +2,6 @@ package com.example.buckit.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.design.shape.RoundedCornerTreatment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,12 +11,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.buckit.R;
-import com.example.buckit.models.Bucketlist;
 import com.example.buckit.models.User;
 
 import java.util.List;
 
-import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
+
 
 public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.ViewHolder> {
 

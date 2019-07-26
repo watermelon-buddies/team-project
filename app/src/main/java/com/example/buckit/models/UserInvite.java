@@ -18,6 +18,7 @@ public class UserInvite extends ParseObject {
     public static final String KEY_MEET_TIMES = "meetTimes";
     public static final String KEY_CREATOR = "creator";
     public static final String KEY_INVITED = "invited";
+    public static final String KEY_ACCEPTED = "accepted";
 
     public UserInvite(){
 
@@ -39,8 +40,12 @@ public class UserInvite extends ParseObject {
 
     public void setCreator(ParseUser creator) { put(KEY_CREATOR, creator); }
 
-//    public ParseUser getInvited() {return getParseUser(KEY_INVITED); }
-//
+    public ParseUser getInvited() {return getParseUser(KEY_INVITED); }
+
+    public Boolean hasAccepted() {return getBoolean(KEY_ACCEPTED);}
+
+    public void setAccepted() {put(KEY_ACCEPTED, true);}
+
     public void setInvited(ParseUser invited) { put(KEY_INVITED, invited); }
 
     public static class Query extends ParseQuery<UserInvite> {
@@ -55,8 +60,13 @@ public class UserInvite extends ParseObject {
             return this;
         }
 
-        public UserInvite.Query withUser(){
-            include("user");
+        public UserInvite.Query withInvited(){
+            include(KEY_INVITED);
+            return this;
+        }
+
+        public UserInvite.Query withAccepted(){
+            include(KEY_ACCEPTED);
             return this;
         }
     }

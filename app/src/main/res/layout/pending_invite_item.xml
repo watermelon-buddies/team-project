@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cvRoot"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/grid_margin"
+    android:layout_marginTop="@dimen/cell_margin"
+    android:layout_marginRight="@dimen/grid_margin"
+    android:clickable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    card_view:cardCornerRadius="@dimen/card_corner_radius"
+    card_view:cardElevation="@dimen/card_elevation">
+
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="250dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tvWhat"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:text="TextView"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvWho"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:text="TextView"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toBottomOf="@+id/tvWhat" />
+
+        <TextView
+            android:id="@+id/tvWhere"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:text="TextView"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toBottomOf="@+id/tvWho" />
+
+        <Button
+            android:id="@+id/btnAccept"
+            android:layout_width="0dp"
+            android:layout_height="49dp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/button_accept"
+            android:text="@string/accept"
+            android:textColor="@color/bright_blue"
+            card_view:layout_constraintEnd_toStartOf="@+id/btnDecline"
+            card_view:layout_constraintHorizontal_bias="0.5"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toBottomOf="@+id/tvWhere" />
+
+        <Button
+            android:id="@+id/btnDecline"
+            android:layout_width="0dp"
+            android:layout_height="49dp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/button_decline"
+            android:text="@string/decline"
+            android:textColor="@android:color/darker_gray"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:layout_constraintHorizontal_bias="0.5"
+            card_view:layout_constraintStart_toEndOf="@+id/btnAccept"
+            card_view:layout_constraintTop_toBottomOf="@+id/tvWhere" />
+
+    </android.support.constraint.ConstraintLayout>
+</android.support.v7.widget.CardView>
