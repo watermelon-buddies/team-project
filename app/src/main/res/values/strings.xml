@@ -47,6 +47,8 @@
     <string name="night">Night</string>
     <string name="send_invite">Send Invite</string>
 
+    <string name="add_friends">Add Friends</string>
+
 
     <string name="image_blur_description">Blur background</string>
     <string name="first_tab_description">Current Bucket</string>

@@ -45,7 +45,6 @@ public class BucketListAchievedFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull final View bucketListView, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(bucketListView, savedInstanceState);
-
         mBucketList = new ArrayList<>();
         mBucketAdapter = new BucketListAdapter(getContext(), mBucketList);
         rvBucketList.setAdapter(mBucketAdapter);
