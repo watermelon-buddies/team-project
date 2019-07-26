@@ -48,6 +48,7 @@
     <string name="send_invite">Send Invite</string>
 
     <string name="pending_invites">Pending Invites</string>
+    <string name="events_coming_up">Events Coming Up</string>
     <string name="accept">ACCEPT</string>
     <string name="decline">DECLINE</string>
 

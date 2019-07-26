@@ -95,7 +95,6 @@ public class HomeActivity extends AppCompatActivity
         View inflated = stub.inflate();
         ButterKnife.bind(this);
         currentUser = ParseUser.getCurrentUser();
-
         getCalendarEvents(calendarCallbackId, Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -159,6 +158,7 @@ public class HomeActivity extends AppCompatActivity
 
 
 
+
     @Override
     public void onBackPressed() {
         if (leftDrawer.isDrawerOpen(GravityCompat.START)) {
@@ -196,6 +196,7 @@ public class HomeActivity extends AppCompatActivity
     }*/
 
     @SuppressWarnings("StatementWithEmptyBody")
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -214,7 +215,11 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_tools) {
 
        } else if (id == R.id.nav_profile) {
-            startActivity(new Intent(HomeActivity.this, ViewProfile.class));
+            //getCalendarEvents(calendarCallbackId, Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
+            Intent profileView = new Intent(HomeActivity.this, ViewProfile.class);
+            profileView.putExtra("userCal", userEvents);
+            startActivity(profileView);
+
 
         }
         leftDrawer.closeDrawer(GravityCompat.START);
@@ -250,7 +255,6 @@ public class HomeActivity extends AppCompatActivity
                     }
                 }
             }
-            Log.d("Check", String.valueOf(userEvents.size()));
         }
     }
 

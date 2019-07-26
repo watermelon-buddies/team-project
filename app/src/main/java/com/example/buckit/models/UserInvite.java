@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 
 @ParseClassName("UserInvite")
+
 public class UserInvite extends ParseObject {
 
     public static final String KEY_EVENT_TITLE = "eventTitle";
@@ -19,6 +20,7 @@ public class UserInvite extends ParseObject {
     public static final String KEY_CREATOR = "creator";
     public static final String KEY_INVITED = "invited";
     public static final String KEY_ACCEPTED = "accepted";
+    public static final String KEY_DURATION = "duration";
 
     public UserInvite(){
 
@@ -44,9 +46,14 @@ public class UserInvite extends ParseObject {
 
     public Boolean hasAccepted() {return getBoolean(KEY_ACCEPTED);}
 
+    public void setDuration(int duration) {put(KEY_DURATION, duration);}
+
+    public Integer getDuration() {return getNumber(KEY_DURATION).intValue();}
+
     public void setAccepted() {put(KEY_ACCEPTED, true);}
 
     public void setInvited(ParseUser invited) { put(KEY_INVITED, invited); }
+
 
     public static class Query extends ParseQuery<UserInvite> {
 
