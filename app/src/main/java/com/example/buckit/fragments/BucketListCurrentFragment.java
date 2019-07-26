@@ -28,7 +28,6 @@ import android.widget.Toast;
 import com.example.buckit.R;
 import com.example.buckit.adapters.BucketListAdapter;
 import com.example.buckit.models.Bucketlist;
-import com.example.buckit.models.User;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -91,7 +90,6 @@ public class BucketListCurrentFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull final View bucketListView, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(bucketListView, savedInstanceState);
-
         ParseUser currentUser = ParseUser.getCurrentUser();
         acl = new ParseACL(currentUser);
         acl.setPublicReadAccess(true);
@@ -99,6 +97,7 @@ public class BucketListCurrentFragment extends Fragment {
         JSONArray categories = currentUser.getJSONArray(KEY_SELECTED_CATEGORIES);
         if (categories == null){
             ArrayList<String> catEmptyList = new ArrayList<>();
+            catEmptyList.add("103");
             currentUser.put(KEY_SELECTED_CATEGORIES, catEmptyList);
             currentUser.saveInBackground(new SaveCallback() {
                 @Override

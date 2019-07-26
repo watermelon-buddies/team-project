@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.support.design.shape.RoundedCornerTreatment;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -26,13 +25,12 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
-import com.example.buckit.LoginActivity;
 import com.bumptech.glide.Glide;
+import com.example.buckit.LoginActivity;
 import com.example.buckit.R;
 import com.example.buckit.fragments.BucketListTabbed;
 import com.example.buckit.fragments.EventsExploreFragment;
 import com.example.buckit.fragments.SchedulerFragment;
-import com.example.buckit.models.User;
 import com.example.buckit.utils.ExploreActivityPermissionDispatcher;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -153,6 +151,7 @@ public class HomeActivity extends AppCompatActivity
         }
 
     }
+
 
 
     @Override
@@ -335,4 +334,5 @@ public class HomeActivity extends AppCompatActivity
         savedInstanceState.putParcelable(KEY_LOCATION, mCurrentLocation);
         super.onSaveInstanceState(savedInstanceState);
     }
+
 }

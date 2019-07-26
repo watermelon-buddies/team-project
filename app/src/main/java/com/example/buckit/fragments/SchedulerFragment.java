@@ -97,6 +97,12 @@ public class SchedulerFragment extends Fragment {
         /* TODO: make this an array of users or make only one selectable*/
         if(btnRecent0.isSelected()){
             userToInvite = recentUsers.get(0);
+        }  else if(btnRecent1.isSelected()){
+            userToInvite = recentUsers.get(1);
+        } else if(btnRecent2.isSelected()){
+            userToInvite = recentUsers.get(2);
+        } else if(btnRecent3.isSelected()){
+            userToInvite = recentUsers.get(3);
         }
     }
 
@@ -127,6 +133,9 @@ public class SchedulerFragment extends Fragment {
             }
         }
     }
+
+
+
 
     private void removeBusyTimes(){
         Log.d("beforeRemove", String.valueOf(meetTimes.size()));
