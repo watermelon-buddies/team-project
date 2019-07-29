@@ -16,6 +16,7 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -36,8 +37,9 @@ public class ViewProfile extends AppCompatActivity {
         stub.setLayoutResource(R.layout.view_profile);
         View inflated = stub.inflate();
         ButterKnife.bind(this);
+        HashMap<String, Integer> userCal = (HashMap<String, Integer>) getIntent().getSerializableExtra("userCal");
         mPendingInvites = new ArrayList<UserInvite>();
-        mPendingInvitesAdapter = new PendingInvitesAdapter(mPendingInvites, this);
+        mPendingInvitesAdapter = new PendingInvitesAdapter(mPendingInvites, userCal, this);
         rvPendingInvites.setAdapter(mPendingInvitesAdapter);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         rvPendingInvites.setLayoutManager(linearLayoutManager);
@@ -46,9 +48,9 @@ public class ViewProfile extends AppCompatActivity {
 
     protected void populateInvites() {
         final UserInvite.Query userInviteQuery = new UserInvite.Query();
-        userInviteQuery.getTop().withInvited();
+        userInviteQuery.getTop().withInvited().withAccepted();
         userInviteQuery.whereEqualTo(UserInvite.KEY_INVITED, ParseUser.getCurrentUser());
-        //userInviteQuery.withAccepted();
+        userInviteQuery.whereEqualTo(UserInvite.KEY_ACCEPTED, false);
         userInviteQuery.findInBackground(new FindCallback<UserInvite>() {
             @Override
             public void done(List<UserInvite> object, ParseException e) {
