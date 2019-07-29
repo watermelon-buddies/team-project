@@ -22,6 +22,7 @@
         <activity android:name=".fragments.AddFriendsActivity"></activity>
         <activity android:name=".activities.SelectTime"></activity>
         <activity android:name=".activities.ViewProfile"></activity>
+        <activity android:name=".activities.ViewFriends"></activity>
         <activity android:name=".fragments.BucketListAchievedFragment" />
         <activity android:name=".fragments.BucketListTabbed" />
         <activity android:name=".fragments.AddToBucketList" />
