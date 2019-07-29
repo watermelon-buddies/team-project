@@ -61,7 +61,7 @@ public class User extends ParseUser {
         }
 
         public Query getTop(){
-            setLimit(4);
+            setLimit(20);
             return this;
         }
 

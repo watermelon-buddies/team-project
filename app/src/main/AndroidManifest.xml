@@ -18,9 +18,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".fragments.AddFriendsActivity"></activity>
         <activity android:name=".activities.SelectTime"></activity>
-        <activity android:name=".activities.ViewFriends" />
-        <activity android:name=".activities.ViewProfile" />
+        <activity android:name=".activities.ViewProfile"></activity>
         <activity android:name=".fragments.BucketListAchievedFragment" />
         <activity android:name=".fragments.BucketListTabbed" />
         <activity android:name=".fragments.AddToBucketList" />

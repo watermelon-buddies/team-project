@@ -213,7 +213,7 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
         LayoutInflater inflater = (LayoutInflater)
                 getContext().getSystemService(LAYOUT_INFLATER_SERVICE);
         popupView = inflater.inflate(R.layout.events_explore_popup_window, null);
-        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int width = LinearLayout.LayoutParams.MATCH_PARENT;
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
         final PopupWindow popupWindow = new PopupWindow(popupView, width, height);
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 50);

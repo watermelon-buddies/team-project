@@ -131,7 +131,7 @@ public class HomeActivity extends AppCompatActivity
                                     fragment.setArguments(bundle);
                                     break;
                                 default:
-                                    fragment = new SchedulerFragment();
+                                    fragment = new BucketListTabbed();
                                     break;
                             }
                             fragmentManager.beginTransaction().replace(R.id.flmain,
@@ -142,7 +142,7 @@ public class HomeActivity extends AppCompatActivity
 
 
         // Set default selection
-        bottomNavigationView.setSelectedItemId(R.id.action_schedule);
+        bottomNavigationView.setSelectedItemId(R.id.action_bucket);
 
         if (TextUtils.isEmpty(getResources().getString(R.string.google_maps_api_key))) {
             throw new IllegalStateException("You forgot to supply a Google Maps API key");

@@ -1,30 +1,49 @@
 package com.example.buckit.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.shape.RoundedCornerTreatment;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.example.buckit.R;
 import com.example.buckit.models.User;
+import com.parse.ParseException;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
+
+import org.json.JSONArray;
 
 import java.util.List;
 
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
+import static com.example.buckit.models.User.KEY_FRIENDS;
 
 public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.ViewHolder> {
 
     private List<User> mFriendsList;
     private Context mContext;
+    private Boolean mShow;
+    private ParseUser currentUser;
+    private String id;
 
-    public FriendsListAdapter(List<User> items, Context context) {
+    public FriendsListAdapter(List<User> items, Context context, boolean showButton, ParseUser user) {
         mFriendsList = items;
         mContext = context;
+        mShow = showButton;
+        currentUser = user;
     }
 
     User friend;
@@ -42,62 +61,62 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         return viewHolder;
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         // get data according to position
 
         friend = mFriendsList.get(position);
+        Log.d("Friend", friend.getUsername());
         holder.tvUsername.setText(friend.getUsername());
         if (friend.getProfilePic() != null){
             Glide.with(mContext)
                     .load(friend.getProfilePic().getUrl())
+                    .fitCenter()
+                    .bitmapTransform(new RoundedCornersTransformation(mContext, 60, 60))
+                    .into(holder.ivProfilePicture);
+        }
+        else {
+            Glide.with(mContext)
+                    .load(R.drawable.no_profile)
+                    .centerCrop()
+                    .bitmapTransform(new RoundedCornersTransformation(mContext, 60, 60))
                     .into(holder.ivProfilePicture);
         }
 
-
-
-                /*Bitmap takenImage = null;
-                Log.d("Images", "Successfully loaded" + post.getImage().toString());
-                try {
-                    takenImage = BitmapFactory.decodeFile(post.getImage().getFile().getPath());
-                    System.out.println(takenImage);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                holder.ivImagePost.setImageBitmap(takenImage);*/
-
-
-        // RESIZE BITMAP, see section below
-        // Load the taken image into a preview
-
-
-        /*holder.ivTweetImage.setVisibility(View.VISIBLE);*/
-
-
-    /*
-            Glide.with(context)
-                    .load(tweet.user.profileImageUrl)
-                    .bitmapTransform(new RoundedCornersTransformation(context, 60, 0))
-                    .into(holder.ivProfileImage);*/
+        if (mShow == true){
+            holder.fabAddFriends.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.fabAddFriends.setVisibility(View.GONE);
+        }
+        holder.fabAddFriends.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                JSONArray friendsList = currentUser.getJSONArray(KEY_FRIENDS);
+                int position = holder.getAdapterPosition();
+                Log.d("Click", "Working");
+                // make sure the position is valid, i.e. actually exists in the view
+                if (position != RecyclerView.NO_POSITION) {
+                        User user = mFriendsList.get(position);
+                        Log.d("Click", user.toString());
+                        currentUser.add(KEY_FRIENDS, user.getObjectId());
+                        currentUser.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e == null) {
+                                    Log.d("Friends", "Added a new friend!");
+                                } else {
+                                    Log.d("Friends", "Failed to add!");
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    }
+            }
+        });
 
     }
-
-    /*    // getRelativeTimeAgo("Mon Apr 01 21:16:23 +0000 2014");
-        public static String getRelativeTimeAgo(String rawJsonDate) {
-            String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
-            SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
-            sf.setLenient(true);
-
-            String relativeDate = "";
-            try {
-                long dateMillis = sf.parse(rawJsonDate).getTime();
-                relativeDate = DateUtils.getRelativeTimeSpanString(dateMillis,
-                        System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS).toString();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            return relativeDate;
-        }*/
 
     @Override
     public int getItemCount() {
@@ -121,11 +140,15 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView tvUsername;
         public ImageView ivProfilePicture;
+        public FloatingActionButton fabAddFriends;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ivProfilePicture = itemView.findViewById(R.id.ivProfilePicture);
             tvUsername = itemView.findViewById(R.id.tvUsername);
+            fabAddFriends = itemView.findViewById(R.id.fabAddFriends);
+            fabAddFriends.setOnClickListener(this);
+
 
         }
 
