@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -136,8 +137,8 @@ public class BucketListCurrentFragment extends Fragment {
         mBucketAdapter = new BucketListAdapter(getContext(), mBucketList);
         rvBucketList.setAdapter(mBucketAdapter);
         // associate the LinearLayoutManager with the RecylcerView
-        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        rvBucketList.setLayoutManager(linearLayoutManager);
+        final GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+        rvBucketList.setLayoutManager(gridLayoutManager);
         populateBucket();
 
         bucketRefreshSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

@@ -26,10 +26,13 @@ import android.widget.Toolbar;
 
 import com.example.buckit.R;
 import com.example.buckit.adapters.FriendsListAdapter;
+import com.example.buckit.fragments.AddFriendsActivity;
 import com.example.buckit.models.User;
 import com.parse.FindCallback;
 import com.parse.ParseACL;
 import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -47,7 +50,7 @@ import static com.example.buckit.fragments.EventsExploreFragment.KEY_SELECTED_CA
 import static com.example.buckit.models.User.KEY_FRIENDS;
 import static com.parse.Parse.getApplicationContext;
 
-public class ViewFriendsFragment extends AppCompatActivity {
+public class ViewFriends extends AppCompatActivity {
 
     Unbinder unbinder;
     ArrayList<User> mFriendsList;
@@ -58,10 +61,12 @@ public class ViewFriendsFragment extends AppCompatActivity {
     TextView btnAddFriends;
     @BindView(R.id.rvFriendsList)
     RecyclerView rvFriendsList;
+    ParseUser currentUser;
+    User user;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ParseUser currentUser = ParseUser.getCurrentUser();
+        currentUser = ParseUser.getCurrentUser();
         ParseACL acl = new ParseACL(currentUser);
         acl.setPublicReadAccess(true);
         currentUser.setACL(acl);
@@ -97,22 +102,28 @@ public class ViewFriendsFragment extends AppCompatActivity {
         btnAddFriends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(ViewFriendsFragment.this, AddFriendsActivity.class));
+                startActivity(new Intent(ViewFriends.this, AddFriendsActivity.class));
             }
         });
     }
 
     protected void populateFriends() {
-        final User.Query userQuery = new User.Query();
-        userQuery.getTop();
+        User.Query userQuery = new User.Query();
+        userQuery.getTop().withFriends();
+        userQuery.whereEqualTo("objectId", ParseUser.getCurrentUser().getObjectId());
         userQuery.findInBackground(new FindCallback<User>() {
             @Override
             public void done(List<User> object, ParseException e) {
                 if (e == null) {
-                    mFriendsList.clear();
-                    mFriendsList.addAll(object);
-                    mFriendsAdapter.notifyDataSetChanged();
-                    Log.d("Timeline Activity", "Successfully loaded posts!");
+                    if (object != null && object.size() > 0){
+                        ParseObject user = object.get(0);  // only one match expected
+                        // now get the user's friends
+                        List<User> friends = user.getList("friends");
+                        mFriendsList.clear();
+                        mFriendsList.addAll(friends);
+                        mFriendsAdapter.notifyDataSetChanged();
+                        Log.d("Timeline Activity", "Successfully loaded posts!");
+                    }
                 } else {
                     e.printStackTrace();
                 }

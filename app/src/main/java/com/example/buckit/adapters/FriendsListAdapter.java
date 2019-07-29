@@ -72,7 +72,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         if (friend.getProfilePic() != null){
             Glide.with(mContext)
                     .load(friend.getProfilePic().getUrl())
-                    .fitCenter()
+                    .centerCrop()
                     .bitmapTransform(new RoundedCornersTransformation(mContext, 60, 60))
                     .into(holder.ivProfilePicture);
         }
@@ -93,14 +93,13 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         holder.fabAddFriends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                JSONArray friendsList = currentUser.getJSONArray(KEY_FRIENDS);
                 int position = holder.getAdapterPosition();
                 Log.d("Click", "Working");
                 // make sure the position is valid, i.e. actually exists in the view
                 if (position != RecyclerView.NO_POSITION) {
                         User user = mFriendsList.get(position);
                         Log.d("Click", user.toString());
-                        currentUser.add(KEY_FRIENDS, user.getObjectId());
+                        currentUser.add(KEY_FRIENDS, user);
                         currentUser.saveInBackground(new SaveCallback() {
                             @Override
                             public void done(ParseException e) {

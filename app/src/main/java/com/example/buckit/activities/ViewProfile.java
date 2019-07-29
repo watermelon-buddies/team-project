@@ -27,7 +27,7 @@ public class ViewProfile extends AppCompatActivity {
     Unbinder unbinder;
     ArrayList<UserInvite> mPendingInvites;
     PendingInvitesAdapter mPendingInvitesAdapter;
-    @BindView(R.id.rvPendingInvites) RecyclerView rvPendingInvites;
+    @BindView(R.id.rvFriendsList) RecyclerView rvPendingInvites;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

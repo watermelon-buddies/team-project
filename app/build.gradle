@@ -4,6 +4,7 @@ android {
     compileSdkVersion 28
     buildToolsVersion "29.0.0"
     defaultConfig {
+        vectorDrawables.useSupportLibrary = true
         applicationId "com.example.buckit"
         minSdkVersion 16
         targetSdkVersion 28
@@ -14,7 +15,6 @@ android {
     }
     buildTypes {
         release {
-
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
