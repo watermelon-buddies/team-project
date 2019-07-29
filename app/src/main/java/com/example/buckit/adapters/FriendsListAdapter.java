@@ -2,9 +2,7 @@ package com.example.buckit.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.design.shape.RoundedCornerTreatment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,17 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.example.buckit.R;
 import com.example.buckit.models.User;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-
-import org.json.JSONArray;
 
 import java.util.List;
 
@@ -65,7 +59,6 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         // get data according to position
-
         friend = mFriendsList.get(position);
         Log.d("Friend", friend.getUsername());
         holder.tvUsername.setText(friend.getUsername());
