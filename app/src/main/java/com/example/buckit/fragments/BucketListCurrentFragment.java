@@ -134,7 +134,7 @@ public class BucketListCurrentFragment extends Fragment {
         });
 
         mBucketList = new ArrayList<>();
-        mBucketAdapter = new BucketListAdapter(getContext(), mBucketList);
+        mBucketAdapter = new BucketListAdapter(getContext(), mBucketList, true);
         rvBucketList.setAdapter(mBucketAdapter);
         // associate the LinearLayoutManager with the RecylcerView
         final GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
@@ -172,10 +172,6 @@ public class BucketListCurrentFragment extends Fragment {
                     JSONArray categories = response.getJSONArray("categories");
                     for (int i = 0; i < categories.length(); i++){
                         JSONObject catObject = categories.getJSONObject(i);
-                        Log.d("ID", catObject.toString());
-                        Log.d("ID", catObject.getString("name"));
-                        Log.d("ID", catObject.getString("id"));
-                        Log.d("ID", category);
                        if (catObject.getString("name").equals(category) ){
                             Log.d("ID", catObject.getString("id"));
                             user.add(KEY_SELECTED_CATEGORIES, catObject.getString("id"));

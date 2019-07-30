@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "293701218628",
+    "firebase_url": "https://buck-it-247119.firebaseio.com",
+    "project_id": "buck-it-247119",
+    "storage_bucket": "buck-it-247119.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:293701218628:android:f36005603fac6caf",
+        "android_client_info": {
+          "package_name": "com.example.buckit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "293701218628-miuqltgt4qa86tc09rs9jv31kkpr36ke.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3Xhlayt4NlpTjwMiZeYDqE4vt7yUZjV0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "293701218628-miuqltgt4qa86tc09rs9jv31kkpr36ke.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

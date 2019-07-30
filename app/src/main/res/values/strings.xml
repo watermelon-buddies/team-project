@@ -66,10 +66,13 @@
     <string name="button_add_to_bucket_description">Add to Bucket List</string>
     <string name="category_prompt">Choose a category</string>
     <string-array name="category_names">
+        <item>Auto, Boat &amp; Air</item>
         <item>Film &amp; Media</item>
         <item>Food &amp; Drink</item>
         <item>Holiday</item>
         <item>Music</item>
+        <item>Performing &amp; Visual Arts</item>
+        <item>Sports &amp; Fitness</item>
         <item>Travel &amp; Outdoor</item>
     </string-array>
 </resources>

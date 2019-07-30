@@ -8,7 +8,16 @@
     <android.support.v7.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:cardCornerRadius="@dimen/card_corner_radius"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -24,56 +33,52 @@
                 android:elevation="2dp"
                 android:gravity="center"
                 android:text="Working"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="@+id/ivCategoryImage"
                 app:layout_constraintEnd_toEndOf="@+id/ivCategoryImage"
                 app:layout_constraintStart_toStartOf="@+id/ivCategoryImage"
+                app:layout_constraintTop_toBottomOf="@+id/ivCategoryImage"
                 tools:visibility="visible" />
 
             <ImageView
                 android:id="@+id/ivCategoryImage"
-                android:layout_width="182dp"
-                android:layout_height="208dp"
+                android:layout_width="190dp"
+                android:layout_height="177dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
                 android:scaleType="fitXY"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/fitness_picture" />
+                app:srcCompat="@drawable/cat_spor" />
 
             <ImageButton
-                android:id="@+id/imageButton"
+                android:id="@+id/btnAchievedItem"
                 android:layout_width="50dp"
                 android:layout_height="25dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/button_oval"
-                app:layout_constraintStart_toEndOf="@+id/imageButton2"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="24dp"
+                android:background="@color/cardview_light_background"
+                android:tint="@color/bright_blue"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvBucketDescription"
                 app:srcCompat="@drawable/ic_check" />
 
             <ImageButton
-                android:id="@+id/imageButton2"
+                android:id="@+id/btnBookItem"
                 android:layout_width="50dp"
                 android:layout_height="25dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/button_oval"
+                android:layout_marginBottom="8dp"
+                android:background="@color/cardview_light_background"
+                android:tint="@color/bright_blue"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/ivCategoryImage"
                 app:layout_constraintTop_toBottomOf="@+id/tvBucketDescription"
                 app:srcCompat="@drawable/ic_calendar" />
-
-            <ImageButton
-                android:id="@+id/imageButton3"
-                android:layout_width="50dp"
-                android:layout_height="25dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/button_oval"
-                android:src="@drawable/abc_ic_menu_overflow_material"
-                android:tint="@color/cardview_dark_background"
-                app:layout_constraintEnd_toEndOf="@+id/ivCategoryImage"
-                app:layout_constraintTop_toBottomOf="@+id/tvBucketDescription" />
 
         </android.support.constraint.ConstraintLayout>
 

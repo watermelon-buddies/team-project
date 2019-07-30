@@ -73,7 +73,6 @@ public class ViewFriends extends AppCompatActivity {
         JSONArray categories = currentUser.getJSONArray(KEY_FRIENDS);
         if (categories == null){
             ArrayList<String> friendsEmptyList = new ArrayList<>();
-            friendsEmptyList.add("Beamlak");
             currentUser.put(KEY_FRIENDS, friendsEmptyList);
             currentUser.saveInBackground(new SaveCallback() {
                 @Override
@@ -86,6 +85,8 @@ public class ViewFriends extends AppCompatActivity {
                     }
                 }
             });
+            startActivity(new Intent(ViewFriends.this, AddFriendsActivity.class));
+            this.finish();
         }
         setContentView(R.layout.activities_drawrer_main);
         ViewStub stub = (ViewStub) findViewById(R.id.layout_stub);
@@ -103,6 +104,7 @@ public class ViewFriends extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(ViewFriends.this, AddFriendsActivity.class));
+                finish();
             }
         });
     }

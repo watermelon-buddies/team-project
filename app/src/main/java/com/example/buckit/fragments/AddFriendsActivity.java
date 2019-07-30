@@ -1,5 +1,6 @@
 package com.example.buckit.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import com.example.buckit.R;
+import com.example.buckit.activities.ViewFriends;
 import com.example.buckit.adapters.FriendsListAdapter;
 import com.example.buckit.models.User;
 import com.parse.FindCallback;
@@ -41,20 +43,22 @@ public class AddFriendsActivity extends AppCompatActivity {
         usersAdapter = new FriendsListAdapter(usersList, this, true, user);
         rvAddFriends.setAdapter(usersAdapter);
         final LinearLayoutManager addLinearLayoutManager = new LinearLayoutManager(this);
-        populateUsers();
+        populateUsers(user);
         rvAddFriends.setLayoutManager(addLinearLayoutManager);
         ivCloseMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
+                startActivity(new Intent(AddFriendsActivity.this, ViewFriends.class));
             }
         });
 
     }
 
-    protected void populateUsers() {
+    protected void populateUsers(ParseUser user) {
         final User.Query userQuery = new User.Query();
         userQuery.getTop();
+        userQuery.whereNotEqualTo("objectId", user.getObjectId());
         userQuery.findInBackground(new FindCallback<User>() {
             @Override
             public void done(List<User> object, ParseException e) {
