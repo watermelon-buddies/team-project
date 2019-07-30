@@ -50,7 +50,7 @@ public class UserInvite extends ParseObject {
 
     public Integer getDuration() {return getNumber(KEY_DURATION).intValue();}
 
-    public void setAccepted() {put(KEY_ACCEPTED, true);}
+    public void setAccepted(boolean value) {put(KEY_ACCEPTED, value);}
 
     public void setInvited(ParseUser invited) { put(KEY_INVITED, invited); }
 

@@ -1,6 +1,7 @@
 package com.example.buckit.fragments;
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,9 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.buckit.R;
+import com.example.buckit.activities.ViewProfile;
 import com.example.buckit.models.User;
 import com.example.buckit.models.UserInvite;
 import com.parse.FindCallback;
@@ -47,6 +51,9 @@ public class SchedulerFragment extends Fragment {
     private HashMap<String, Integer> userEvents;
     private ArrayList<User> recentUsers = new ArrayList<>();
     private ParseUser userToInvite;
+    private int durationIn15MinIntervals;
+    @BindView(R.id.spinnerHours) Spinner spinnerHours;
+    @BindView(R.id.spinnerMinutes) Spinner spinnerMinutes;
     @BindView(R.id.tvEventTitle) TextView tvEventTitle;
     @BindView(R.id.etLocation) EditText etLocation;
     @BindView (R.id.btnRecent0) Button btnRecent0;
@@ -154,7 +161,6 @@ public class SchedulerFragment extends Fragment {
                 if(btnText.equals("Fri")){ addDayToArray(new java.text.SimpleDateFormat("dd/MM/yyyy").format(getNextWeekday(DayOfWeek.FRIDAY))); }
                 if(btnText.equals("Sat")){ addDayToArray(new java.text.SimpleDateFormat("dd/MM/yyyy").format(getNextWeekday(DayOfWeek.SATURDAY))); }
                 if(btnText.equals("Sun")){ addDayToArray(new java.text.SimpleDateFormat("dd/MM/yyyy").format(getNextWeekday(DayOfWeek.SUNDAY))); }
-                Log.d("bigcheck", String.valueOf(meetTimes.size()));
                 /*TODO: Bug control*/
             }
         }
@@ -167,22 +173,20 @@ public class SchedulerFragment extends Fragment {
         Log.d("beforeRemove", String.valueOf(meetTimes.size()));
         for(int i = 0; i < meetTimes.size(); i++){
             String currTime = meetTimes.get(i);
-            if(userEvents.containsKey(currTime)){
-                for(int j = 0; j < userEvents.get(currTime) - 1; j++){
-                    if(i < meetTimes.size()){
-                        meetTimes.remove(i);
+            if(userEvents.containsKey(currTime)) {
+                meetTimes.remove(i);
+                if (!meetTimes.get(i - 1).equals("break")) {
+                    if (i == meetTimes.size()) {
+                        meetTimes.add("break");
+                    } else {
+                        meetTimes.set(i, "break");
                     }
-                }
-                if(i == meetTimes.size()){
-                    meetTimes.add("break");
-                } else {
-                    meetTimes.set(i, "break");
-                }
 
+                }
             }
         }
         for(String time : meetTimes){
-            Log.d("check", time);
+            Log.d("checkRemoved", time);
         }
         Log.d("after remove", String.valueOf(meetTimes.size()));
     }
@@ -227,6 +231,7 @@ public class SchedulerFragment extends Fragment {
                         constructCalendarList();
                         removeBusyTimes();
                         sendInvite();
+                        startActivity(new Intent(getActivity(), ViewProfile.class));
                     }
                     if (v.isSelected()) {
                         v.setSelected(false);
@@ -238,19 +243,39 @@ public class SchedulerFragment extends Fragment {
         }
     }
 
+    private void calculateDuration(){
+        String initialHours = spinnerHours.getSelectedItem().toString();
+        String finalHours = initialHours.substring(0,calculateEnd(initialHours));
+        String initialMinutes = spinnerMinutes.getSelectedItem().toString();
+        String finalMinutes = initialMinutes.substring(0,calculateEnd(initialMinutes));
+        durationIn15MinIntervals = (Integer.valueOf(finalHours) * 4) + (Integer.valueOf(finalMinutes) / 15);
+    }
+
+    private int calculateEnd(String time){
+        if(time.charAt(1) == ' '){
+            return 1;
+        } else {
+            return 2;
+        }
+    }
+
     private void sendInvite(){
         addUserInvite();
+        calculateDuration();
         UserInvite newInvite = new UserInvite();
         newInvite.setTitle(tvEventTitle.getText().toString());
         newInvite.setLocation(etLocation.getText().toString());
         newInvite.setCreator(ParseUser.getCurrentUser());
         newInvite.setMeetTimes(meetTimes);
+        newInvite.setAccepted(false);
         newInvite.setInvited(userToInvite);
+        newInvite.setDuration(durationIn15MinIntervals);
         newInvite.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if(e == null){
                     Log.d("InviteCheck", "Post created successfully");
+                    Toast.makeText(getContext(), "Invite Sent", Toast.LENGTH_SHORT).show();
                 } else{
                     Log.d("InviteCheck", "Post error");
                 }

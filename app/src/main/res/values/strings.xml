@@ -41,6 +41,9 @@
     <string name="sun">Sun</string>
     <string name="select_days">Select Days</string>
     <string name="select_times">Select Times</string>
+    <string name="select_duration">Select Duration</string>
+    <string name="hours">Hours</string>
+    <string name="minutes">Minutes</string>
     <string name="morning">Morning</string>
     <string name="afternoon">Afternoon</string>
     <string name="evening">Evening</string>
@@ -74,5 +77,26 @@
         <item>Performing &amp; Visual Arts</item>
         <item>Sports &amp; Fitness</item>
         <item>Travel &amp; Outdoor</item>
+    </string-array>
+
+    <string-array name="hour_options">
+        <item>0 hours</item>
+        <item>1 hour</item>
+        <item>2 hours</item>
+        <item>3 hours</item>
+        <item>4 hours</item>
+        <item>5 hours</item>
+        <item>6 hours</item>
+        <item>7 hours</item>
+        <item>8 hours</item>
+        <item>9 hours</item>
+
+    </string-array>
+
+    <string-array name="minute_options">
+        <item>0 minutes</item>
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>45 minutes</item>
     </string-array>
 </resources>

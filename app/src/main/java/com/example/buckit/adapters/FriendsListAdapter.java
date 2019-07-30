@@ -60,7 +60,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         // get data according to position
-        friend = mFriendsList.get(position);
+        friend = (User) mFriendsList.get(position);
         Log.d("Friend", friend.getUsername());
         holder.tvUsername.setText(friend.getUsername());
         if (friend.getProfilePic() != null){
