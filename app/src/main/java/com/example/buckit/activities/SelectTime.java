@@ -23,21 +23,25 @@ public class SelectTime extends AppCompatActivity {
 
     ArrayList<String> finalMeetTimes;
     ArrayList<ArrayList<String>> ranges;
+    ArrayList<String> toDisplay;
     private HashMap<String, Integer> userEvents;
     JSONArray sentTimes;
     ListView lvMeetTimes;
     ArrayAdapter<String> meetTimesAdapter;
     int duration;
     Button btnOption1, btnOption2, btnOption3, btnOption4;
+    ArrayList<Button> selectTimeButtons;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_time);
         ranges = new ArrayList<>();
+        toDisplay = new ArrayList<>();
+        selectTimeButtons = new ArrayList<>();
         String meetTimes = getIntent().getStringExtra("InviteTimes");
         duration = getIntent().getIntExtra("duration", 0);
-
+        defineButtons();
         try {
             sentTimes = new JSONArray(meetTimes);
         } catch (JSONException e) {
@@ -58,9 +62,19 @@ public class SelectTime extends AppCompatActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        meetTimesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, finalMeetTimes);
         lvMeetTimes = findViewById(R.id.lvMeetTimes);
         lvMeetTimes.setAdapter(meetTimesAdapter);
+    }
+
+    private void defineButtons(){
+        btnOption1 = findViewById(R.id.btnOption1);
+        btnOption2 = findViewById(R.id.btnOption2);
+        btnOption3 = findViewById(R.id.btnOption3);
+        btnOption4 = findViewById(R.id.btnOption4);
+        selectTimeButtons.add(btnOption1);
+        selectTimeButtons.add(btnOption2);
+        selectTimeButtons.add(btnOption3);
+        selectTimeButtons.add(btnOption4);
     }
 
 
@@ -92,8 +106,52 @@ public class SelectTime extends AppCompatActivity {
     private void organizeInRanges() throws ParseException {
         finalMeetTimes = removedNotEnoughTime();
         createSeparateArrayLists();
+        toDisplay.addAll(ranges.get(0));
+        meetTimesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, toDisplay);
         setButtons();
+        btnOption1.setSelected(true);
+        setButtonListeners();
     }
+
+    private void setButtonListeners(){
+        for (Button btn : selectTimeButtons) {
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(v.getId() == btnOption1.getId()){
+                        toDisplay.clear();
+                        toDisplay.addAll(ranges.get(0));
+                        v.setSelected(true);
+                        setUnselected(btnOption2, btnOption3, btnOption4);
+                    } else if(v.getId() == btnOption2.getId()){
+                        toDisplay.clear();
+                        toDisplay.addAll(ranges.get(1));
+                        v.setSelected(true);
+                        setUnselected(btnOption1, btnOption3, btnOption4);
+                    } else if(v.getId() == btnOption3.getId()){
+                        toDisplay.clear();
+                        toDisplay.addAll(ranges.get(2));
+                        v.setSelected(true);
+                        setUnselected(btnOption1, btnOption2, btnOption4);
+                    } else if(v.getId() == btnOption4.getId()){
+                        toDisplay.clear();
+                        toDisplay.addAll(ranges.get(3));
+                        v.setSelected(true);
+                        setUnselected(btnOption1, btnOption2, btnOption3);
+                    }
+                    meetTimesAdapter.notifyDataSetChanged();
+                }
+            });
+        }
+    }
+
+    private void setUnselected(Button btn1, Button btn2, Button btn3){
+        btn1.setSelected(false);
+        btn2.setSelected(false);
+        btn3.setSelected(false);
+    }
+
+
 
     private void setButtons(){
         ArrayList<String> dateRanges = new ArrayList<String>();
@@ -103,17 +161,16 @@ public class SelectTime extends AppCompatActivity {
         }
         for(int i = 0; i < dateRanges.size(); i++){
             if(i < 4){
-                int option;
+                Button btnCurr;
                 if(i == 0){
-                    option = R.id.btnOption1;
+                    btnCurr = btnOption1;
                 } else if(i == 1){
-                    option = R.id.btnOption2;
+                    btnCurr = btnOption2;
                 } else if(i == 2){
-                    option = R.id.btnOption3;
+                    btnCurr = btnOption3;
                 } else {
-                    option = R.id.btnOption4;
+                    btnCurr = btnOption4;
                 }
-                Button btnCurr = findViewById(option);
                 btnCurr.setVisibility(View.VISIBLE);
                 btnCurr.setText(dateRanges.get(i));
             }
