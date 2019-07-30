@@ -1,5 +1,6 @@
 package com.example.buckit.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -25,6 +26,7 @@ public class PendingInvitesAdapter extends RecyclerView.Adapter<PendingInvitesAd
     private Context mContext;
     private UserInvite currInvite;
     private HashMap<String, Integer> mUserCal;
+    public static final int SELECT_TIME_REQUEST_CODE = 20;
 
     public PendingInvitesAdapter(List<UserInvite> items, HashMap<String, Integer> userCal, Context context) {
         mUserInvites = items;
@@ -68,6 +70,12 @@ public class PendingInvitesAdapter extends RecyclerView.Adapter<PendingInvitesAd
         return mUserInvites.size();
     }
 
+    public void removeData(int position) {
+        mUserInvites.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position,getItemCount());
+    }
+
 
 
     // create the viewholder class
@@ -96,11 +104,14 @@ public class PendingInvitesAdapter extends RecyclerView.Adapter<PendingInvitesAd
                 selectTime.putExtra("InviteTimes", currInvite.getMeetTimes().toString());
                 selectTime.putExtra("userCal", mUserCal);
                 selectTime.putExtra("duration", currInvite.getDuration());
-                mContext.startActivity(selectTime);
+                selectTime.putExtra("position", position);
+                ((Activity) mContext).startActivityForResult(selectTime, SELECT_TIME_REQUEST_CODE);
 
             }
 
         }
+
+
 
     }
 }

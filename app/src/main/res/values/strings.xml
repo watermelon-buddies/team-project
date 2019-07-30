@@ -54,13 +54,15 @@
     <string name="events_coming_up">Events Coming Up</string>
     <string name="accept">ACCEPT</string>
     <string name="decline">DECLINE</string>
-    <string name="select_meet_time">Select Time To Meet</string>
+    <string name="select_meet_time">Here is when you\'re both free</string>
     <string name="between">Between</string>
     <string name="option_1">Option 1</string>
     <string name="option_2">Option 2</string>
     <string name="option_3">Option 3</string>
     <string name="option_4">Option 4</string>
     <string name="all_optins">See All Options</string>
+    <string name="select_time">Select Time</string>
+    <string name="meet_on">meet on</string>
 
     <string name="add_friends">Add Friends</string>
 

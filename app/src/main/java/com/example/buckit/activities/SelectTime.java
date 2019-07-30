@@ -1,12 +1,16 @@
 package com.example.buckit.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.buckit.R;
 
@@ -29,17 +33,21 @@ public class SelectTime extends AppCompatActivity {
     ListView lvMeetTimes;
     ArrayAdapter<String> meetTimesAdapter;
     int duration;
-    Button btnOption1, btnOption2, btnOption3, btnOption4;
+    Button btnOption1, btnOption2, btnOption3, btnOption4, btnBookIt;
     ArrayList<Button> selectTimeButtons;
+    TextView tvSelectedTime;
+    Integer position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_time);
         ranges = new ArrayList<>();
+        tvSelectedTime = findViewById(R.id.tvSelectedTime);
         toDisplay = new ArrayList<>();
         selectTimeButtons = new ArrayList<>();
         String meetTimes = getIntent().getStringExtra("InviteTimes");
+        position = getIntent().getIntExtra("position", 0);
         duration = getIntent().getIntExtra("duration", 0);
         defineButtons();
         try {
@@ -64,6 +72,7 @@ public class SelectTime extends AppCompatActivity {
         }
         lvMeetTimes = findViewById(R.id.lvMeetTimes);
         lvMeetTimes.setAdapter(meetTimesAdapter);
+        setListTimeListeners();
     }
 
     private void defineButtons(){
@@ -71,10 +80,23 @@ public class SelectTime extends AppCompatActivity {
         btnOption2 = findViewById(R.id.btnOption2);
         btnOption3 = findViewById(R.id.btnOption3);
         btnOption4 = findViewById(R.id.btnOption4);
+        btnBookIt = findViewById(R.id.btnBookIt);
         selectTimeButtons.add(btnOption1);
         selectTimeButtons.add(btnOption2);
         selectTimeButtons.add(btnOption3);
         selectTimeButtons.add(btnOption4);
+        selectTimeButtons.add(btnBookIt);
+    }
+
+    private void setListTimeListeners(){
+        lvMeetTimes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String time = toDisplay.get(position);
+                tvSelectedTime.setText(time);
+            }
+        });
+
     }
 
 
@@ -118,7 +140,9 @@ public class SelectTime extends AppCompatActivity {
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(v.getId() == btnOption1.getId()){
+                    if(v.getId() == btnBookIt.getId()){
+                        finalizeActivity();
+                    }else if(v.getId() == btnOption1.getId()){
                         toDisplay.clear();
                         toDisplay.addAll(ranges.get(0));
                         v.setSelected(true);
@@ -145,13 +169,23 @@ public class SelectTime extends AppCompatActivity {
         }
     }
 
+    private void finalizeActivity(){
+        if(tvSelectedTime.equals(R.string.select_time)){
+            Toast.makeText(this, "Please select a time!", Toast.LENGTH_SHORT).show();
+        } else{
+            Intent i = new Intent();
+            i.putExtra("position", position);
+            i.putExtra("final time", tvSelectedTime.getText());
+            setResult(RESULT_OK, i);
+            finish();
+        }
+    }
+
     private void setUnselected(Button btn1, Button btn2, Button btn3){
         btn1.setSelected(false);
         btn2.setSelected(false);
         btn3.setSelected(false);
     }
-
-
 
     private void setButtons(){
         ArrayList<String> dateRanges = new ArrayList<String>();
