@@ -21,6 +21,7 @@ import com.parse.SaveCallback;
 
 import java.util.List;
 
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 import static com.example.buckit.models.User.KEY_FRIENDS;
@@ -65,15 +66,13 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         if (friend.getProfilePic() != null){
             Glide.with(mContext)
                     .load(friend.getProfilePic().getUrl())
-                    .centerCrop()
-                    .bitmapTransform(new RoundedCornersTransformation(mContext, 60, 60))
+                    .bitmapTransform(new CropCircleTransformation(mContext))
                     .into(holder.ivProfilePicture);
         }
         else {
             Glide.with(mContext)
                     .load(R.drawable.no_profile)
-                    .centerCrop()
-                    .bitmapTransform(new RoundedCornersTransformation(mContext, 60, 60))
+                    .bitmapTransform(new CropCircleTransformation(mContext))
                     .into(holder.ivProfilePicture);
         }
 
@@ -104,6 +103,8 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
                                 }
                             }
                         });
+                        mFriendsList.remove(position);
+                        notifyDataSetChanged();
                     }
             }
         });
@@ -132,7 +133,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView tvUsername;
         public ImageView ivProfilePicture;
-        public FloatingActionButton fabAddFriends;
+        public ImageView fabAddFriends;
 
         public ViewHolder(View itemView) {
             super(itemView);

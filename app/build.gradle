@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 28
@@ -61,4 +62,8 @@ dependencies {
     implementation 'com.github.wenchaojiang:AndroidSwipeableCardStack:0.1.4'
     implementation 'org.parceler:parceler-api:1.1.12'
     annotationProcessor 'org.parceler:parceler:1.1.12'
+    implementation "com.google.firebase:firebase-core:$googlePlayVersion"
+    implementation "com.google.firebase:firebase-messaging:15.0.2"
+
 }
+
