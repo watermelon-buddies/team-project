@@ -299,6 +299,23 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnSaturday" />
 
+        <TextView
+            android:id="@+id/tvSelectDuration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="38dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:text="@string/select_duration"
+            android:textColor="#B6B2B2"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.483"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnEvening" />
+
         <EditText
             android:id="@+id/etLocation"
             android:layout_width="0dp"
@@ -352,7 +369,7 @@
             android:id="@+id/btnSend"
             android:layout_width="136dp"
             android:layout_height="49dp"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="24dp"
             android:layout_marginBottom="16dp"
             android:background="@drawable/button_submit"
             android:paddingLeft="10dp"
@@ -364,7 +381,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnEvening" />
+            app:layout_constraintTop_toBottomOf="@+id/spinnerMinutes" />
 
         <Button
             android:id="@+id/btnNight"
@@ -480,6 +497,36 @@
             app:layout_constraintHorizontal_bias="0.272"
             app:layout_constraintStart_toEndOf="@+id/btnWednesday"
             app:layout_constraintTop_toBottomOf="@+id/tvSelectDays" />
+
+        <Spinner
+            android:id="@+id/spinnerHours"
+            android:layout_width="wrap_content"
+            android:layout_height="43dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="16dp"
+            android:entries="@array/hour_options"
+            android:gravity="center"
+            android:prompt="@string/category_prompt"
+            app:layout_constraintEnd_toStartOf="@+id/spinnerMinutes"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/tvSelectDuration"
+            app:layout_constraintTop_toBottomOf="@+id/tvSelectDuration" />
+
+        <Spinner
+            android:id="@+id/spinnerMinutes"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="16dp"
+            android:entries="@array/minute_options"
+            android:gravity="center"
+            android:prompt="@string/category_prompt"
+            app:layout_constraintEnd_toEndOf="@+id/tvSelectDuration"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/spinnerHours"
+            app:layout_constraintTop_toBottomOf="@+id/tvSelectDuration" />
 
     </android.support.constraint.ConstraintLayout>
 

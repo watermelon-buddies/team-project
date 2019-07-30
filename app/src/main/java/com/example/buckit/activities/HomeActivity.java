@@ -79,6 +79,7 @@ public class HomeActivity extends AppCompatActivity
     public final static String LONG_KEY = "long";
     final private static int calendarCallbackId = 42;
     ParseUser currentUser;
+    static final long ONE_MINUTE_IN_MILLIS=60000;
 
 
     /* HomeActivity after sucessfully logging in that contains BucketListFragment,
@@ -246,11 +247,14 @@ public class HomeActivity extends AppCompatActivity
                     for (me.everything.providers.android.calendar.Event currEvent : provider.getEvents(currCal.id).getList()) {
                         // Checks events are happening within the range of two months
                         if ((currEvent.dTStart) >= today && (currEvent.dTStart) <= nextMonth) {
+                            /* TODO: fix this so that time within an event is also counted as busy*/
                             Long timeOfEvent = ((currEvent.dTend - currEvent.dTStart) / 1000) / 60;
                             Integer rangeIn15MinIntervals = Math.toIntExact(timeOfEvent) / 15;
-                            String normalDate = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new java.util.Date(currEvent.dTStart));
-                            Log.d("check", normalDate + " " + String.valueOf(rangeIn15MinIntervals));
-                            userEvents.put(normalDate, rangeIn15MinIntervals);
+                            for(int i = 0; i < rangeIn15MinIntervals; i++){
+                                String normalDate = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new java.util.Date(currEvent.dTStart + (15 * i * ONE_MINUTE_IN_MILLIS)));
+                                Log.d("check", normalDate);
+                                userEvents.put(normalDate, 1);
+                            }
                         }
                     }
                 }

@@ -95,6 +95,7 @@ public class PendingInvitesAdapter extends RecyclerView.Adapter<PendingInvitesAd
                 Intent selectTime = new Intent(mContext, SelectTime.class);
                 selectTime.putExtra("InviteTimes", currInvite.getMeetTimes().toString());
                 selectTime.putExtra("userCal", mUserCal);
+                selectTime.putExtra("duration", currInvite.getDuration());
                 mContext.startActivity(selectTime);
 
             }
