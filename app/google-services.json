@@ -15,13 +15,21 @@
       },
       "oauth_client": [
         {
+          "client_id": "293701218628-stj6ibkgecaf1jvkmmqc4ft5k52p48e5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.buckit",
+            "certificate_hash": "10d95ef7e95a0992d9b7e0168eb7773a2397c09a"
+          }
+        },
+        {
           "client_id": "293701218628-miuqltgt4qa86tc09rs9jv31kkpr36ke.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB3Xhlayt4NlpTjwMiZeYDqE4vt7yUZjV0"
+          "current_key": "AIzaSyAzhrB9PxO709DboXW9qwbJi83JU64MXFY"
         }
       ],
       "services": {

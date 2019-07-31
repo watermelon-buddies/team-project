@@ -64,6 +64,10 @@ dependencies {
     annotationProcessor 'org.parceler:parceler:1.1.12'
     implementation "com.google.firebase:firebase-core:$googlePlayVersion"
     implementation "com.google.firebase:firebase-messaging:15.0.2"
+    implementation 'com.pushwoosh:pushwoosh:5.18.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.8.1'
+    implementation 'com.google.firebase:firebase-messaging:10.2.1'
+//    implementation 'com.google.firebase:firebase-messaging:19.0.1'
+
 
 }
-

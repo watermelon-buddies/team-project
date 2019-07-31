@@ -43,6 +43,7 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.parse.ParseUser;
 
 import java.util.Date;
@@ -82,6 +83,7 @@ public class HomeActivity extends AppCompatActivity
     static final long ONE_MINUTE_IN_MILLIS=60000;
 
 
+
     /* HomeActivity after sucessfully logging in that contains BucketListFragment,
     EventsExploreFragment and SchedulerFragment
     *
@@ -94,6 +96,7 @@ public class HomeActivity extends AppCompatActivity
         ViewStub stub = (ViewStub) findViewById(R.id.layout_stub);
         stub.setLayoutResource(R.layout.home_activity_content);
         View inflated = stub.inflate();
+        FirebaseMessaging.getInstance().subscribeToTopic("NEWYORK_WEATHER");
         ButterKnife.bind(this);
         currentUser = ParseUser.getCurrentUser();
         getCalendarEvents(calendarCallbackId, Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
@@ -103,10 +106,8 @@ public class HomeActivity extends AppCompatActivity
                 this, leftDrawer, toolbar, R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
         leftDrawer.addDrawerListener(toggle);
-
         toggle.syncState();
         leftDrawerNavigationView.setNavigationItemSelectedListener(this);
-
         final FragmentManager fragmentManager = getSupportFragmentManager();
             // handle navigation selection
             bottomNavigationView.setOnNavigationItemSelectedListener(
@@ -158,9 +159,14 @@ public class HomeActivity extends AppCompatActivity
     }
 
 
-
-
     @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+
+
+        @Override
     public void onBackPressed() {
         if (leftDrawer.isDrawerOpen(GravityCompat.START)) {
             ImageView ivUserProfilePic = findViewById(R.id.ivUserProfilePic);
@@ -174,27 +180,7 @@ public class HomeActivity extends AppCompatActivity
     }
     /* TODO Check for need of other option on task bar*/
 
-/*    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }*/
 
     @SuppressWarnings("StatementWithEmptyBody")
     @RequiresApi(api = Build.VERSION_CODES.O)

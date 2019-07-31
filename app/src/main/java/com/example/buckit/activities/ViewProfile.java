@@ -59,6 +59,7 @@ public class ViewProfile extends AppCompatActivity {
         rvComingUp.setLayoutManager(linearLayoutManager2);
         populatePendingInvites();
         populateComingUpInvites(true);
+
     }
 
     protected void populatePendingInvites() {

@@ -1,5 +1,6 @@
 package com.example.buckit.fragments;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Bundle;
@@ -79,6 +80,15 @@ public class SchedulerFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View schedulerView, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(schedulerView, savedInstanceState);
+        checkCategories();
+        createButtonArray(schedulerView);
+        btnSend = schedulerView.findViewById(R.id.btnSend);
+        schedulerButtons.add(btnSend);
+        getRecentUsers();
+        addListeners();
+    }
+
+    private void checkCategories(){
         ParseUser currentUser = ParseUser.getCurrentUser();
         ParseACL acl = new ParseACL(currentUser);
         acl.setPublicReadAccess(true);
@@ -100,11 +110,6 @@ public class SchedulerFragment extends Fragment {
                 }
             });
         }
-        createButtonArray(schedulerView);
-        btnSend = schedulerView.findViewById(R.id.btnSend);
-        schedulerButtons.add(btnSend);
-        getRecentUsers();
-        addListeners();
     }
 
     private void getRecentUsers(){
@@ -150,6 +155,7 @@ public class SchedulerFragment extends Fragment {
         btnRecent3.setText(initialsUser3);
     }
 
+    @SuppressLint("SimpleDateFormat")
     private void constructCalendarList() {
         for(Button btn : schedulerButtons){
             if(btn.isSelected()) {
@@ -185,10 +191,7 @@ public class SchedulerFragment extends Fragment {
                 }
             }
         }
-        for(String time : meetTimes){
-            Log.d("checkRemoved", time);
-        }
-        Log.d("after remove", String.valueOf(meetTimes.size()));
+
     }
 
     private void addDayToArray(String day){

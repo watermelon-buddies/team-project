@@ -66,6 +66,8 @@
 
     <string name="add_friends">Add Friends</string>
 
+    <string name="fcm_sender_id">293701218628</string>
+
 
     <string name="image_blur_description">Blur background</string>
     <string name="first_tab_description">Current Bucket</string>
