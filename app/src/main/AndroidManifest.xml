@@ -8,6 +8,15 @@
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <meta-data
+        android:name="com.pushwoosh.appid"
+        android:value="DC395-D78B5" />
+    <meta-data
+        android:name="com.pushwoosh.senderid"
+        android:value="@string/fcm_sender_id" />
 
     <application
         android:name=".ParseApp"
@@ -19,9 +28,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".activities.ShowPopUp"></activity>
         <activity android:name=".activities.SignUpDetailsActivtiy"></activity>
-
-        <service android:name=".utils.MyFirebaseMessagingService">
+        <service
+            android:name=".utils.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -67,6 +77,11 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent"></meta-data>
+
     </application>
 
 </manifest>

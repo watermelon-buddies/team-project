@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
@@ -27,6 +28,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.buckit.LoginActivity;
@@ -45,8 +47,14 @@ import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.parse.ParseUser;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -55,8 +63,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.everything.providers.android.calendar.Calendar;
 import me.everything.providers.android.calendar.CalendarProvider;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import permissions.dispatcher.NeedsPermission;
-
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static com.example.buckit.models.User.KEY_PROFILE_PICTURE;
@@ -75,14 +87,16 @@ public class HomeActivity extends AppCompatActivity
     private LocationRequest mLocationRequest;
     public Location mCurrentLocation;
     public HashMap<String, Integer> userEvents;
-    private long UPDATE_INTERVAL = 10000;  /* 1000 secs */
-    private long FASTEST_INTERVAL = 5000; /* 500 secs */
+    private long UPDATE_INTERVAL = 1000000;  /* 1000 secs */
+    private long FASTEST_INTERVAL = 500000; /* 500 secs */
     private final static long EPOCH_MILLI_MONTH = 62L * 24L * 60L * 60L * 1000L;
     public final static String LAT_KEY = "lat";
     public final static String LONG_KEY = "long";
     final private static int calendarCallbackId = 42;
     ParseUser currentUser;
     static final long ONE_MINUTE_IN_MILLIS=60000;
+    static final String device_id = "dVkZACS4lWc:APA91bEgPEk-L92S7eeP2vDdP3mDdEt08VcSXKnarVf4jDWac4TF9qV1ptkpBzIhIP3PcYBJvKEtnoQCIgVPkhNe8QNxpwoeGvILQIcOgQ1QYFnU48mQuhVN_up-0Kbl4F-A_CZqI81d";
+
 
 
     /* HomeActivity after sucessfully logging in that contains BucketListFragment,
@@ -94,11 +108,12 @@ public class HomeActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activities_drawrer_main);
-        Log.d("device id", FirebaseInstanceId.getInstance().getToken());
         ViewStub stub = (ViewStub) findViewById(R.id.layout_stub);
         stub.setLayoutResource(R.layout.home_activity_content);
-        findViewById(R.layout.activities_nav_header);
         View inflated = stub.inflate();
+        FirebaseMessaging.getInstance().subscribeToTopic("NEWYORK_WEATHER");
+        Log.d("device id", FirebaseInstanceId.getInstance().getToken());
+
         ButterKnife.bind(this);
         currentUser = ParseUser.getCurrentUser();
         getCalendarEvents(calendarCallbackId, Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
@@ -108,10 +123,8 @@ public class HomeActivity extends AppCompatActivity
                 this, leftDrawer, toolbar, R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
         leftDrawer.addDrawerListener(toggle);
-
         toggle.syncState();
         leftDrawerNavigationView.setNavigationItemSelectedListener(this);
-
         final FragmentManager fragmentManager = getSupportFragmentManager();
             // handle navigation selection
             bottomNavigationView.setOnNavigationItemSelectedListener(
@@ -145,27 +158,85 @@ public class HomeActivity extends AppCompatActivity
                             return true;
                         }
                     });
-
-
-        // Set default selection
         bottomNavigationView.setSelectedItemId(R.id.action_schedule);
-
         if (TextUtils.isEmpty(getResources().getString(R.string.google_maps_api_key))) {
             throw new IllegalStateException("You forgot to supply a Google Maps API key");
         }
-
         if (savedInstanceState != null && savedInstanceState.keySet().contains(KEY_LOCATION)) {
             // Since KEY_LOCATION was found in the Bundle, we can be sure that mCurrentLocation
             // is not null.
             mCurrentLocation = savedInstanceState.getParcelable(KEY_LOCATION);
         }
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.put(device_id);
+        sendMessage(jsonArray, "You have an event invite!");
+    }
 
+    public void sendMessage(final JSONArray recipients, final String message) {
+        try {
+            if (recipients.getString(0).length() > 0)
+                new AsyncTask<String, String, String>() {
+                    @Override
+                    protected String doInBackground(String... params) {
+                        try {
+                            JSONObject root = new JSONObject();
+                            JSONObject notification = new JSONObject();
+                            notification.put("msg", message);
+                            notification.put("type", "chat");
+                            JSONObject data = new JSONObject();
+                            data.put("body", message);
+                            root.put("data", data);
+                            root.put("registration_ids", recipients);
+                            root.put("priority", 10);
+                            String result = postToFCM(root.toString());
+                            Log.d("chat Activity", "Result: " + result);
+                            return result;
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(String result) {
+                        try {
+                            JSONObject resultJson = new JSONObject(result);
+                            int success, failure;
+                            success = resultJson.getInt("success");
+                            failure = resultJson.getInt("failure");
+                            Toast.makeText(HomeActivity.this, "Message Success: " + success + "Message Failed: " + failure, Toast.LENGTH_LONG).show();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(HomeActivity.this, "Message Failed, Unknown error occurred.", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }.execute();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String postToFCM(String bodyString) throws IOException {
+        OkHttpClient mClient = new OkHttpClient();
+        final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+
+        RequestBody body = RequestBody.create(JSON, bodyString);
+        Request request = new Request.Builder()
+                .url("https://fcm.googleapis.com/fcm/send")
+                .post(body)
+                .addHeader("Authorization", "key=" + "AAAARGH08UQ:APA91bFv6okGY7RVsHIXT1gfhQ4Ag_dlqCqmPSmBuChSmye8kboxYt2eJg4I-P-JPZ0ULtXUP5kac_GV1sjSPaLw1ZoM45Wtr-_jOWiv4OR9HpnxU5EgL3ZosA0bTzFdvXckTczaiBea")
+                .build();
+        Response response = mClient.newCall(request).execute();
+        return response.body().string();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
     }
 
 
-
-
-    @Override
+        @Override
     public void onBackPressed() {
         if (leftDrawer.isDrawerOpen(GravityCompat.START)) {
             ImageView ivUserProfilePic = findViewById(R.id.ivUserProfilePic);
@@ -179,27 +250,7 @@ public class HomeActivity extends AppCompatActivity
     }
     /* TODO Check for need of other option on task bar*/
 
-/*    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }*/
 
     @SuppressWarnings("StatementWithEmptyBody")
     @RequiresApi(api = Build.VERSION_CODES.O)
