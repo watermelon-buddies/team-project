@@ -59,8 +59,8 @@ public class ViewProfile extends AppCompatActivity {
         rvComingUp.setLayoutManager(linearLayoutManager2);
         populatePendingInvites();
         populateComingUpInvites(true);
-
     }
+
 
     protected void populatePendingInvites() {
         final UserInvite.Query userInviteQuery = new UserInvite.Query();
@@ -78,7 +78,6 @@ public class ViewProfile extends AppCompatActivity {
                 } else {
                     e.printStackTrace();
                 }
-
             }
         });
     }
