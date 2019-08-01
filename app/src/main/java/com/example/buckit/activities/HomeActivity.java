@@ -131,6 +131,7 @@ public class HomeActivity extends AppCompatActivity
 
     private void customView(){
         View headerLayour = leftDrawerNavigationView.getHeaderView(0);
+        headerLayour.setBackgroundColor(R.color.standard_blue);
         TextView tvUsername = headerLayour.findViewById(R.id.tvUsername);
         tvUsername.setText(currentUser.getUsername());
 //        ImageView ivUserProfilePic = findViewById(R.id.ivUserProfilePic);

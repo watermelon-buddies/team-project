@@ -32,6 +32,7 @@
         android:fontFamily="sans-serif-light"
         android:foregroundGravity="top"
         android:gravity="top"
+        android:paddingTop="24dp"
         android:text="Events Near You"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textSize="18sp"
