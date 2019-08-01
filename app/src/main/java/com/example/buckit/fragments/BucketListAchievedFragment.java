@@ -17,6 +17,7 @@ import com.example.buckit.adapters.BucketListAdapter;
 import com.example.buckit.models.Bucketlist;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,12 +26,15 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+import static com.example.buckit.models.Bucketlist.KEY_USER;
+
 public class BucketListAchievedFragment extends Fragment {
 
     Unbinder unbinder;
     ArrayList<Bucketlist> mBucketList;
     BucketListAdapter mBucketAdapter;
     @BindView(R.id.rvBucketList) RecyclerView rvBucketList;
+    ParseUser user;
 
     @Nullable
     @Override
@@ -43,6 +47,7 @@ public class BucketListAchievedFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull final View bucketListView, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(bucketListView, savedInstanceState);
+        user = ParseUser.getCurrentUser();
         mBucketList = new ArrayList<>();
         mBucketAdapter = new BucketListAdapter(getContext(), mBucketList, false);
         rvBucketList.setAdapter(mBucketAdapter);
@@ -63,7 +68,7 @@ public class BucketListAchievedFragment extends Fragment {
         bucketQuery.getTop().withUser();
         bucketQuery.orderByDescending("createdAt");
         bucketQuery.whereEqualTo("achieved", true);
-
+        bucketQuery.whereEqualTo(KEY_USER, user);
         bucketQuery.findInBackground(new FindCallback<Bucketlist>() {
             @Override
             public void done(List<Bucketlist> object, ParseException e) {

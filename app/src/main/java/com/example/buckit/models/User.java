@@ -16,6 +16,7 @@ public class User extends ParseUser {
     public static final String KEY_EVENTS_RSVP = "eventsRSVP";
     public static final String KEY_USERNAME = "username";
     public static final String KEY_OBJECT_ID = "objectId";
+    public static final String KEY_EVENT_RADIUS = "eventRadius";
 
     public User(){ }
 

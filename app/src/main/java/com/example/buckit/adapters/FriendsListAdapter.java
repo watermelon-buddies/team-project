@@ -14,7 +14,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.buckit.R;
+import com.example.buckit.models.FriendInvite;
 import com.example.buckit.models.User;
+import com.parse.FindCallback;
+import com.parse.Parse;
+import com.parse.ParseACL;
+import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -25,6 +30,7 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 import static com.example.buckit.models.User.KEY_FRIENDS;
+import static com.example.buckit.models.User.KEY_USERNAME;
 
 public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.ViewHolder> {
 
@@ -91,7 +97,9 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
                 if (position != RecyclerView.NO_POSITION) {
                         User user = mFriendsList.get(position);
                         Log.d("Click", user.toString());
-                        currentUser.add(KEY_FRIENDS, user);
+                        createFriendRequest(currentUser, user);
+/*                        currentUser.add(KEY_FRIENDS, user);
+                     *//*   currentUser.add("friendsIds", user.getObjectId());*//*
                         currentUser.saveInBackground(new SaveCallback() {
                             @Override
                             public void done(ParseException e) {
@@ -103,6 +111,28 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
                                 }
                             }
                         });
+                        User.Query userQuery = new User.Query();
+                        userQuery.whereEqualTo(KEY_USERNAME, user.getUsername());
+                        userQuery.findInBackground(new FindCallback<User>() {
+                            @Override
+                            public void done(List<User> objects, ParseException e) {
+                                ParseUser friendUser = objects.get(0);
+                                Log.d("friends", friendUser.toString());
+                                friendUser.add(KEY_FRIENDS, currentUser);
+                                friendUser.saveInBackground(new SaveCallback() {
+                                    @Override
+                                    public void done(ParseException e) {
+                                        if (e == null) {
+                                            Log.d("Friends", "Added"+currentUser.toString());
+                                        } else {
+                                            Log.d("Friends", "Failed to add!");
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
+
+                            }
+                        });*/
                         mFriendsList.remove(position);
                         notifyDataSetChanged();
                     }
@@ -111,11 +141,26 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 
     }
 
+    private void createFriendRequest(ParseUser inviter, ParseUser invited) {
+        FriendInvite newInvitation = new FriendInvite();
+        newInvitation.setInviter(inviter);
+        newInvitation.setInvited(invited);
+        // Status 2 meaning friend request not accepter or rejected yet
+        newInvitation.setStatus(2);
+        newInvitation.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    Log.d("Invitation", "Sent successfully");
+                }
+            }
+        });
+    }
+
     @Override
     public int getItemCount() {
         return mFriendsList.size();
     }
-    // for each row, inflate the alyout and cache references intop view
 
     public void clear() {
         mFriendsList.clear();

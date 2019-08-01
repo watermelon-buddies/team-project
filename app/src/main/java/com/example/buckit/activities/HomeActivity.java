@@ -20,6 +20,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
@@ -43,6 +44,7 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.parse.ParseUser;
 
 import java.util.Date;
@@ -54,6 +56,7 @@ import butterknife.ButterKnife;
 import me.everything.providers.android.calendar.Calendar;
 import me.everything.providers.android.calendar.CalendarProvider;
 import permissions.dispatcher.NeedsPermission;
+
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static com.example.buckit.models.User.KEY_PROFILE_PICTURE;
@@ -72,8 +75,8 @@ public class HomeActivity extends AppCompatActivity
     private LocationRequest mLocationRequest;
     public Location mCurrentLocation;
     public HashMap<String, Integer> userEvents;
-    private long UPDATE_INTERVAL = 1000000;  /* 1000 secs */
-    private long FASTEST_INTERVAL = 500000; /* 500 secs */
+    private long UPDATE_INTERVAL = 10000;  /* 1000 secs */
+    private long FASTEST_INTERVAL = 5000; /* 500 secs */
     private final static long EPOCH_MILLI_MONTH = 62L * 24L * 60L * 60L * 1000L;
     public final static String LAT_KEY = "lat";
     public final static String LONG_KEY = "long";
@@ -91,8 +94,10 @@ public class HomeActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activities_drawrer_main);
+        Log.d("device id", FirebaseInstanceId.getInstance().getToken());
         ViewStub stub = (ViewStub) findViewById(R.id.layout_stub);
         stub.setLayoutResource(R.layout.home_activity_content);
+        findViewById(R.layout.activities_nav_header);
         View inflated = stub.inflate();
         ButterKnife.bind(this);
         currentUser = ParseUser.getCurrentUser();

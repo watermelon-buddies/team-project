@@ -58,6 +58,14 @@
 
     <string name="add_friends">Add Friends</string>
 
+    <string name="radius_description">How far are you willing to go for events?</string>
+    <string name="distance_hint">Set distance</string>
+    <string name="category_select_question">Choose categories you want to explore</string>
+    <string name="phone_question">Add phone number</string>
+    <string name="almost_done">Almost done with registration!</string>
+    <string name="almost_done_2">Please complete the following details to complete registration
+    </string>
+    <string name="finish_registration">Finish Registration</string>
 
     <string name="image_blur_description">Blur background</string>
     <string name="first_tab_description">Current Bucket</string>
@@ -78,7 +86,10 @@
         <item>Sports &amp; Fitness</item>
         <item>Travel &amp; Outdoor</item>
     </string-array>
-
+    <string-array name="distance_types">
+        <item>km</item>
+        <item>mi</item>
+    </string-array>
     <string-array name="hour_options">
         <item>0 hours</item>
         <item>1 hour</item>

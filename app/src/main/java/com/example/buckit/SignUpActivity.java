@@ -3,16 +3,33 @@ package com.example.buckit;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.buckit.models.User;
+import com.example.buckit.utils.MultiSelectSpinner;
+import com.parse.Parse;
+import com.parse.ParseACL;
+import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
+
+import org.json.JSONArray;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.example.buckit.fragments.EventsExploreFragment.KEY_SELECTED_CATEGORIES;
+import static com.example.buckit.models.User.KEY_EVENT_RADIUS;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -26,6 +43,7 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_up_activity);
         ButterKnife.bind(this);
+
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -39,15 +57,19 @@ public class SignUpActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String username = etUsername.getText().toString();
                 String password = etPassword.getText().toString();
-                registerNewUser(username, password);
-
+                if (username == null || password == null){
+                    Toast.makeText(getApplicationContext(), "Please fill in all required inputs", Toast.LENGTH_SHORT);
+                }
+                else {
+                    registerNewUser(username, password);
+                }
             }
         });
     }
 
     private void registerNewUser(final String username, final String password) {
         // Create the ParseUser
-        ParseUser user = new ParseUser();
+        User user = (User) new ParseUser();
         // Set core properties
         user.setUsername(username);
         user.setPassword(password);
@@ -59,8 +81,11 @@ public class SignUpActivity extends AppCompatActivity {
                     Intent i = new Intent();
                     i.putExtra("username", username);
                     i.putExtra("password", password);
+                    Log.d("username", username);
+
                     setResult(RESULT_OK, i);
-                    Toast.makeText(getApplicationContext(), "Account created successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Account created successfully",
+                            Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
                     e.printStackTrace();

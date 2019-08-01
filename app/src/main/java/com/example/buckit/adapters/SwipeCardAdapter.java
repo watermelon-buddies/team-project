@@ -46,6 +46,7 @@ public class SwipeCardAdapter extends ArrayAdapter<HashMap<Event, Integer>> {
         tvTitle.setText(mEvents.get(position).getTitle());
         Glide.with(mContext)
                 .load(mEvents.get(position).getImageUrl())
+                .centerCrop()
                 .fitCenter()
                 .placeholder(R.drawable.grey_placeholder)
                 .into(ivEventPicture);

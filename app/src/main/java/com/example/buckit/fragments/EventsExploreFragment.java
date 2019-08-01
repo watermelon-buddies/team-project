@@ -108,17 +108,15 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
     // Sends request specifying location for events. Result list is used to create event types
     private void getEvents(ParseUser user) {
         ArrayList<String> categories = (ArrayList<String>) user.get(KEY_SELECTED_CATEGORIES);
-        final int[] position = {0};
-        for (int i = 0;i < categories.size(); i++) {
+        if (categories.get(0) == null) {
+            Log.d("Categories", "is null");
             AsyncHttpClient client = new AsyncHttpClient();
             RequestParams params = new RequestParams();
             String url = API_BASE_URL + "events/search";
-            params.put(API_KEY_AREA_RADIUS, "20mi");
+            params.put(API_KEY_AREA_RADIUS, user.getString("eventRadius"));
             params.put(API_KEY_LATITUDE, latitude);
             params.put(API_KEY_LONGITUDE, longitude);
             params.put(API_KEY_PARAM, PRIVATE_TOKEN);
-            Log.d("Events", "Loading category "+categories.get(i));
-            params.put(API_KEY_CATEGORY, categories.get(i));
             client.get(url, params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -126,8 +124,7 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
                         JSONArray events = response.getJSONArray("events");
                         for (int j = 0; j < events.length(); j++) {
                             Event currEvent = new Event(events.getJSONObject(j));
-                            eventsList.put(position[0], currEvent);
-                            position[0]++;
+                            eventsList.put(j, currEvent);
                             swipe_card_adapter.notifyDataSetChanged();;
                         }
                     } catch (JSONException e) {
@@ -136,29 +133,38 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
                 }
             });
         }
-        AsyncHttpClient client = new AsyncHttpClient();
-        RequestParams params = new RequestParams();
-        String url = API_BASE_URL + "events/search";
-        params.put(API_KEY_AREA_RADIUS, user.getString("eventRadius"));
-        params.put(API_KEY_LATITUDE, latitude);
-        params.put(API_KEY_LONGITUDE, longitude);
-        params.put(API_KEY_PARAM, PRIVATE_TOKEN);
-        client.get(url, params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                try {
-                    JSONArray events = response.getJSONArray("events");
-                    for (int j = 0; j < events.length(); j++) {
-                        Event currEvent = new Event(events.getJSONObject(j));
-                        eventsList.put(position[0], currEvent);
-                        position[0]++;
-                        swipe_card_adapter.notifyDataSetChanged();;
+        else {
+            final int[] position = {0};
+            for (int i = 0;i < categories.size(); i++) {
+                Log.d("Categories", "is not null");
+                AsyncHttpClient client = new AsyncHttpClient();
+                RequestParams params = new RequestParams();
+                String url = API_BASE_URL + "events/search";
+                params.put(API_KEY_AREA_RADIUS, "20mi");
+                params.put(API_KEY_LATITUDE, latitude);
+                params.put(API_KEY_LONGITUDE, longitude);
+                params.put(API_KEY_PARAM, PRIVATE_TOKEN);
+                Log.d("Events", "Loading category "+categories.get(i));
+                params.put(API_KEY_CATEGORY, categories.get(i));
+                client.get(url, params, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        try {
+                            JSONArray events = response.getJSONArray("events");
+                            for (int j = 0; j < events.length(); j++) {
+                                Event currEvent = new Event(events.getJSONObject(j));
+                                eventsList.put(position[0], currEvent);
+                                position[0]++;
+                                swipe_card_adapter.notifyDataSetChanged();;
+                            }
+                        } catch (JSONException e) {
+                            Log.d("Get events", "Failure to retrieve events");
+                        }
                     }
-                } catch (JSONException e) {
-                    Log.d("Get events", "Failure to retrieve events");
-                }
+                });
             }
-        });
+        }
+
     }
 
     public static JSONArray shuffleJsonArray (JSONArray array) throws JSONException {
