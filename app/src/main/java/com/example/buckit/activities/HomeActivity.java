@@ -27,6 +27,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -35,6 +36,7 @@ import com.example.buckit.R;
 import com.example.buckit.fragments.BucketListTabbed;
 import com.example.buckit.fragments.EventsExploreFragment;
 import com.example.buckit.fragments.SchedulerFragment;
+import com.example.buckit.models.User;
 import com.example.buckit.utils.ExploreActivityPermissionDispatcher;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -45,8 +47,7 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.messaging.FirebaseMessaging;
+import com.parse.ParseFile;
 import com.parse.ParseUser;
 
 import org.json.JSONArray;
@@ -70,7 +71,6 @@ import okhttp3.Response;
 import permissions.dispatcher.NeedsPermission;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-import static com.example.buckit.models.User.KEY_PROFILE_PICTURE;
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
 public class HomeActivity extends AppCompatActivity
@@ -82,26 +82,22 @@ public class HomeActivity extends AppCompatActivity
     @BindView(R.id.toolbar) Toolbar toolbar;
 
     private final static String KEY_LOCATION = "location";
-
-    private LocationRequest mLocationRequest;
-    public Location mCurrentLocation;
-    public HashMap<String, Integer> userEvents;
-    private long UPDATE_INTERVAL = 1000000;  /* 1000 secs */
-    private long FASTEST_INTERVAL = 500000; /* 500 secs */
+    public static final String KEY_PROFILE_PICTURE= "profilePic";
+    private final static long UPDATE_INTERVAL = 1000000;  /* 1000 secs */
+    private final static long FASTEST_INTERVAL = 500000; /* 500 secs */
     private final static long EPOCH_MILLI_MONTH = 62L * 24L * 60L * 60L * 1000L;
+    public static final long ONE_MINUTE_IN_MILLIS=60000;
+    private static final String DEVICE_ID = "dVkZACS4lWc:APA91bEgPEk-L92S7eeP2vDdP3mDdEt08VcSXKnarVf4jDWac4TF9qV1ptkpBzIhIP3PcYBJvKEtnoQCIgVPkhNe8QNxpwoeGvILQIcOgQ1QYFnU48mQuhVN_up-0Kbl4F-A_CZqI81d";
     public final static String LAT_KEY = "lat";
     public final static String LONG_KEY = "long";
-    final private static int calendarCallbackId = 42;
-    ParseUser currentUser;
-    static final long ONE_MINUTE_IN_MILLIS=60000;
-    static final String device_id = "dVkZACS4lWc:APA91bEgPEk-L92S7eeP2vDdP3mDdEt08VcSXKnarVf4jDWac4TF9qV1ptkpBzIhIP3PcYBJvKEtnoQCIgVPkhNe8QNxpwoeGvILQIcOgQ1QYFnU48mQuhVN_up-0Kbl4F-A_CZqI81d";
-
-
+    final private static int CALENDAR_CALLBACK_ID = 42;
+    private LocationRequest mLocationRequest;
+    public HashMap<String, Integer> userEvents;
+    public Location mCurrentLocation;
+    private ParseUser currentUser;
 
     /* HomeActivity after sucessfully logging in that contains BucketListFragment,
-    EventsExploreFragment and SchedulerFragment
-    *
-    * */
+    EventsExploreFragment and SchedulerFragment */
     @Override
     @RequiresApi(api = Build.VERSION_CODES.O)
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,65 +106,76 @@ public class HomeActivity extends AppCompatActivity
         ViewStub stub = (ViewStub) findViewById(R.id.layout_stub);
         stub.setLayoutResource(R.layout.home_activity_content);
         View inflated = stub.inflate();
-        FirebaseMessaging.getInstance().subscribeToTopic("NEWYORK_WEATHER");
-        Log.d("device id", FirebaseInstanceId.getInstance().getToken());
-
         ButterKnife.bind(this);
         currentUser = ParseUser.getCurrentUser();
-        getCalendarEvents(calendarCallbackId, Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        getCalendarEvents(CALENDAR_CALLBACK_ID, Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
         setSupportActionBar(toolbar);
+        setUpFragments();
+        customView();
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, leftDrawer, toolbar, R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
         leftDrawer.addDrawerListener(toggle);
         toggle.syncState();
         leftDrawerNavigationView.setNavigationItemSelectedListener(this);
-        final FragmentManager fragmentManager = getSupportFragmentManager();
-            // handle navigation selection
-            bottomNavigationView.setOnNavigationItemSelectedListener(
-                    new BottomNavigationView.OnNavigationItemSelectedListener() {
-                        @Override
-                        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                            Fragment fragment;
-                            switch (item.getItemId()) {
-                                case R.id.action_bucket:
-                                    fragment = new BucketListTabbed();
-                                    break;
-                                case R.id.action_schedule:
-                                    Bundle userCal = new Bundle();
-                                    userCal.putSerializable("userEvents", userEvents);
-                                    fragment = new SchedulerFragment();
-                                    fragment.setArguments(userCal);
-                                    break;
-                                case R.id.action_events:
-                                    Bundle bundle = new Bundle();
-                                    bundle.putDouble(LAT_KEY, mCurrentLocation.getLatitude());
-                                    bundle.putDouble(LONG_KEY, mCurrentLocation.getLongitude());
-                                    fragment = new EventsExploreFragment();
-                                    fragment.setArguments(bundle);
-                                    break;
-                                default:
-                                    fragment = new SchedulerFragment();
-                                    break;
-                            }
-                            fragmentManager.beginTransaction().replace(R.id.flmain,
-                                    fragment).commit();
-                            return true;
-                        }
-                    });
-        bottomNavigationView.setSelectedItemId(R.id.action_schedule);
         if (TextUtils.isEmpty(getResources().getString(R.string.google_maps_api_key))) {
             throw new IllegalStateException("You forgot to supply a Google Maps API key");
         }
         if (savedInstanceState != null && savedInstanceState.keySet().contains(KEY_LOCATION)) {
-            // Since KEY_LOCATION was found in the Bundle, we can be sure that mCurrentLocation
-            // is not null.
             mCurrentLocation = savedInstanceState.getParcelable(KEY_LOCATION);
         }
         JSONArray jsonArray = new JSONArray();
-        jsonArray.put(device_id);
+        jsonArray.put(DEVICE_ID);
         sendMessage(jsonArray, "You have an event invite!");
+    }
+
+    private void customView(){
+        View headerLayour = leftDrawerNavigationView.getHeaderView(0);
+        TextView tvUsername = headerLayour.findViewById(R.id.tvUsername);
+        tvUsername.setText(currentUser.getUsername());
+//        ImageView ivUserProfilePic = findViewById(R.id.ivUserProfilePic);
+//        Glide.with(this)
+//                .load((
+//                .into(ivUserProfilePic);
+    }
+
+
+
+    public void setUpFragments(){
+        final FragmentManager fragmentManager = getSupportFragmentManager();
+        // handle navigation selection
+        bottomNavigationView.setOnNavigationItemSelectedListener(
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        Fragment fragment;
+                        switch (item.getItemId()) {
+                            case R.id.action_bucket:
+                                fragment = new BucketListTabbed();
+                                break;
+                            case R.id.action_schedule:
+                                Bundle userCal = new Bundle();
+                                userCal.putSerializable("userEvents", userEvents);
+                                fragment = new SchedulerFragment();
+                                fragment.setArguments(userCal);
+                                break;
+                            case R.id.action_events:
+                                Bundle bundle = new Bundle();
+                                bundle.putDouble(LAT_KEY, mCurrentLocation.getLatitude());
+                                bundle.putDouble(LONG_KEY, mCurrentLocation.getLongitude());
+                                fragment = new EventsExploreFragment();
+                                fragment.setArguments(bundle);
+                                break;
+                            default:
+                                fragment = new SchedulerFragment();
+                                break;
+                        }
+                        fragmentManager.beginTransaction().replace(R.id.flmain,
+                                fragment).commit();
+                        return true;
+                    }
+                });
+        bottomNavigationView.setSelectedItemId(R.id.action_schedule);
     }
 
     public void sendMessage(final JSONArray recipients, final String message) {
@@ -179,9 +186,6 @@ public class HomeActivity extends AppCompatActivity
                     protected String doInBackground(String... params) {
                         try {
                             JSONObject root = new JSONObject();
-                            JSONObject notification = new JSONObject();
-                            notification.put("msg", message);
-                            notification.put("type", "chat");
                             JSONObject data = new JSONObject();
                             data.put("body", message);
                             root.put("data", data);
@@ -195,7 +199,6 @@ public class HomeActivity extends AppCompatActivity
                         }
                         return null;
                     }
-
                     @Override
                     protected void onPostExecute(String result) {
                         try {
@@ -218,7 +221,6 @@ public class HomeActivity extends AppCompatActivity
     public String postToFCM(String bodyString) throws IOException {
         OkHttpClient mClient = new OkHttpClient();
         final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-
         RequestBody body = RequestBody.create(JSON, bodyString);
         Request request = new Request.Builder()
                 .url("https://fcm.googleapis.com/fcm/send")
@@ -239,6 +241,8 @@ public class HomeActivity extends AppCompatActivity
     public void onBackPressed() {
         if (leftDrawer.isDrawerOpen(GravityCompat.START)) {
             ImageView ivUserProfilePic = findViewById(R.id.ivUserProfilePic);
+            TextView name = findViewById(R.id.tvUsername);
+            name.setText(currentUser.getUsername());
             Glide.with(this)
                     .load(currentUser.getParseFile(KEY_PROFILE_PICTURE).getUrl())
                     .into(ivUserProfilePic);
@@ -271,7 +275,7 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_tools) {
 
        } else if (id == R.id.nav_profile) {
-            //getCalendarEvents(calendarCallbackId, Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
+            //getCalendarEvents(CALENDAR_CALLBACK_ID, Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
             Intent profileView = new Intent(HomeActivity.this, ViewProfile.class);
             profileView.putExtra("userCal", userEvents);
             startActivity(profileView);
@@ -302,7 +306,6 @@ public class HomeActivity extends AppCompatActivity
                     for (me.everything.providers.android.calendar.Event currEvent : provider.getEvents(currCal.id).getList()) {
                         // Checks events are happening within the range of two months
                         if ((currEvent.dTStart) >= today && (currEvent.dTStart) <= nextMonth) {
-                            /* TODO: fix this so that time within an event is also counted as busy*/
                             Long timeOfEvent = ((currEvent.dTend - currEvent.dTStart) / 1000) / 60;
                             Integer rangeIn15MinIntervals = Math.toIntExact(timeOfEvent) / 15;
                             for(int i = 0; i < rangeIn15MinIntervals; i++){
@@ -362,11 +365,9 @@ public class HomeActivity extends AppCompatActivity
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         mLocationRequest.setInterval(UPDATE_INTERVAL);
         mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
-
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
         builder.addLocationRequest(mLocationRequest);
         LocationSettingsRequest locationSettingsRequest = builder.build();
-
         SettingsClient settingsClient = LocationServices.getSettingsClient(this);
         settingsClient.checkLocationSettings(locationSettingsRequest);
         //noinspection MissingPermission
@@ -391,9 +392,6 @@ public class HomeActivity extends AppCompatActivity
         if (location == null) {
             return;
         }
-
-        // Report to the UI that the location was updated
-
         mCurrentLocation = location;
         Log.d("Location", mCurrentLocation.toString());
     }

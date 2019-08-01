@@ -49,8 +49,8 @@ public class ViewProfile extends AppCompatActivity {
         HashMap<String, Integer> userCal = (HashMap<String, Integer>) getIntent().getSerializableExtra("userCal");
         mPendingInvites = new ArrayList<UserInvite>();
         mComingUpInvites = new ArrayList<>();
-        mPendingInvitesAdapter = new PendingInvitesAdapter(mPendingInvites, userCal, this);
-        mComingUpInvitesAdapter = new PendingInvitesAdapter(mComingUpInvites, userCal, this);
+        mPendingInvitesAdapter = new PendingInvitesAdapter(mPendingInvites, userCal, this, true);
+        mComingUpInvitesAdapter = new PendingInvitesAdapter(mComingUpInvites, userCal, this, false);
         rvPendingInvites.setAdapter(mPendingInvitesAdapter);
         rvComingUp.setAdapter(mComingUpInvitesAdapter);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);

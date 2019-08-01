@@ -23,15 +23,17 @@ import java.util.List;
 public class PendingInvitesAdapter extends RecyclerView.Adapter<PendingInvitesAdapter.ViewHolder> {
 
     private List<UserInvite> mUserInvites;
+    private boolean isPending;
     private Context mContext;
     private UserInvite currInvite;
     private HashMap<String, Integer> mUserCal;
     public static final int SELECT_TIME_REQUEST_CODE = 20;
 
-    public PendingInvitesAdapter(List<UserInvite> items, HashMap<String, Integer> userCal, Context context) {
+    public PendingInvitesAdapter(List<UserInvite> items, HashMap<String, Integer> userCal, Context context, boolean pendingInvites) {
         mUserInvites = items;
         mUserCal = userCal;
         mContext = context;
+        isPending = pendingInvites;
     }
 
 
@@ -52,9 +54,12 @@ public class PendingInvitesAdapter extends RecyclerView.Adapter<PendingInvitesAd
 
         currInvite = mUserInvites.get(position);
         holder.tvWhat.setText(currInvite.getTitle());
-        ParseUser creator = currInvite.getCreator();
+        ParseUser getFriend = currInvite.getCreator();
+        if(getFriend == ParseUser.getCurrentUser()){
+            getFriend = currInvite.getInvited();
+        }
         try{
-            holder.tvWho.setText("with " + creator.fetchIfNeeded().getUsername());
+            holder.tvWho.setText("with " + getFriend.fetchIfNeeded().getUsername());
         } catch(ParseException e){
             e.printStackTrace();
         }
@@ -85,6 +90,9 @@ public class PendingInvitesAdapter extends RecyclerView.Adapter<PendingInvitesAd
         public TextView tvWho;
         public TextView tvWhere;
         public Button btnAccept;
+        public Button btnDecline;
+        public View buttonDivider;
+        public View horizontalDivider;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -92,23 +100,33 @@ public class PendingInvitesAdapter extends RecyclerView.Adapter<PendingInvitesAd
             tvWho = itemView.findViewById(R.id.tvWho);
             tvWhere = itemView.findViewById(R.id.tvWhere);
             btnAccept = itemView.findViewById(R.id.btnAccept);
+            btnDecline = itemView.findViewById(R.id.btnDecline);
+            buttonDivider = itemView.findViewById(R.id.buttonDivider);
+            horizontalDivider = itemView.findViewById(R.id.horizontalDivider);
+            if(!isPending){
+                btnAccept.setVisibility(View.GONE);
+                btnDecline.setVisibility(View.GONE);
+                buttonDivider.setVisibility(View.GONE);
+                horizontalDivider.setVisibility(View.GONE);
+            }
             btnAccept.setOnClickListener(this);
         }
 
 //        @Override
         public void onClick(View v) {
-            int position = getAdapterPosition();
-            UserInvite currInvite = mUserInvites.get(position);
-            if(v.getId() == btnAccept.getId()){
-                Intent selectTime = new Intent(mContext, SelectTime.class);
-                selectTime.putExtra("InviteTimes", currInvite.getMeetTimes().toString());
-                selectTime.putExtra("userCal", mUserCal);
-                selectTime.putExtra("duration", currInvite.getDuration());
-                selectTime.putExtra("position", position);
-                ((Activity) mContext).startActivityForResult(selectTime, SELECT_TIME_REQUEST_CODE);
+            if(isPending){
+                int position = getAdapterPosition();
+                UserInvite currInvite = mUserInvites.get(position);
+                if(v.getId() == btnAccept.getId()){
+                    Intent selectTime = new Intent(mContext, SelectTime.class);
+                    selectTime.putExtra("InviteTimes", currInvite.getMeetTimes().toString());
+                    selectTime.putExtra("userCal", mUserCal);
+                    selectTime.putExtra("duration", currInvite.getDuration());
+                    selectTime.putExtra("position", position);
+                    ((Activity) mContext).startActivityForResult(selectTime, SELECT_TIME_REQUEST_CODE);
 
+                }
             }
-
         }
 
 

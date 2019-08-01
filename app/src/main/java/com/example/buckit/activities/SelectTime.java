@@ -99,8 +99,6 @@ public class SelectTime extends AppCompatActivity {
 
     }
 
-
-
     private void findMeetTimes() {
         Log.d("beforeRemove", String.valueOf(finalMeetTimes.size()));
         for (int i = 0; i < finalMeetTimes.size(); i++) {
@@ -128,10 +126,9 @@ public class SelectTime extends AppCompatActivity {
     private void organizeInRanges() throws ParseException {
         finalMeetTimes = removedNotEnoughTime();
         createSeparateArrayLists();
-        toDisplay.addAll(ranges.get(0));
+        toDisplay.add("");
         meetTimesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, toDisplay);
         setButtons();
-        btnOption1.setSelected(true);
         setButtonListeners();
     }
 
