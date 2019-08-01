@@ -21,7 +21,6 @@ public class Bucketlist extends ParseObject {
     public static final String KEY_DEADLINE = "deadline";
     public static final String KEY_ACHIEVED = "achieved";
     public static final String KEY_CATEGORY = "category";
-/*    public static final String KEY_ELEMENTS = "elements";*/
 
     public Bucketlist(){
 

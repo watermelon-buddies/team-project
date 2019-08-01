@@ -39,7 +39,6 @@ public class BucketListAdapter extends RecyclerView.Adapter<BucketListAdapter.Vi
         show = achieved;
     }
 
-    RecyclerView rvPost;
     private boolean click;
     Bucketlist bucketList;
 

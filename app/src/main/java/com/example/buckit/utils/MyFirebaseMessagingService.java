@@ -1,4 +1,4 @@
-package com.example.buckit.utils;
+/*package com.example.buckit.utils;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -63,7 +63,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
     }
-}
+}*/
 
 
 

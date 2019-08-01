@@ -8,8 +8,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.buckit.activities.HomeActivity;
+import com.example.buckit.activities.SignUpDetailsActivtiy;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -72,11 +74,24 @@ public class LoginActivity extends AppCompatActivity {
         if(resultCode == RESULT_OK && requestCode == SIGNUP_REQUEST_CODE){
             String username = data.getExtras().getString("username");
             String password = data.getExtras().getString("password");
-            login(username, password);
+            firstLogIn(username, password);
         }
     }
 
-
+    private void firstLogIn(String username, String password) {
+        ParseUser.logInInBackground(username, password, new LogInCallback() {
+            @Override
+            public void done(ParseUser user, ParseException e) {
+                if(e == null){
+                    startActivity(new Intent(LoginActivity.this, SignUpDetailsActivtiy.class));
+                    finish();
+                } else {
+                    Log.e("LoginActivity", "Error");
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 
     // Checks that the user exists and the password corresponds to it
     private void login(String username, String password) {
@@ -88,6 +103,7 @@ public class LoginActivity extends AppCompatActivity {
                     goToHome();
                 } else {
                     Log.e("LoginActivity", "Error");
+                    Toast.makeText(getApplicationContext(), "Please check if username and password is correct!", Toast.LENGTH_LONG);
                     e.printStackTrace();
                 }
             }

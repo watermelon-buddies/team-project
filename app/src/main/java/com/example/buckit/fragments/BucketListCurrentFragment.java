@@ -58,6 +58,7 @@ import static com.example.buckit.fragments.EventsExploreFragment.API_BASE_URL;
 import static com.example.buckit.fragments.EventsExploreFragment.API_KEY_PARAM;
 import static com.example.buckit.fragments.EventsExploreFragment.KEY_SELECTED_CATEGORIES;
 import static com.example.buckit.fragments.EventsExploreFragment.PRIVATE_TOKEN;
+import static com.example.buckit.models.Bucketlist.KEY_USER;
 import static com.parse.Parse.getApplicationContext;
 
 public class BucketListCurrentFragment extends Fragment {
@@ -78,6 +79,7 @@ public class BucketListCurrentFragment extends Fragment {
     public View popupView;
     ParseACL acl;
     boolean mFirstLoad;
+    ParseUser user;
 
     /* Inflate bucket_list_fragment.xml and bind views using Butterknife */
     @Nullable
@@ -92,6 +94,7 @@ public class BucketListCurrentFragment extends Fragment {
     public void onViewCreated(@NonNull final View bucketListView, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(bucketListView, savedInstanceState);
         /* addItem floating action button for adding new item to the bucket list */
+        user = ParseUser.getCurrentUser();
         addItemFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,7 +118,6 @@ public class BucketListCurrentFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         final String description = etItemDescription.getText().toString();
-                        final ParseUser user = ParseUser.getCurrentUser();
                         final String category = spinnerCategory.getSelectedItem().toString();
                         try {
                             addItemToBucketList(description, user, deadline, category);
@@ -172,7 +174,7 @@ public class BucketListCurrentFragment extends Fragment {
                     JSONArray categories = response.getJSONArray("categories");
                     for (int i = 0; i < categories.length(); i++){
                         JSONObject catObject = categories.getJSONObject(i);
-                       if (catObject.getString("name").equals(category) ){
+                        if (catObject.getString("name").equals(category) ){
                             Log.d("ID", catObject.getString("id"));
                             user.add(KEY_SELECTED_CATEGORIES, catObject.getString("id"));
                             user.saveInBackground(new SaveCallback() {
@@ -249,6 +251,7 @@ public class BucketListCurrentFragment extends Fragment {
     protected void populateBucket() {
         final Bucketlist.Query bucketQuery = new Bucketlist.Query();
         bucketQuery.getTop().withUser();
+        bucketQuery.whereEqualTo(KEY_USER, user);
         bucketQuery.orderByDescending("createdAt");
         bucketQuery.whereEqualTo("achieved", false);
 

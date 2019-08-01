@@ -97,7 +97,6 @@ public class SchedulerFragment extends Fragment {
         if (categories == null){
             ArrayList<String> catEmptyList = new ArrayList<>();
             currentUser.put(KEY_SELECTED_CATEGORIES, catEmptyList);
-            catEmptyList.add("103");
             currentUser.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(ParseException e) {

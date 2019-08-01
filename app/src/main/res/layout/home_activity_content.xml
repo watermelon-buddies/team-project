@@ -19,6 +19,18 @@
         app:titleTextColor="@android:color/white"></android.support.v7.widget.Toolbar>
 
 
+    <ImageView
+        android:id="@+id/ivNotificationCircle"
+        android:layout_width="15dp"
+        android:layout_height="12dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginRight="36dp"
+        android:layout_marginBottom="19dp"
+        android:tint="#ff0000"
+        app:layout_constraintBottom_toTopOf="@+id/divider3"
+        app:layout_constraintEnd_toEndOf="@+id/toolbar"
+        app:srcCompat="@drawable/ic_notification_circle" />
+
     <FrameLayout
         android:id="@+id/flmain"
         android:layout_width="0dp"
@@ -26,8 +38,10 @@
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintVertical_bias="0.0">
 
     </FrameLayout>
 
@@ -36,6 +50,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:itemIconTint="@color/selector_bottom_navigation"
+        app:itemTextColor="@color/selector_bottom_navigation"
         app:menu="@menu/menu_bottom_navigation" />
 
     <ImageView
@@ -64,15 +80,26 @@
 
     <ImageView
         android:id="@+id/ivNotifications"
-        android:layout_width="31dp"
-        android:layout_height="26dp"
+        android:layout_width="35dp"
+        android:layout_height="28dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginRight="24dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:tint="@color/grey"
         app:layout_constraintEnd_toEndOf="@+id/toolbar"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_notifications" />
+
+    <ImageView
+        android:id="@+id/btnSavedEvents"
+        android:layout_width="40dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        app:layout_constraintEnd_toStartOf="@+id/ivNotifications"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/btn_star_big_on" />
 
 
 </android.support.constraint.ConstraintLayout>
