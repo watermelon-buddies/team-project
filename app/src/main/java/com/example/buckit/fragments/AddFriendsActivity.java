@@ -53,7 +53,7 @@ public class AddFriendsActivity extends AppCompatActivity {
         usersAdapter = new FriendsListAdapter(usersList, this, true, user);
         rvAddFriends.setAdapter(usersAdapter);
         final LinearLayoutManager addLinearLayoutManager = new LinearLayoutManager(this);
-        findFriendsAlreadyRequested();
+        findUsersAlreadyRequested();
         rvAddFriends.setLayoutManager(addLinearLayoutManager);
         ivCloseMenu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,51 +65,9 @@ public class AddFriendsActivity extends AppCompatActivity {
 
     }
 
-    protected void populateUsers(final List<String> requestedIds) {
-        User.Query friendsQuery = new User.Query();
-        friendsQuery.withFriends();
-        friendsQuery.whereEqualTo("objectId", ParseUser.getCurrentUser().getObjectId());
-        friendsQuery.findInBackground(new FindCallback<User>() {
-            @Override
-            public void done(List<User> users, ParseException e) {
-                if (e == null) {
-                    if (users != null && users.size() > 0) {
-                        ParseObject mainUser = users.get(0);  // only one match expected
-                        // now get the user's friends
-                        List<User> friends = mainUser.getList("friends");
-                        List<String> friendId = new ArrayList<>();
-                        for (User friend : friends) {
-                            friendId.add(friend.getObjectId());
-                        }
-                        Log.d("Friends", friendId.toString());
-                        Log.d("Friends", requestedIds.toString());
-                        User.Query userQuery = new User.Query();
-                        userQuery.getTop();
-                        userQuery.whereNotEqualTo("objectId", user.getObjectId());
-                        userQuery.whereNotContainedIn("objectId", friendId);
-                        userQuery.whereNotContainedIn("objectId", requestedIds);
-                        userQuery.findInBackground(new FindCallback<User>() {
-                            @Override
-                            public void done(final List<User> object, ParseException e) {
-                                if (e == null) {
-                                    usersList.clear();
-                                    usersList.addAll(object);
-                                    usersAdapter.notifyDataSetChanged();
-                                }
-                            }
-                        });
-                    } else {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-    }
-
-    private void findFriendsAlreadyRequested() {
+    private void findUsersAlreadyRequested() {
         final List<String> requestedIds = new ArrayList<>();
         final FriendInvite.Query sentOutInvited = new FriendInvite.Query();
-        /*        sentOutInvited.getSentRequests(user);*/
         sentOutInvited.findInBackground(new FindCallback<FriendInvite>() {
             @Override
             public void done(List<FriendInvite> objects, ParseException e) {
@@ -120,18 +78,58 @@ public class AddFriendsActivity extends AppCompatActivity {
                             String id1 = invitation.getInviter().getObjectId();
                             String id2 = user.getObjectId();
                             Log.d("Id", id1 + " " + id2);
-                            System.out.println(id1 + id2);
                             if (id1.equals(id2)) {
                                 String id = invitation.getInvited().getObjectId();
                                 requestedIds.add(id);
                             }
                         }
                     }
-                    populateUsers(requestedIds);
+                    findAlreadyFriends(requestedIds);
                 }
             }
         });
 
+    }
+
+    protected void findAlreadyFriends(final List<String> requestedIds) {
+        User.Query friendsQuery = new User.Query();
+        friendsQuery.withFriends();
+        friendsQuery.whereEqualTo("objectId", ParseUser.getCurrentUser().getObjectId());
+        friendsQuery.findInBackground(new FindCallback<User>() {
+            @Override
+            public void done(List<User> users, ParseException e) {
+                if (e == null) {
+                    if (users != null && users.size() > 0) {
+                        ParseObject mainUser = users.get(0);
+                        List<User> friends = mainUser.getList("friends");
+                        List<String> alreadyRequestedIds = new ArrayList<>();
+                        for (User friend : friends) {
+                            alreadyRequestedIds.add(friend.getObjectId());
+                        }
+                        alreadyRequestedIds.addAll(requestedIds);
+                        populateUsers(alreadyRequestedIds);
+                    } else {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+    private void populateUsers(List<String> alreadyRequestedIds) {
+        User.Query userQuery = new User.Query();
+        userQuery.whereNotEqualTo("objectId", user.getObjectId());
+        userQuery.whereNotContainedIn("objectId", alreadyRequestedIds);
+        userQuery.findInBackground(new FindCallback<User>() {
+            @Override
+            public void done(final List<User> object, ParseException e) {
+                if (e == null) {
+                    usersList.clear();
+                    usersList.addAll(object);
+                    usersAdapter.notifyDataSetChanged();
+                }
+            }
+        });
     }
 }
 
