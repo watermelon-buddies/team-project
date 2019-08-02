@@ -349,7 +349,6 @@ public class SchedulerFragment extends Fragment {
         newInvite.setLocation(etLocation.getText().toString());
         newInvite.setCreator(ParseUser.getCurrentUser());
         newInvite.setMeetTimes(meetTimes);
-        newInvite.setAccepted(false);
         newInvite.setInvited(userToInvite);
         newInvite.setDuration(durationIn15MinIntervals);
         newInvite.saveInBackground(new SaveCallback() {

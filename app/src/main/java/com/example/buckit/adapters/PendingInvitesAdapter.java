@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import com.example.buckit.activities.SelectTime;
 import com.example.buckit.models.UserInvite;
 import com.parse.ParseException;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.HashMap;
 import java.util.List;
@@ -110,13 +112,14 @@ public class PendingInvitesAdapter extends RecyclerView.Adapter<PendingInvitesAd
                 horizontalDivider.setVisibility(View.GONE);
             }
             btnAccept.setOnClickListener(this);
+            btnDecline.setOnClickListener(this);
         }
 
 //        @Override
         public void onClick(View v) {
+            int position = getAdapterPosition();
+            UserInvite currInvite = mUserInvites.get(position);
             if(isPending){
-                int position = getAdapterPosition();
-                UserInvite currInvite = mUserInvites.get(position);
                 if(v.getId() == btnAccept.getId()){
                     Intent selectTime = new Intent(mContext, SelectTime.class);
                     selectTime.putExtra("InviteTimes", currInvite.getMeetTimes().toString());
@@ -124,6 +127,21 @@ public class PendingInvitesAdapter extends RecyclerView.Adapter<PendingInvitesAd
                     selectTime.putExtra("duration", currInvite.getDuration());
                     selectTime.putExtra("position", position);
                     ((Activity) mContext).startActivityForResult(selectTime, SELECT_TIME_REQUEST_CODE);
+
+                } else if(v.getId() == btnDecline.getId()){
+                    currInvite.setAccepted(false);
+                    currInvite.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                Log.d("Pending Invites", "Event Declined");
+                            } else {
+                                Log.d("Pending Invites", "Failed to decline");
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                    removeData(position);
 
                 }
             }
