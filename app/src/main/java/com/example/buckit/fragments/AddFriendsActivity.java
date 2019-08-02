@@ -14,23 +14,17 @@ import com.example.buckit.activities.ViewFriends;
 import com.example.buckit.adapters.FriendsListAdapter;
 import com.example.buckit.models.FriendInvite;
 import com.example.buckit.models.User;
-import com.google.android.gms.common.util.CollectionUtils;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-
-import static com.example.buckit.models.FriendInvite.KEY_INVITER;
 
 public class AddFriendsActivity extends AppCompatActivity {
 
@@ -50,7 +44,7 @@ public class AddFriendsActivity extends AppCompatActivity {
         user = ParseUser.getCurrentUser();
         ButterKnife.bind(this);
         usersList = new ArrayList<User>();
-        usersAdapter = new FriendsListAdapter(usersList, this, true, user);
+        usersAdapter = new FriendsListAdapter(usersList, this, true, false, user);
         rvAddFriends.setAdapter(usersAdapter);
         final LinearLayoutManager addLinearLayoutManager = new LinearLayoutManager(this);
         findFriendsAlreadyRequested();
@@ -62,8 +56,9 @@ public class AddFriendsActivity extends AppCompatActivity {
                 startActivity(new Intent(AddFriendsActivity.this, ViewFriends.class));
             }
         });
-
     }
+
+
 
     protected void populateUsers(final List<String> requestedIds) {
         User.Query friendsQuery = new User.Query();

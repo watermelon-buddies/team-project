@@ -51,7 +51,7 @@
         app:titleTextColor="@android:color/white"></android.support.v7.widget.Toolbar>
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/ivLogo"
         android:layout_width="125dp"
         android:layout_height="43dp"
         android:layout_marginTop="8dp"

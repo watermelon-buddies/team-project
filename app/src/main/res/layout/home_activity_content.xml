@@ -55,7 +55,7 @@
         app:menu="@menu/menu_bottom_navigation" />
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/ivLogo"
         android:layout_width="125dp"
         android:layout_height="43dp"
         android:layout_marginTop="8dp"
@@ -83,8 +83,8 @@
         android:layout_width="35dp"
         android:layout_height="28dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginRight="32dp"
         android:tint="@color/grey"
         app:layout_constraintEnd_toEndOf="@+id/toolbar"
         app:layout_constraintTop_toTopOf="parent"
@@ -92,14 +92,15 @@
 
     <ImageView
         android:id="@+id/btnSavedEvents"
-        android:layout_width="40dp"
-        android:layout_height="32dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginRight="24dp"
+        android:layout_width="26dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:tint="@color/grey"
         app:layout_constraintEnd_toStartOf="@+id/ivNotifications"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/btn_star_big_on" />
+        app:srcCompat="@drawable/bookmark_icon" />
 
 
 </android.support.constraint.ConstraintLayout>

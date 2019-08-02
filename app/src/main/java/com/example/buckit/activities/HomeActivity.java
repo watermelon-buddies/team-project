@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
@@ -72,6 +73,7 @@ import okhttp3.Response;
 import permissions.dispatcher.NeedsPermission;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import static com.example.buckit.fragments.SchedulerFragment.SELECT_FRIEND_CODE;
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
 public class HomeActivity extends AppCompatActivity
@@ -96,6 +98,9 @@ public class HomeActivity extends AppCompatActivity
     public HashMap<String, Integer> userEvents;
     public Location mCurrentLocation;
     private ParseUser currentUser;
+    private String userSchedulerSelected;
+    private FragmentManager fragmentManager;
+    private Fragment fragment;
 
     /* HomeActivity after sucessfully logging in that contains BucketListFragment,
     EventsExploreFragment and SchedulerFragment */
@@ -135,22 +140,17 @@ public class HomeActivity extends AppCompatActivity
         headerLayour.setBackgroundColor(R.color.standard_blue);
         TextView tvUsername = headerLayour.findViewById(R.id.tvUsername);
         tvUsername.setText(currentUser.getUsername());
-//        ImageView ivUserProfilePic = findViewById(R.id.ivUserProfilePic);
-//        Glide.with(this)
-//                .load((
-//                .into(ivUserProfilePic);
     }
 
 
 
     public void setUpFragments(){
-        final FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager = getSupportFragmentManager();
         // handle navigation selection
         bottomNavigationView.setOnNavigationItemSelectedListener(
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                  new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        Fragment fragment;
                         switch (item.getItemId()) {
                             case R.id.action_bucket:
                                 fragment = new BucketListTabbed();
@@ -158,6 +158,7 @@ public class HomeActivity extends AppCompatActivity
                             case R.id.action_schedule:
                                 Bundle userCal = new Bundle();
                                 userCal.putSerializable("userEvents", userEvents);
+                                userCal.putString("userSelected", "");
                                 fragment = new SchedulerFragment();
                                 fragment.setArguments(userCal);
                                 break;
@@ -178,6 +179,16 @@ public class HomeActivity extends AppCompatActivity
                     }
                 });
         bottomNavigationView.setSelectedItemId(R.id.action_schedule);
+    }
+
+    private void createSchedulerFragment(){
+        Bundle userCal = new Bundle();
+        userCal.putSerializable("userEvents", userEvents);
+        userCal.putString("userSelected", userSchedulerSelected);
+        fragment = new SchedulerFragment();
+        fragment.setArguments(userCal);
+        fragmentManager.beginTransaction().replace(R.id.flmain,
+                fragment).commit();
     }
 
     public void sendMessage(final JSONArray recipients, final String message) {
@@ -218,6 +229,13 @@ public class HomeActivity extends AppCompatActivity
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+            userSchedulerSelected = data.getExtras().getString("selected_user");
+            createSchedulerFragment();
     }
 
     public String postToFCM(String bodyString) throws IOException {
