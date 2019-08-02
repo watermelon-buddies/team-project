@@ -14,17 +14,21 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.buckit.R;
 import com.example.buckit.activities.SelectTime;
+import com.example.buckit.activities.ViewFriends;
 import com.example.buckit.models.FriendInvite;
+import com.example.buckit.models.User;
 import com.example.buckit.models.UserInvite;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
+import static com.example.buckit.models.User.KEY_FRIENDS;
 import static com.example.buckit.models.User.KEY_PROFILE_PICTURE;
 
 public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAdapter.ViewHolder> {
@@ -32,10 +36,15 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
     private List<FriendInvite> mRequests;
     private Context mContext;
     private FriendInvite currRequest;
+    private ArrayList<User> mFriendsList;
+    private FriendsListAdapter mFriendsAdapter;
+    ParseUser currUser;
 
-    public FriendRequestsAdapter(List<FriendInvite> requests, Context context) {
+    public FriendRequestsAdapter(List<FriendInvite> requests, Context context, ArrayList<User> friends, FriendsListAdapter friendsAdapter) {
         mRequests = requests;
         mContext = context;
+        mFriendsAdapter = friendsAdapter;
+        mFriendsList = friends;
     }
 
 
@@ -45,6 +54,7 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
+        currUser = ParseUser.getCurrentUser();
         View pendingInvitesView = inflater.inflate(R.layout.friend_requests_item_view, parent, false);
         ViewHolder viewHolder = new ViewHolder(pendingInvitesView);
         return viewHolder;
@@ -56,11 +66,24 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
 
         currRequest = mRequests.get(position);
         holder.rootView.setTag(currRequest);
-        holder.tvRequestUsername.setText(currRequest.getInviter().getUsername());
-        Glide.with(mContext)
-                .load(currRequest.getInviter().getParseFile(KEY_PROFILE_PICTURE).getUrl())
-                .bitmapTransform(new CropCircleTransformation(mContext))
-                .into(holder.ivRequestProfilePic);
+        try {
+            holder.tvRequestUsername.setText(currRequest.getInviter().fetchIfNeeded().getUsername());
+            if (currRequest.getInviter().fetchIfNeeded().getParseFile(KEY_PROFILE_PICTURE) != null) {
+                Glide.with(mContext)
+                        .load(currRequest.getInviter().fetchIfNeeded().getParseFile(KEY_PROFILE_PICTURE).getUrl())
+                        .bitmapTransform(new CropCircleTransformation(mContext))
+                        .into(holder.ivRequestProfilePic);
+            }
+            else {
+                Glide.with(mContext)
+                        .load(R.drawable.no_profile)
+                        .bitmapTransform(new CropCircleTransformation(mContext))
+                        .into(holder.ivRequestProfilePic);
+            }
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -95,13 +118,19 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
         @Override
         public void onClick(View v) {
             FriendInvite invite = (FriendInvite) rootView.getTag();
-            if (v.getId() == btnDeclineFriend.getId()){
+            if (v.getId() == btnAcceptFriend.getId()){
                 invite.setStatus(1);
+                currUser.add(KEY_FRIENDS, invite.getInviter());
+                currUser.saveInBackground();
+                mFriendsList.add(0, (User) invite.getInviter());
+                mFriendsAdapter.notifyDataSetChanged();
             }
-            else if(v.getId() == btnAcceptFriend.getId()){
+            else if(v.getId() == btnDeclineFriend.getId()){
                 invite.setStatus(0);
             }
             invite.saveInBackground();
+            mRequests.remove(invite);
+            notifyDataSetChanged();
         }
 
     }

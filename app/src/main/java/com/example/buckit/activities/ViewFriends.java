@@ -120,14 +120,14 @@ public class ViewFriends extends AppCompatActivity {
         mFriendsAdapter = new FriendsListAdapter(mFriendsList, this, false, currentUser);
         rvFriendsList.setAdapter(mFriendsAdapter);
         // associate the LinearLayoutManager with the RecylcerView
-        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        rvFriendsList.setLayoutManager(linearLayoutManager);
+        final LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(this);
+        rvFriendsList.setLayoutManager(linearLayoutManager1);
         updateFriends(currentUser);
-        populateFriends();
         mRequestsList = new ArrayList<FriendInvite>();
-        mRequestsAdapter = new FriendRequestsAdapter(mRequestsList, this);
+        mRequestsAdapter = new FriendRequestsAdapter(mRequestsList, this, mFriendsList, mFriendsAdapter);
         rvRequestsList.setAdapter(mRequestsAdapter);
-        rvRequestsList.setLayoutManager(linearLayoutManager);
+        final LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        rvRequestsList.setLayoutManager(linearLayoutManager2);
         populateInvites();
         btnAddFriends.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -179,27 +179,30 @@ public class ViewFriends extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-    protected void updateFriends(ParseUser user) {
+    protected void updateFriends(final ParseUser user) {
         FriendInvite.Query checkInvitations = new FriendInvite.Query();
-        checkInvitations.getSentRequests(user);
         checkInvitations.getAccepted();
         checkInvitations.findInBackground(new FindCallback<FriendInvite>() {
             @Override
             public void done(List<FriendInvite> objects, ParseException e) {
-                if (objects != null && objects.size()>0) {
-                    for (int i = 0; i<objects.size(); i++){
-                        FriendInvite acceptedInvitations = objects.get(i);
-                        ParseUser friend = acceptedInvitations.getInvited();
-                        currentUser.add(KEY_FRIENDS, friend);
-                        currentUser.saveInBackground();
-                        try {
-                            acceptedInvitations.delete();
-                            acceptedInvitations.saveInBackground();
-                        } catch (ParseException e1) {
-                            e1.printStackTrace();
+                if (e == null){
+                    if (objects != null && objects.size()>0) {
+                        for (int i = 0; i<objects.size(); i++){
+                            FriendInvite acceptedInvitations = objects.get(i);
+                            if (acceptedInvitations.getInviter().getObjectId().equals(user.getObjectId())){
+                                ParseUser friend = acceptedInvitations.getInvited();
+                                currentUser.add(KEY_FRIENDS, friend);
+                                currentUser.saveInBackground();
+                                try {
+                                    acceptedInvitations.delete();
+                                    acceptedInvitations.saveInBackground();
+                                } catch (ParseException e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
                         }
-
                     }
+                    populateFriends();
                 }
             }
         });
@@ -207,7 +210,7 @@ public class ViewFriends extends AppCompatActivity {
 
     }
 
-    protected void populateFriends() {
+    public void populateFriends() {
         User.Query userQuery = new User.Query();
         userQuery.getTop().withFriends();
         userQuery.whereEqualTo("objectId", ParseUser.getCurrentUser().getObjectId());
@@ -234,6 +237,7 @@ public class ViewFriends extends AppCompatActivity {
     private void populateInvites() {
         FriendInvite.Query requestsQuery = new FriendInvite.Query();
         requestsQuery.getFriendRequests(currentUser);
+        requestsQuery.getUnansweredRequests();
         requestsQuery.findInBackground(new FindCallback<FriendInvite>() {
             @Override
             public void done(List<FriendInvite> requests, ParseException e) {

@@ -58,5 +58,10 @@ public class FriendInvite extends ParseObject {
             whereEqualTo(KEY_REQUEST_STATUS, 1);
             return this;
         }
+
+        public FriendInvite.Query getUnansweredRequests () {
+            whereEqualTo(KEY_REQUEST_STATUS, 2);
+            return this;
+        }
     }
 }
