@@ -234,8 +234,12 @@ public class HomeActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-            userSchedulerSelected = data.getExtras().getString("selected_user");
-            createSchedulerFragment();
+        if(resultCode == RESULT_OK){
+            if(data.getExtras() != null){
+                userSchedulerSelected = data.getExtras().getString("selected_user");
+                createSchedulerFragment();
+            }
+        }
     }
 
     public String postToFCM(String bodyString) throws IOException {
