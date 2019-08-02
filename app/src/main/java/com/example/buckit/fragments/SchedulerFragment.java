@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.buckit.R;
+import com.example.buckit.activities.ViewFriends;
 import com.example.buckit.activities.ViewProfile;
 import com.example.buckit.models.User;
 import com.example.buckit.models.UserInvite;
@@ -45,6 +47,8 @@ import static com.example.buckit.fragments.EventsExploreFragment.KEY_SELECTED_CA
 @TargetApi(26)
 public class SchedulerFragment extends Fragment {
 
+
+    public static int SELECT_FRIEND_CODE = 100;
     private Unbinder unbinder;
     private ArrayList<Button> schedulerButtons;
     private ArrayList<String> meetTimes;
@@ -61,6 +65,7 @@ public class SchedulerFragment extends Fragment {
     @BindView (R.id.btnRecent1) Button btnRecent1;
     @BindView (R.id.btnRecent2) Button btnRecent2;
     @BindView (R.id.btnRecent3) Button btnRecent3;
+    @BindView (R.id.fabAddFriends) FloatingActionButton fabAddFriends;
 
 
 
@@ -71,11 +76,25 @@ public class SchedulerFragment extends Fragment {
         unbinder = ButterKnife.bind(this, schedulerView);
         meetTimes = new ArrayList<>();
         userEvents = new HashMap<>();
+        addFriendsSetUp();
         if (getArguments() != null){
             userEvents = (HashMap<String, Integer>) getArguments().getSerializable("userEvents");
         }
         return schedulerView;
     }
+
+    private void addFriendsSetUp(){
+        fabAddFriends.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent viewFriends = new Intent(getActivity(), ViewFriends.class);
+                viewFriends.putExtra("scheduler", true);
+                startActivityForResult(viewFriends, SELECT_FRIEND_CODE);
+            }
+        });
+    }
+
+
 
     @Override
     public void onViewCreated(@NonNull View schedulerView, @Nullable Bundle savedInstanceState) {
