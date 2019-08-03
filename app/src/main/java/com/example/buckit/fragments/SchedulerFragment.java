@@ -3,6 +3,7 @@ package com.example.buckit.fragments;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -31,7 +32,10 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.IOException;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -42,6 +46,11 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import static com.example.buckit.fragments.EventsExploreFragment.KEY_SELECTED_CATEGORIES;
 
@@ -62,6 +71,7 @@ public class SchedulerFragment extends Fragment {
     private ParseUser userToInvite;
 
     private int durationIn15MinIntervals;
+    @BindView(R.id.tvRecents) TextView tvRecents;
     @BindView(R.id.spinnerHours) Spinner spinnerHours;
     @BindView(R.id.etEventName) EditText etEventName;
     @BindView(R.id.tvAddInvitees) TextView addInvitees;
@@ -176,6 +186,7 @@ public class SchedulerFragment extends Fragment {
 
     private void setButtons(){
         if(userFriendsList.size() > 0) {
+            tvRecents.setVisibility(View.VISIBLE);
             Button btnToSend = btnRecent0;
             for (int i = 0; i < userFriendsList.size(); i++) {
                 if (i == 1) {
@@ -188,29 +199,12 @@ public class SchedulerFragment extends Fragment {
                 handleSetUp(userFriendsList.get(i), btnToSend);
             }
         }
-        if(userFriendsList.size() < 4){
-            removeExtraButtons();
-        }
     }
 
-    private void removeExtraButtons(){
-        int numFriends = userFriendsList.size();
-        if(numFriends < 1){
-            btnRecent0.setVisibility(View.GONE);
-        }
-        if(numFriends < 2){
-            btnRecent1.setVisibility(View.GONE);
-        }
-        if(numFriends < 3){
-            btnRecent2.setVisibility(View.GONE);
-        }
-        if(numFriends < 4){
-            btnRecent3.setVisibility(View.GONE);
-        }
-    }
 
     private void handleSetUp(String original, Button btn){
         String initials = original.substring(0,1) + original.substring((original.indexOf(" ")+1), (original.indexOf(" ") + 2));
+        btn.setVisibility(View.VISIBLE);
         btn.setText(initials);
         recentFriendButtons.add(btn);
     }
@@ -298,6 +292,7 @@ public class SchedulerFragment extends Fragment {
                             removeBusyTimes();
                             sendInvite();
                             startActivity(new Intent(getActivity(), ViewProfile.class));
+                            sendNotification();
                             getActivity().finish();
                         }
                     }
@@ -313,6 +308,63 @@ public class SchedulerFragment extends Fragment {
                 }
             });
         }
+    }
+
+    private void sendNotification(){
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.put(((User)userToInvite).getDeviceId());
+        sendMessage(jsonArray, "You have an event invite!");
+    }
+
+    public void sendMessage(final JSONArray recipients, final String message) {
+        try {
+            if (recipients.getString(0).length() > 0)
+                new AsyncTask<String, String, String>() {
+                    @Override
+                    protected String doInBackground(String... params) {
+                        try {
+                            JSONObject root = new JSONObject();
+                            JSONObject data = new JSONObject();
+                            data.put("body", message);
+                            root.put("data", data);
+                            root.put("registration_ids", recipients);
+                            root.put("priority", 10);
+                            String result = postToFCM(root.toString());
+                            Log.d("chat Activity", "Result: " + result);
+                            return result;
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                        return null;
+                    }
+                    @Override
+                    protected void onPostExecute(String result) {
+                        try {
+                            JSONObject resultJson = new JSONObject(result);
+                            int success, failure;
+                            success = resultJson.getInt("success");
+                            failure = resultJson.getInt("failure");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }.execute();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String postToFCM(String bodyString) throws IOException {
+        OkHttpClient mClient = new OkHttpClient();
+        final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        RequestBody body = RequestBody.create(JSON, bodyString);
+        Request request = new Request.Builder()
+                .url("https://fcm.googleapis.com/fcm/send")
+                .post(body)
+                .addHeader("Authorization", "key=" + "AAAARGH08UQ:APA91bFv6okGY7RVsHIXT1gfhQ4Ag_dlqCqmPSmBuChSmye8kboxYt2eJg4I-P-JPZ0ULtXUP5kac_GV1sjSPaLw1ZoM45Wtr-_jOWiv4OR9HpnxU5EgL3ZosA0bTzFdvXckTczaiBea")
+                .build();
+        Response response = mClient.newCall(request).execute();
+        return response.body().string();
     }
 
     private void unselectOtherRecents(View button){

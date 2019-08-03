@@ -22,7 +22,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Layout;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
@@ -49,7 +48,7 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.parse.ParseFile;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.parse.ParseUser;
 
 import org.json.JSONArray;
@@ -73,7 +72,6 @@ import okhttp3.Response;
 import permissions.dispatcher.NeedsPermission;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-import static com.example.buckit.fragments.SchedulerFragment.SELECT_FRIEND_CODE;
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
 public class HomeActivity extends AppCompatActivity
@@ -90,7 +88,6 @@ public class HomeActivity extends AppCompatActivity
     private final static long FASTEST_INTERVAL = 500000; /* 500 secs */
     private final static long EPOCH_MILLI_MONTH = 62L * 24L * 60L * 60L * 1000L;
     public static final long ONE_MINUTE_IN_MILLIS=60000;
-    private static final String DEVICE_ID = "dVkZACS4lWc:APA91bEgPEk-L92S7eeP2vDdP3mDdEt08VcSXKnarVf4jDWac4TF9qV1ptkpBzIhIP3PcYBJvKEtnoQCIgVPkhNe8QNxpwoeGvILQIcOgQ1QYFnU48mQuhVN_up-0Kbl4F-A_CZqI81d";
     public final static String LAT_KEY = "lat";
     public final static String LONG_KEY = "long";
     final private static int CALENDAR_CALLBACK_ID = 42;
@@ -130,10 +127,8 @@ public class HomeActivity extends AppCompatActivity
         if (savedInstanceState != null && savedInstanceState.keySet().contains(KEY_LOCATION)) {
             mCurrentLocation = savedInstanceState.getParcelable(KEY_LOCATION);
         }
-        JSONArray jsonArray = new JSONArray();
-        jsonArray.put(DEVICE_ID);
-        sendMessage(jsonArray, "You have an event invite!");
     }
+
 
     private void customView(){
         View headerLayour = leftDrawerNavigationView.getHeaderView(0);
@@ -141,6 +136,7 @@ public class HomeActivity extends AppCompatActivity
         TextView tvUsername = headerLayour.findViewById(R.id.tvUsername);
         tvUsername.setText(currentUser.getUsername());
     }
+
 
 
 
@@ -191,46 +187,6 @@ public class HomeActivity extends AppCompatActivity
                 fragment).commit();
     }
 
-    public void sendMessage(final JSONArray recipients, final String message) {
-        try {
-            if (recipients.getString(0).length() > 0)
-                new AsyncTask<String, String, String>() {
-                    @Override
-                    protected String doInBackground(String... params) {
-                        try {
-                            JSONObject root = new JSONObject();
-                            JSONObject data = new JSONObject();
-                            data.put("body", message);
-                            root.put("data", data);
-                            root.put("registration_ids", recipients);
-                            root.put("priority", 10);
-                            String result = postToFCM(root.toString());
-                            Log.d("chat Activity", "Result: " + result);
-                            return result;
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                        return null;
-                    }
-                    @Override
-                    protected void onPostExecute(String result) {
-                        try {
-                            JSONObject resultJson = new JSONObject(result);
-                            int success, failure;
-                            success = resultJson.getInt("success");
-                            failure = resultJson.getInt("failure");
-                            Toast.makeText(HomeActivity.this, "Message Success: " + success + "Message Failed: " + failure, Toast.LENGTH_LONG).show();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Toast.makeText(HomeActivity.this, "Message Failed, Unknown error occurred.", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                }.execute();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -242,18 +198,7 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
-    public String postToFCM(String bodyString) throws IOException {
-        OkHttpClient mClient = new OkHttpClient();
-        final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-        RequestBody body = RequestBody.create(JSON, bodyString);
-        Request request = new Request.Builder()
-                .url("https://fcm.googleapis.com/fcm/send")
-                .post(body)
-                .addHeader("Authorization", "key=" + "AAAARGH08UQ:APA91bFv6okGY7RVsHIXT1gfhQ4Ag_dlqCqmPSmBuChSmye8kboxYt2eJg4I-P-JPZ0ULtXUP5kac_GV1sjSPaLw1ZoM45Wtr-_jOWiv4OR9HpnxU5EgL3ZosA0bTzFdvXckTczaiBea")
-                .build();
-        Response response = mClient.newCall(request).execute();
-        return response.body().string();
-    }
+
 
     @Override
     public void onPause() {

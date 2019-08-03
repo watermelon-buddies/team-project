@@ -31,6 +31,7 @@
                 android:padding="15dp"
                 android:textColor="#FCF9F9"
                 android:textSize="18sp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/btnRecent1" />
 
@@ -46,6 +47,7 @@
                 android:padding="15dp"
                 android:textColor="#FCF9F9"
                 android:textSize="18sp"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
@@ -61,6 +63,7 @@
                 android:padding="15dp"
                 android:textColor="#FCF9F9"
                 android:textSize="18sp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/btnRecent0" />
 
@@ -76,6 +79,7 @@
                 android:padding="15dp"
                 android:textColor="#FCF9F9"
                 android:textSize="18sp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/btnRecent2" />
@@ -256,6 +260,7 @@
             android:text="@string/recent_friends"
             android:textColor="#B6B2B2"
             android:textSize="12sp"
+            android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="@+id/constraintLayout3"
             app:layout_constraintStart_toEndOf="@+id/fabViewFriends"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout3" />
