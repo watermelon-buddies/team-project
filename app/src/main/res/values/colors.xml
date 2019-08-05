@@ -14,7 +14,9 @@
     <color name="standard_blue">#42A5F5</color>
     <color name="selected_blue">#355CC6</color>
     <color name="grey">#ABABAB</color>
-    <color name="bright_blue">#33b5e5</color>
+    <color name="bright_blue">#33B5E5</color>
     <color name="light_grey">#FBFBFB</color>
     <color name="darker_grey">#F3F4F4</color>
+    <color name="white">#ffffff</color>
+    <color name="purple">#C47B72BE</color>
 </resources>

@@ -6,6 +6,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -84,6 +86,10 @@ public class ViewFriends extends AppCompatActivity {
     NavigationView leftDrawerNavigationView;
     @BindView(R.id.toolbar) Toolbar toolbar;
     ParseUser currentUser;
+    @BindView(R.id.tvNoRequests) TextView tvNoRequests;
+    @BindView(R.id.tvCurrentFriends) TextView tvCurrentFriends;
+    @BindView(R.id.viewFriendsConstraint)
+    ConstraintLayout viewFriendsConstraint;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -243,6 +249,11 @@ public class ViewFriends extends AppCompatActivity {
             public void done(List<FriendInvite> requests, ParseException e) {
                 if (e == null) {
                     if (requests != null && requests.size()>0) {
+                        ConstraintSet constraintSet = new ConstraintSet();
+                        constraintSet.clone(viewFriendsConstraint);
+                        constraintSet.connect(R.id.tvCurrentFriends,ConstraintSet.TOP, R.id.rvFriendRequests,ConstraintSet.BOTTOM,16);
+                        constraintSet.applyTo(viewFriendsConstraint);
+                        tvNoRequests.setVisibility(View.INVISIBLE);
                         mRequestsList.clear();
                         mRequestsList.addAll(requests);
                         mRequestsAdapter.notifyDataSetChanged();
