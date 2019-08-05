@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
@@ -21,7 +22,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Layout;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
@@ -48,7 +48,7 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.parse.ParseFile;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.parse.ParseUser;
 
 import org.json.JSONArray;
@@ -88,7 +88,6 @@ public class HomeActivity extends AppCompatActivity
     private final static long FASTEST_INTERVAL = 500000; /* 500 secs */
     private final static long EPOCH_MILLI_MONTH = 62L * 24L * 60L * 60L * 1000L;
     public static final long ONE_MINUTE_IN_MILLIS=60000;
-    private static final String DEVICE_ID = "dVkZACS4lWc:APA91bEgPEk-L92S7eeP2vDdP3mDdEt08VcSXKnarVf4jDWac4TF9qV1ptkpBzIhIP3PcYBJvKEtnoQCIgVPkhNe8QNxpwoeGvILQIcOgQ1QYFnU48mQuhVN_up-0Kbl4F-A_CZqI81d";
     public final static String LAT_KEY = "lat";
     public final static String LONG_KEY = "long";
     final private static int CALENDAR_CALLBACK_ID = 42;
@@ -96,6 +95,9 @@ public class HomeActivity extends AppCompatActivity
     public HashMap<String, Integer> userEvents;
     public Location mCurrentLocation;
     private ParseUser currentUser;
+    private String userSchedulerSelected;
+    private FragmentManager fragmentManager;
+    private Fragment fragment;
 
     /* HomeActivity after sucessfully logging in that contains BucketListFragment,
     EventsExploreFragment and SchedulerFragment */
@@ -125,32 +127,26 @@ public class HomeActivity extends AppCompatActivity
         if (savedInstanceState != null && savedInstanceState.keySet().contains(KEY_LOCATION)) {
             mCurrentLocation = savedInstanceState.getParcelable(KEY_LOCATION);
         }
-        JSONArray jsonArray = new JSONArray();
-        jsonArray.put(DEVICE_ID);
-        sendMessage(jsonArray, "You have an event invite!");
     }
+
 
     private void customView(){
         View headerLayour = leftDrawerNavigationView.getHeaderView(0);
         headerLayour.setBackgroundColor(R.color.standard_blue);
         TextView tvUsername = headerLayour.findViewById(R.id.tvUsername);
         tvUsername.setText(currentUser.getUsername());
-//        ImageView ivUserProfilePic = findViewById(R.id.ivUserProfilePic);
-//        Glide.with(this)
-//                .load((
-//                .into(ivUserProfilePic);
     }
 
 
 
+
     public void setUpFragments(){
-        final FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager = getSupportFragmentManager();
         // handle navigation selection
         bottomNavigationView.setOnNavigationItemSelectedListener(
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                  new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        Fragment fragment;
                         switch (item.getItemId()) {
                             case R.id.action_bucket:
                                 fragment = new BucketListTabbed();
@@ -158,6 +154,7 @@ public class HomeActivity extends AppCompatActivity
                             case R.id.action_schedule:
                                 Bundle userCal = new Bundle();
                                 userCal.putSerializable("userEvents", userEvents);
+                                userCal.putString("userSelected", "");
                                 fragment = new SchedulerFragment();
                                 fragment.setArguments(userCal);
                                 break;
@@ -180,58 +177,28 @@ public class HomeActivity extends AppCompatActivity
         bottomNavigationView.setSelectedItemId(R.id.action_bucket);
     }
 
-    public void sendMessage(final JSONArray recipients, final String message) {
-        try {
-            if (recipients.getString(0).length() > 0)
-                new AsyncTask<String, String, String>() {
-                    @Override
-                    protected String doInBackground(String... params) {
-                        try {
-                            JSONObject root = new JSONObject();
-                            JSONObject data = new JSONObject();
-                            data.put("body", message);
-                            root.put("data", data);
-                            root.put("registration_ids", recipients);
-                            root.put("priority", 10);
-                            String result = postToFCM(root.toString());
-                            Log.d("chat Activity", "Result: " + result);
-                            return result;
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                        return null;
-                    }
-                    @Override
-                    protected void onPostExecute(String result) {
-                        try {
-                            JSONObject resultJson = new JSONObject(result);
-                            int success, failure;
-                            success = resultJson.getInt("success");
-                            failure = resultJson.getInt("failure");
-                            Toast.makeText(HomeActivity.this, "Message Success: " + success + "Message Failed: " + failure, Toast.LENGTH_LONG).show();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Toast.makeText(HomeActivity.this, "Message Failed, Unknown error occurred.", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                }.execute();
-        } catch (JSONException e) {
-            e.printStackTrace();
+    private void createSchedulerFragment(){
+        Bundle userCal = new Bundle();
+        userCal.putSerializable("userEvents", userEvents);
+        userCal.putString("userSelected", userSchedulerSelected);
+        fragment = new SchedulerFragment();
+        fragment.setArguments(userCal);
+        fragmentManager.beginTransaction().replace(R.id.flmain,
+                fragment).commit();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK){
+            if(data.getExtras() != null){
+                userSchedulerSelected = data.getExtras().getString("selected_user");
+                createSchedulerFragment();
+            }
         }
     }
 
-    public String postToFCM(String bodyString) throws IOException {
-        OkHttpClient mClient = new OkHttpClient();
-        final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-        RequestBody body = RequestBody.create(JSON, bodyString);
-        Request request = new Request.Builder()
-                .url("https://fcm.googleapis.com/fcm/send")
-                .post(body)
-                .addHeader("Authorization", "key=" + "AAAARGH08UQ:APA91bFv6okGY7RVsHIXT1gfhQ4Ag_dlqCqmPSmBuChSmye8kboxYt2eJg4I-P-JPZ0ULtXUP5kac_GV1sjSPaLw1ZoM45Wtr-_jOWiv4OR9HpnxU5EgL3ZosA0bTzFdvXckTczaiBea")
-                .build();
-        Response response = mClient.newCall(request).execute();
-        return response.body().string();
-    }
+
 
     @Override
     public void onPause() {

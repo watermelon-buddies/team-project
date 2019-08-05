@@ -1,9 +1,10 @@
 package com.example.buckit.adapters;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,10 +18,6 @@ import com.bumptech.glide.Glide;
 import com.example.buckit.R;
 import com.example.buckit.models.FriendInvite;
 import com.example.buckit.models.User;
-import com.parse.FindCallback;
-import com.parse.Parse;
-import com.parse.ParseACL;
-import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -28,10 +25,6 @@ import com.parse.SaveCallback;
 import java.util.List;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
-import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
-
-import static com.example.buckit.models.User.KEY_FRIENDS;
-import static com.example.buckit.models.User.KEY_USERNAME;
 
 public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.ViewHolder> {
 
@@ -40,12 +33,16 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     private Boolean mShow;
     private ParseUser currentUser;
     private String id;
+    private Boolean mScheduler;
 
-    public FriendsListAdapter(List<User> items, Context context, boolean showButton, ParseUser user) {
+
+    public FriendsListAdapter(List<User> items, Context context, boolean showButton, boolean scheduler, ParseUser user) {
         mFriendsList = items;
         mContext = context;
         mShow = showButton;
+        mScheduler = scheduler;
         currentUser = user;
+
     }
 
     User friend;
@@ -70,23 +67,21 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         friend = (User) mFriendsList.get(position);
         Log.d("Friend", friend.getUsername());
         holder.tvUsername.setText(friend.getUsername());
-        if (friend.getProfilePic() != null){
+        if (friend.getProfilePic() != null) {
             Glide.with(mContext)
                     .load(friend.getProfilePic().getUrl())
                     .bitmapTransform(new CropCircleTransformation(mContext))
                     .into(holder.ivProfilePicture);
-        }
-        else {
+        } else {
             Glide.with(mContext)
                     .load(R.drawable.no_profile)
                     .bitmapTransform(new CropCircleTransformation(mContext))
                     .into(holder.ivProfilePicture);
         }
 
-        if (mShow == true){
+        if (mShow == true) {
             holder.fabAddFriends.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             holder.fabAddFriends.setVisibility(View.GONE);
         }
         holder.fabAddFriends.setOnClickListener(new View.OnClickListener() {
@@ -96,11 +91,19 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
                 Log.d("Click", "Working");
                 // make sure the position is valid, i.e. actually exists in the view
                 if (position != RecyclerView.NO_POSITION) {
-                        User user = mFriendsList.get(position);
+                    User user = mFriendsList.get(position);
+                    if (mScheduler) {
+                        Intent friendSelected = new Intent();
+                        friendSelected.putExtra("selected_user", user.getUsername());
+                        ((Activity) mContext).setResult(((Activity)mContext).RESULT_OK, friendSelected);
+                        ((Activity) mContext).finish();
+                    } else {
+
+
                         Log.d("Click", user.toString());
                         createFriendRequest(currentUser, user);
-/*                        currentUser.add(KEY_FRIENDS, user);
-                     *//*   currentUser.add("friendsIds", user.getObjectId());*//*
+                        /*                        currentUser.add(KEY_FRIENDS, user);
+                         *//*   currentUser.add("friendsIds", user.getObjectId());*//*
                         currentUser.saveInBackground(new SaveCallback() {
                             @Override
                             public void done(ParseException e) {
@@ -137,6 +140,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
                         mFriendsList.remove(position);
                         notifyDataSetChanged();
                     }
+                }
             }
         });
 

@@ -7,29 +7,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.buckit.models.User;
-import com.example.buckit.utils.MultiSelectSpinner;
-import com.parse.Parse;
-import com.parse.ParseACL;
-import com.parse.ParseException;
-import com.parse.ParseObject;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
-
-import org.json.JSONArray;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static com.example.buckit.fragments.EventsExploreFragment.KEY_SELECTED_CATEGORIES;
-import static com.example.buckit.models.User.KEY_EVENT_RADIUS;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -72,6 +58,7 @@ public class SignUpActivity extends AppCompatActivity {
         User user = (User) new ParseUser();
         // Set core properties
         user.setUsername(username);
+        user.setDeviceId(FirebaseInstanceId.getInstance().getToken());
         user.setPassword(password);
        // Invoke signUpInBackground
         user.signUpInBackground(new SignUpCallback() {

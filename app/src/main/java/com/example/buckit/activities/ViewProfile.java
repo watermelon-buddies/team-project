@@ -66,7 +66,7 @@ public class ViewProfile extends AppCompatActivity {
         final UserInvite.Query userInviteQuery = new UserInvite.Query();
         userInviteQuery.getTop().withInvited().withAccepted();
         userInviteQuery.whereEqualTo(UserInvite.KEY_INVITED, ParseUser.getCurrentUser());
-        userInviteQuery.whereEqualTo(UserInvite.KEY_ACCEPTED, false);
+        userInviteQuery.whereEqualTo(UserInvite.KEY_ACCEPTED, null);
         userInviteQuery.findInBackground(new FindCallback<UserInvite>() {
             @Override
             public void done(List<UserInvite> object, ParseException e) {

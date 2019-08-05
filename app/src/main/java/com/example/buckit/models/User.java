@@ -17,6 +17,7 @@ public class User extends ParseUser {
     public static final String KEY_USERNAME = "username";
     public static final String KEY_OBJECT_ID = "objectId";
     public static final String KEY_EVENT_RADIUS = "eventRadius";
+    public static final String KEY_DEVICE_ID = "deviceId";
 
     public User(){ }
 
@@ -34,6 +35,11 @@ public class User extends ParseUser {
     public void setProfilePic(ParseFile profilePic){
         put(KEY_PROFILE_PICTURE, profilePic);
     }
+
+    public void setDeviceId(String deviceId){put(KEY_DEVICE_ID, deviceId); }
+
+    public String getDeviceId(){return getString(KEY_DEVICE_ID);}
+
 
     public String getCategories() {
         return getString(KEY_CATEGORIES_SELECTED);

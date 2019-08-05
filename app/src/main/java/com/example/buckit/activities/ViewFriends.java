@@ -1,8 +1,6 @@
 package com.example.buckit.activities;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
@@ -18,21 +16,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -47,12 +34,10 @@ import com.parse.FindCallback;
 import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,10 +46,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-import static com.example.buckit.fragments.EventsExploreFragment.KEY_SELECTED_CATEGORIES;
 import static com.example.buckit.models.User.KEY_FRIENDS;
 import static com.example.buckit.models.User.KEY_PROFILE_PICTURE;
-import static com.parse.Parse.getApplicationContext;
 
 public class ViewFriends extends AppCompatActivity {
 
@@ -85,11 +68,13 @@ public class ViewFriends extends AppCompatActivity {
     @BindView(R.id.nav_view)
     NavigationView leftDrawerNavigationView;
     @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.ivLogo) ImageView logo;
     ParseUser currentUser;
     @BindView(R.id.tvNoRequests) TextView tvNoRequests;
     @BindView(R.id.tvCurrentFriends) TextView tvCurrentFriends;
     @BindView(R.id.viewFriendsConstraint)
     ConstraintLayout viewFriendsConstraint;
+    Boolean scheduler = false;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,7 +108,16 @@ public class ViewFriends extends AppCompatActivity {
         View inflated = stub.inflate();
         ButterKnife.bind(this);
         mFriendsList = new ArrayList<User>();
-        mFriendsAdapter = new FriendsListAdapter(mFriendsList, this, false, currentUser);
+        if(getIntent().getExtras() != null){
+            String userToInvite = "";
+            btnAddFriends.setVisibility(View.GONE);
+            scheduler = true;
+            toolbar.setVisibility(View.GONE);
+            logo.setVisibility(View.GONE);
+            mFriendsAdapter = new FriendsListAdapter(mFriendsList, this, true, true, currentUser);
+        } else {
+            mFriendsAdapter = new FriendsListAdapter(mFriendsList, this, false, false, currentUser);
+        }
         rvFriendsList.setAdapter(mFriendsAdapter);
         // associate the LinearLayoutManager with the RecylcerView
         final LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(this);
