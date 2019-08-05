@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -182,7 +183,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView tvUsername;
         public ImageView ivProfilePicture;
-        public ImageView fabAddFriends;
+        public Button fabAddFriends;
 
         public ViewHolder(View itemView) {
             super(itemView);

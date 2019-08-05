@@ -23,8 +23,8 @@
 
     <ImageView
         android:id="@+id/ivProfilePicture"
-        android:layout_width="98dp"
-        android:layout_height="95dp"
+        android:layout_width="88dp"
+        android:layout_height="83dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
@@ -32,17 +32,19 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
 
-    <ImageView
+    <Button
         android:id="@+id/fabAddFriends"
-        android:layout_width="49dp"
-        android:layout_height="41dp"
-        android:layout_marginTop="43dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:tint="@color/bright_blue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/button_oval"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:text="Add Friend"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>

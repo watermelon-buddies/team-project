@@ -166,7 +166,7 @@ public class HomeActivity extends AppCompatActivity
                                 fragment.setArguments(bundle);
                                 break;
                             default:
-                                fragment = new SchedulerFragment();
+                                fragment = new BucketListTabbed();
                                 break;
                         }
                         fragmentManager.beginTransaction().replace(R.id.flmain,
@@ -174,7 +174,7 @@ public class HomeActivity extends AppCompatActivity
                         return true;
                     }
                 });
-        bottomNavigationView.setSelectedItemId(R.id.action_schedule);
+        bottomNavigationView.setSelectedItemId(R.id.action_bucket);
     }
 
     private void createSchedulerFragment(){

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -23,6 +24,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.parse.ParseUser;
+import com.wajahatkarim3.easyflipview.EasyFlipView;
 import com.wenchao.cardstack.CardStack;
 
 import org.json.JSONArray;
@@ -94,8 +96,7 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
         super.onViewCreated(view, savedInstanceState);
         ParseUser user = ParseUser.getCurrentUser();
         eventsList = new HashMap<>();
-        rvEvents.setContentResource(R.layout.event_item_view);
-        rvEvents.setListener(this);
+        rvEvents.setContentResource(R.layout.event_card_adapter);
         swipe_card_adapter = new SwipeCardAdapter(getContext().getApplicationContext(),20, eventsList);
         rvEvents.setAdapter(swipe_card_adapter);
         if (getArguments() != null){
@@ -210,8 +211,10 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
     // later or put it in their calendar
     @Override
     public void topCardTapped() {
-        onButtonShowPopupWindowClick(rvEvents);
+
     }
+
+
 
 
     public void onButtonShowPopupWindowClick(View view) {
