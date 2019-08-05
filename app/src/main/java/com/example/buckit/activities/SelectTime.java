@@ -1,7 +1,10 @@
 package com.example.buckit.activities;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +23,7 @@ import org.json.JSONException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -138,6 +142,12 @@ public class SelectTime extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     if(v.getId() == btnBookIt.getId()){
+                        /* TODO: check if a time is selected */
+                        try{
+                            addToCalendar();
+                        }catch(ParseException e){
+                            e.printStackTrace();
+                        }
                         finalizeActivity();
                     }else if(v.getId() == btnOption1.getId()){
                         toDisplay.clear();
@@ -164,6 +174,23 @@ public class SelectTime extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private void addToCalendar() throws ParseException{
+        Calendar beginTime = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("EEEE, HH:mm");
+        Date date = sdf.parse(tvSelectedTime.getText().toString());
+        beginTime.setTime(date);
+        long calID = 3;
+        ContentResolver cr = getContentResolver();
+        ContentValues values = new ContentValues();
+        values.put(CalendarContract.Events.DTSTART, date.getTime());
+        values.put(CalendarContract.Events.DTEND, date.getTime()+3600000);
+        values.put(CalendarContract.Events.TITLE, "Eat ice cream");
+        values.put(CalendarContract.Events.DESCRIPTION, "Group workout");
+        values.put(CalendarContract.Events.CALENDAR_ID, calID);
+        values.put(CalendarContract.Events.EVENT_TIMEZONE, "America/Los_Angeles");
+        cr.insert(CalendarContract.Events.CONTENT_URI, values);
     }
 
     private void finalizeActivity(){
