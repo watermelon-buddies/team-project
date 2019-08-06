@@ -93,8 +93,6 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
         return mRequests.size();
     }
 
-
-
     // create the viewholder class
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

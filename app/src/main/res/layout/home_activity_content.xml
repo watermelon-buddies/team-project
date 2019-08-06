@@ -90,17 +90,5 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_notifications" />
 
-    <ImageView
-        android:id="@+id/btnSavedEvents"
-        android:layout_width="26dp"
-        android:layout_height="25dp"
-        android:layout_marginTop="18dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:tint="@color/grey"
-        app:layout_constraintEnd_toStartOf="@+id/ivNotifications"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/bookmark_icon" />
-
 
 </android.support.constraint.ConstraintLayout>

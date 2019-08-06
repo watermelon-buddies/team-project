@@ -98,6 +98,7 @@
         <item>Performing &amp; Visual Arts</item>
         <item>Sports &amp; Fitness</item>
         <item>Travel &amp; Outdoor</item>
+        <item>Other</item>
     </string-array>
     <string-array name="distance_types">
         <item>km</item>

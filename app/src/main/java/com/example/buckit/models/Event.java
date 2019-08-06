@@ -2,12 +2,18 @@ package com.example.buckit.models;
 
 import android.os.Environment;
 
+import com.parse.ParseException;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import org.mortbay.jetty.Server;
 
 import java.io.StringWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Event {
 
@@ -35,7 +41,7 @@ public class Event {
     }
 
     public String getStartTime() {
-        return startTime;
+        return changeTo12HourFormat(startTime.substring(11,19));
     }
 
     public String getDate() {
@@ -45,7 +51,24 @@ public class Event {
     }
 
     public String getEndTime() {
-        return endTime;
+        return changeTo12HourFormat(endTime.substring(11,19));
+    }
+
+
+    public String changeTo12HourFormat (String time) {
+        DateFormat df = new SimpleDateFormat("HH:mm:ss");
+        DateFormat outputformat = new SimpleDateFormat("hh:mm aa");
+        Date date = null;
+        String formattedTime = null;
+        try{
+            //Conversion of input String to date
+            date= df.parse(time);
+            //old date format to new date format
+            formattedTime = outputformat.format(date);
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+        return formattedTime;
     }
 
     public String getImageUrl() {

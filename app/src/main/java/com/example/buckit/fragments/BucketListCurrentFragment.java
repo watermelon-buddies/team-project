@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -77,7 +78,6 @@ public class BucketListCurrentFragment extends Fragment {
     ArrayList<Bucketlist> mBucketList;
     BucketListAdapter mBucketAdapter;
     public View popupView;
-    ParseACL acl;
     boolean mFirstLoad;
     ParseUser user;
 
@@ -98,40 +98,7 @@ public class BucketListCurrentFragment extends Fragment {
         addItemFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addBlur();
-                LayoutInflater inflater = (LayoutInflater)
-                        getContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-
-                popupView = inflater.inflate(R.layout.bucket_list_add_popup_window, null);
-                final Spinner spinnerCategory = popupView.findViewById(R.id.spinnerCategory);
-                final EditText etItemDescription = popupView.findViewById(R.id.etItemDescription);
-                final DatePicker dpCalendar = popupView.findViewById(R.id.dpCalendar);
-                final Button btnBuckIt = popupView.findViewById(R.id.btnBuckIt);
-                final String deadline = (dpCalendar.getMonth()+1)+"/"+ (dpCalendar.getDayOfMonth())+"/"+dpCalendar.getYear();
-                int width = LinearLayout.LayoutParams.MATCH_PARENT;
-                int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-                final PopupWindow popupWindow = new PopupWindow(popupView, width, height);
-                popupWindow.showAtLocation(bucketListView, Gravity.CENTER, 0, 0);
-                popupWindow.setFocusable(true);
-                popupWindow.update();
-                btnBuckIt.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        final String description = etItemDescription.getText().toString();
-                        final String category = spinnerCategory.getSelectedItem().toString();
-                        try {
-                            addItemToBucketList(description, user, deadline, category);
-                        } catch (java.text.ParseException e) {
-                           e.printStackTrace();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        popupWindow.dismiss();
-                        populateBucket();
-                        removeBlur();
-                    }
-                });
-
+                popupWindowForBucketList(bucketListView);
             }
         });
 
@@ -139,10 +106,9 @@ public class BucketListCurrentFragment extends Fragment {
         mBucketAdapter = new BucketListAdapter(getContext(), mBucketList, true);
         rvBucketList.setAdapter(mBucketAdapter);
         // associate the LinearLayoutManager with the RecylcerView
-        final GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
-        rvBucketList.setLayoutManager(gridLayoutManager);
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        rvBucketList.setLayoutManager(linearLayoutManager);
         populateBucket();
-
         bucketRefreshSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -241,10 +207,40 @@ public class BucketListCurrentFragment extends Fragment {
         unbinder.unbind();
     }
 
-    private void showEditDialog() {
-        FragmentManager fm = getActivity().getSupportFragmentManager();
-        AddToBucketList addToBucketList = AddToBucketList.newInstance("Composing Tweet");
-        addToBucketList.show(fm, "fragment_compose_tweet");
+    public void popupWindowForBucketList(View view) {
+        addBlur();
+        LayoutInflater inflater = (LayoutInflater)
+                getContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+
+        popupView = inflater.inflate(R.layout.bucket_list_add_popup_window, null);
+        final Spinner spinnerCategory = popupView.findViewById(R.id.spinnerCategory);
+        final EditText etItemDescription = popupView.findViewById(R.id.etItemDescription);
+        final DatePicker dpCalendar = popupView.findViewById(R.id.dpCalendar);
+        final Button btnBuckIt = popupView.findViewById(R.id.btnBuckIt);
+        final String deadline = (dpCalendar.getMonth()+1)+"/"+ (dpCalendar.getDayOfMonth())+"/"+dpCalendar.getYear();
+        int width = LinearLayout.LayoutParams.MATCH_PARENT;
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height);
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+        popupWindow.setFocusable(true);
+        popupWindow.update();
+        btnBuckIt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String description = etItemDescription.getText().toString();
+                final String category = spinnerCategory.getSelectedItem().toString();
+                try {
+                    addItemToBucketList(description, user, deadline, category);
+                } catch (java.text.ParseException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                popupWindow.dismiss();
+                populateBucket();
+                removeBlur();
+            }
+        });
     }
 
 
