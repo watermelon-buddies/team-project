@@ -6,15 +6,24 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.buckit.LoginActivity;
 import com.example.buckit.R;
 import com.example.buckit.adapters.PendingInvitesAdapter;
 import com.example.buckit.models.NotificationSender;
@@ -38,7 +47,7 @@ import butterknife.Unbinder;
 
 import static com.example.buckit.adapters.PendingInvitesAdapter.SELECT_TIME_REQUEST_CODE;
 
-public class ViewProfile extends AppCompatActivity {
+public class ViewProfile extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     Unbinder unbinder;
     ArrayList<UserInvite> mPendingInvites;
@@ -48,6 +57,13 @@ public class ViewProfile extends AppCompatActivity {
     @BindView(R.id.rvPendingInvites) RecyclerView rvPendingInvites;
     @BindView(R.id.rvComingUp) RecyclerView rvComingUp;
     @BindView(R.id.tvPending) TextView tvPending;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout leftDrawer;
+    @BindView(R.id.nav_view)
+    NavigationView leftDrawerNavigationView;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    HashMap<String, Integer> userCal;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +72,7 @@ public class ViewProfile extends AppCompatActivity {
         stub.setLayoutResource(R.layout.view_profile);
         View inflated = stub.inflate();
         ButterKnife.bind(this);
-        HashMap<String, Integer> userCal = (HashMap<String, Integer>) getIntent().getSerializableExtra("userCal");
+        userCal = (HashMap<String, Integer>) getIntent().getSerializableExtra("userCal");
         mPendingInvites = new ArrayList<UserInvite>();
         mComingUpInvites = new ArrayList<>();
         mPendingInvitesAdapter = new PendingInvitesAdapter(mPendingInvites, userCal, this, true);
@@ -69,6 +85,13 @@ public class ViewProfile extends AppCompatActivity {
         rvComingUp.setLayoutManager(linearLayoutManager2);
         populatePendingInvites();
         populateComingUpInvites(true);
+        setSupportActionBar(toolbar);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, leftDrawer, toolbar, R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close);
+        leftDrawer.addDrawerListener(toggle);
+        toggle.syncState();
+        leftDrawerNavigationView.setNavigationItemSelectedListener(this);
     }
 
 
@@ -157,6 +180,33 @@ public class ViewProfile extends AppCompatActivity {
         cr.insert(CalendarContract.Events.CONTENT_URI, values);
     }
 
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        /* TODO Change the navigation items and select to which activity they lead to */
+
+        if (id == R.id.nav_logout) {
+            ParseUser.logOut();
+            Intent logoutIntent = new Intent(ViewProfile.this, LoginActivity.class);
+            startActivity(logoutIntent);
+            finish();
+        }
+        else if (id == R.id.nav_view_friends) {
+            Intent friendsView = new Intent(ViewProfile.this, ViewFriends.class);
+            friendsView.putExtra("userCal", userCal);
+            startActivity(friendsView);
+        } else if (id == R.id.nav_profile) {
+            //getCalendarEvents(CALENDAR_CALLBACK_ID, Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
+            Intent profileView = new Intent(ViewProfile.this, ViewProfile.class);
+            profileView.putExtra("userCal", userCal);
+            startActivity(profileView);
+
+        }
+        leftDrawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

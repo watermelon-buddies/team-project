@@ -38,6 +38,7 @@ import com.parse.SaveCallback;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -67,6 +68,7 @@ public class ViewFriends extends AppCompatActivity {
     NavigationView leftDrawerNavigationView;
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.ivLogo) ImageView logo;
+    public HashMap<String, Integer> userEvents;
     ParseUser currentUser;
     @BindView(R.id.tvNoRequests) TextView tvNoRequests;
     @BindView(R.id.tvCurrentFriends) TextView tvCurrentFriends;
@@ -78,6 +80,7 @@ public class ViewFriends extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         currentUser = ParseUser.getCurrentUser();
+        userEvents = (HashMap<String, Integer>) getIntent().getSerializableExtra("userCal");
         ParseACL acl = new ParseACL(currentUser);
         acl.setPublicReadAccess(true);
         acl.setPublicWriteAccess(true);
@@ -107,7 +110,7 @@ public class ViewFriends extends AppCompatActivity {
         View inflated = stub.inflate();
         ButterKnife.bind(this);
         mFriendsList = new ArrayList<User>();
-        if(getIntent().getExtras() != null){
+        if(getIntent().getBooleanExtra("scheduler", false) == true){
             String userToInvite = "";
             btnAddFriends.setVisibility(View.GONE);
             scheduler = true;
@@ -150,18 +153,18 @@ public class ViewFriends extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 int id = menuItem.getItemId();
 
-                /* TODO Change the navigation items and select to which activity they lead to */
-
                 if (id == R.id.nav_logout) {
                     ParseUser.logOut();
                     Intent logoutIntent = new Intent(ViewFriends.this, LoginActivity.class);
                     startActivity(logoutIntent);
                     finish();
-                }
-                else if (id == R.id.nav_view_friends) {
+                } else if (id == R.id.nav_view_friends) {
                     startActivity(new Intent(ViewFriends.this, ViewFriends.class));
-                } else if (id == R.id.nav_tools) {
-
+                } else if (id == R.id.nav_profile) {
+                    //getCalendarEvents(CALENDAR_CALLBACK_ID, Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
+                    Intent profileView = new Intent(ViewFriends.this, ViewProfile.class);
+                    profileView.putExtra("userCal", userEvents);
+                    startActivity(profileView);
                 }
                 leftDrawer.closeDrawer(GravityCompat.START);
                 return true;

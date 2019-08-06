@@ -12,11 +12,6 @@
             android:icon="@drawable/ic_friends"
             android:iconTint="@color/bright_blue"
             android:title="View Friends" />
-        <item
-            android:id="@+id/nav_tools"
-            android:icon="@drawable/ic_menu_manage"
-            android:iconTint="@color/bright_blue"
-            android:title="Settings" />
 
     <group>
         <item

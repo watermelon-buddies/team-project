@@ -78,7 +78,8 @@ public class BucketListAdapter extends RecyclerView.Adapter<BucketListAdapter.Vi
         // get data according to position
 
         bucketList = mBucketList.get(position);
-        holder.rootView.setTag(bucketList);
+        holder.btnAchieve.setTag(bucketList);
+        holder.btnDeleteItem.setTag(bucketList);
         holder.tvBucketDescription.setText(bucketList.getName());
         int id = mContext.getResources().getIdentifier("com.example.buckit:drawable/cat_" + bucketList.getCategory().toLowerCase().substring(0, 4), null, null);
         Log.d("category", String.valueOf(id));
@@ -124,7 +125,10 @@ public class BucketListAdapter extends RecyclerView.Adapter<BucketListAdapter.Vi
             ivCategoryImage = itemView.findViewById(R.id.ivCategoryImage);
             tvBucketDescription = itemView.findViewById(R.id.tvBucketDescription);
             btnBookItem = itemView.findViewById(R.id.btnBookItem);
+            btnDeleteItem = itemView.findViewById(R.id.btnDeleteItem);
             btnAchieve = itemView.findViewById(R.id.btnAchievedItem);
+            btnAchieve.setOnClickListener(this);
+            btnDeleteItem.setOnClickListener(this);
             if (show = true){
                 btnAchieve.setVisibility(View.VISIBLE);
                 btnBookItem.setVisibility(View.VISIBLE);
@@ -133,13 +137,14 @@ public class BucketListAdapter extends RecyclerView.Adapter<BucketListAdapter.Vi
                 btnAchieve.setVisibility(View.GONE);
                 btnBookItem.setVisibility(View.GONE);
             }
+
         }
 
         @Override
         public void onClick(View v) {
-
-            Bucketlist item = (Bucketlist) rootView.getTag();
             if (v.getId() == btnAchieve.getId()){
+                Log.d("Click", "Working!");
+                Bucketlist item = (Bucketlist) btnAchieve.getTag();
                 if (item != null) {
                     Log.d("Click", "Working!");
                     Bucketlist.Query bucketQuery = new Bucketlist.Query();
@@ -157,6 +162,7 @@ public class BucketListAdapter extends RecyclerView.Adapter<BucketListAdapter.Vi
                 }
             }
             else if(v.getId() == btnDeleteItem.getId()) {
+                Bucketlist item = (Bucketlist) btnDeleteItem.getTag();
                 if (item != null) {
                     Log.d("Click", "Working!");
                     Bucketlist.Query bucketQuery = new Bucketlist.Query();
