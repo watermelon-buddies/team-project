@@ -62,6 +62,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import me.everything.providers.android.calendar.Calendar;
 import me.everything.providers.android.calendar.CalendarProvider;
 import okhttp3.MediaType;
@@ -106,6 +107,7 @@ public class HomeActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activities_drawrer_main);
+        Log.d("device id", FirebaseInstanceId.getInstance().getToken());
         ViewStub stub = (ViewStub) findViewById(R.id.layout_stub);
         stub.setLayoutResource(R.layout.home_activity_content);
         View inflated = stub.inflate();
@@ -130,11 +132,26 @@ public class HomeActivity extends AppCompatActivity
     }
 
 
+    @SuppressLint("ResourceAsColor")
     private void customView(){
-        View headerLayour = leftDrawerNavigationView.getHeaderView(0);
-        headerLayour.setBackgroundColor(R.color.standard_blue);
-        TextView tvUsername = headerLayour.findViewById(R.id.tvUsername);
-        tvUsername.setText(currentUser.getUsername());
+        View headerLayout = leftDrawerNavigationView.getHeaderView(0);
+        headerLayout.setBackgroundColor(R.color.bright_blue);
+        User user = (User) currentUser;
+        TextView tvUsername = headerLayout.findViewById(R.id.tvUsername);
+        ImageView ivUserProfilePic = headerLayout.findViewById(R.id.ivUserProfilePic);
+        tvUsername.setText(user.getUsername());
+        if (user.getProfilePic() != null){
+            Glide.with(this)
+                    .load(user.getProfilePic().getUrl())
+                    .bitmapTransform(new CropCircleTransformation(this))
+                    .into(ivUserProfilePic);
+        }
+        else{
+            Glide.with(this)
+                    .load(R.drawable.no_profile)
+                    .bitmapTransform(new CropCircleTransformation(this))
+                    .into(ivUserProfilePic);
+        }
     }
 
 

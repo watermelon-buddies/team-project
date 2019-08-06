@@ -53,7 +53,6 @@ public class SwipeCardAdapter extends ArrayAdapter<HashMap<Event, Integer>>  {
         ImageView ivEventDetailPicture  = contentView.findViewById(R.id.ivEventDetailPicture);
         TextView tvEventDate = contentView.findViewById(R.id.tvEventDate);
         ImageView btnFlip = contentView.findViewById(R.id.btnFlip);
-        ImageView btnFavoriteEvent = contentView.findViewById(R.id.btnFavoriteEvent);
         ImageView btnBuckEvent = contentView.findViewById(R.id.btnBuckEvent);
         ImageView btnFlipDetail = contentView.findViewById(R.id.btnFlipDetail);
         btnFlipDetail.setOnClickListener(new View.OnClickListener() {
@@ -77,16 +76,13 @@ public class SwipeCardAdapter extends ArrayAdapter<HashMap<Event, Integer>>  {
                 .placeholder(R.drawable.grey_placeholder)
                 .into(ivEventPicture);
             tvEventDate.setText(event.getDate());
-            tvStartTime.setText(event.getStartTime());
-            tvEndingTime.setText(event.getEndTime());
+            tvStartTime.setText("Starts @ "+event.getStartTime());
+            tvEndingTime.setText("Ends @ "+event.getEndTime());
             tvEventDescription.setText(event.getDescription());
             tvEventTitle.setText(event.getTitle());
         return contentView;
     }
 
-    void favoriteEvent() {
-
-    }
 
     void bookEvent() {
 

@@ -102,41 +102,6 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 
                         Log.d("Click", user.toString());
                         createFriendRequest(currentUser, user);
-                        /*                        currentUser.add(KEY_FRIENDS, user);
-                         *//*   currentUser.add("friendsIds", user.getObjectId());*//*
-                        currentUser.saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(ParseException e) {
-                                if (e == null) {
-                                    Log.d("Friends", "Added a new friend!");
-                                } else {
-                                    Log.d("Friends", "Failed to add!");
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
-                        User.Query userQuery = new User.Query();
-                        userQuery.whereEqualTo(KEY_USERNAME, user.getUsername());
-                        userQuery.findInBackground(new FindCallback<User>() {
-                            @Override
-                            public void done(List<User> objects, ParseException e) {
-                                ParseUser friendUser = objects.get(0);
-                                Log.d("friends", friendUser.toString());
-                                friendUser.add(KEY_FRIENDS, currentUser);
-                                friendUser.saveInBackground(new SaveCallback() {
-                                    @Override
-                                    public void done(ParseException e) {
-                                        if (e == null) {
-                                            Log.d("Friends", "Added"+currentUser.toString());
-                                        } else {
-                                            Log.d("Friends", "Failed to add!");
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                });
-
-                            }
-                        });*/
                         mFriendsList.remove(position);
                         notifyDataSetChanged();
                     }
