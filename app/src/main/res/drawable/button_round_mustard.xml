@@ -5,6 +5,6 @@
         <solid android:color="@color/pastel_mustard"/>
     </shape></item>
     <item android:state_selected="true"><shape android:shape="oval">
-        <solid android:color="@color/dark_mustard"/>
+        <solid android:color="@color/friend_selected_blue"/>
     </shape></item>
 </selector>

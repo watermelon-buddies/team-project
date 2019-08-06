@@ -3,10 +3,8 @@ package com.example.buckit.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
-import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -74,6 +72,7 @@ public class ViewFriends extends AppCompatActivity {
     @BindView(R.id.tvCurrentFriends) TextView tvCurrentFriends;
     @BindView(R.id.viewFriendsConstraint)
     ConstraintLayout viewFriendsConstraint;
+    @BindView(R.id.tvFriendRequests) TextView tvFriendRequests;
     Boolean scheduler = false;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +113,9 @@ public class ViewFriends extends AppCompatActivity {
             scheduler = true;
             toolbar.setVisibility(View.GONE);
             logo.setVisibility(View.GONE);
+            rvRequestsList.setVisibility(View.GONE);
+            tvNoRequests.setVisibility(View.GONE);
+            tvFriendRequests.setVisibility(View.GONE);
             mFriendsAdapter = new FriendsListAdapter(mFriendsList, this, true, true, currentUser);
         } else {
             mFriendsAdapter = new FriendsListAdapter(mFriendsList, this, false, false, currentUser);

@@ -29,6 +29,7 @@
                 android:background="@drawable/button_round_mustard"
                 android:color="#12DECB"
                 android:padding="15dp"
+                android:tag="2131361979"
                 android:textColor="#FCF9F9"
                 android:textSize="18sp"
                 android:visibility="gone"
@@ -39,12 +40,13 @@
                 android:id="@+id/btnRecent0"
                 android:layout_width="59dp"
                 android:layout_height="57dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginLeft="32dp"
+                android:layout_marginStart="28dp"
+                android:layout_marginLeft="28dp"
                 android:layout_marginBottom="2dp"
-                android:background="@drawable/button_round_green"
+                android:background="@drawable/button_round_blue"
                 android:color="#12DECB"
                 android:padding="15dp"
+                android:tag="2131361977"
                 android:textColor="#FCF9F9"
                 android:textSize="18sp"
                 android:visibility="invisible"
@@ -61,6 +63,7 @@
                 android:background="@drawable/button_round_pink"
                 android:color="#12DECB"
                 android:padding="15dp"
+                android:tag="2131361978"
                 android:textColor="#FCF9F9"
                 android:textSize="18sp"
                 android:visibility="gone"
@@ -77,12 +80,14 @@
                 android:background="@drawable/button_round_purple"
                 android:color="#12DECB"
                 android:padding="15dp"
+                android:tag="2131361980"
                 android:textColor="#FCF9F9"
                 android:textSize="18sp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/btnRecent2" />
+
         </android.support.constraint.ConstraintLayout>
 
         <Button
@@ -120,6 +125,54 @@
             app:layout_constraintEnd_toEndOf="@+id/btnThursday"
             app:layout_constraintStart_toStartOf="@+id/btnWednesday"
             app:layout_constraintTop_toBottomOf="@+id/btnWednesday" />
+
+        <ImageView
+            android:id="@+id/ivCheckmark0"
+            android:layout_width="25dp"
+            android:layout_height="22dp"
+            android:layout_marginStart="67dp"
+            android:layout_marginLeft="67dp"
+            android:layout_marginTop="36dp"
+            android:visibility="invisible"
+            app:layout_constraintStart_toEndOf="@+id/fabViewFriends"
+            app:layout_constraintTop_toBottomOf="@+id/tvAddInvitees"
+            app:srcCompat="@drawable/checkmark" />
+
+        <ImageView
+            android:id="@+id/ivCheckmark1"
+            android:layout_width="25dp"
+            android:layout_height="22dp"
+            android:layout_marginStart="139dp"
+            android:layout_marginLeft="139dp"
+            android:layout_marginTop="36dp"
+            android:visibility="invisible"
+            app:layout_constraintStart_toEndOf="@+id/fabViewFriends"
+            app:layout_constraintTop_toBottomOf="@+id/tvAddInvitees"
+            app:srcCompat="@drawable/checkmark" />
+
+        <ImageView
+            android:id="@+id/ivCheckmark2"
+            android:layout_width="25dp"
+            android:layout_height="22dp"
+            android:layout_marginStart="207dp"
+            android:layout_marginLeft="207dp"
+            android:layout_marginTop="36dp"
+            android:visibility="invisible"
+            app:layout_constraintStart_toEndOf="@+id/fabViewFriends"
+            app:layout_constraintTop_toBottomOf="@+id/tvAddInvitees"
+            app:srcCompat="@drawable/checkmark" />
+
+        <ImageView
+            android:id="@+id/ivCheckmark3"
+            android:layout_width="25dp"
+            android:layout_height="22dp"
+            android:layout_marginStart="279dp"
+            android:layout_marginLeft="279dp"
+            android:layout_marginTop="36dp"
+            android:visibility="invisible"
+            app:layout_constraintStart_toEndOf="@+id/fabViewFriends"
+            app:layout_constraintTop_toBottomOf="@+id/tvAddInvitees"
+            app:srcCompat="@drawable/checkmark" />
 
         <TextView
             android:id="@+id/tvEventTitle"

@@ -19,6 +19,8 @@ import com.google.firebase.messaging.RemoteMessage;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "FirebaseMessagingServic";
+    private static final String KEY_BODY = "body";
+    private static final String KEY_DATA = "data";
 
     public MyFirebaseMessagingService() {
 
@@ -33,9 +35,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         if(remoteMessage.getData().size() > 0){
             Log.d(TAG, remoteMessage.getData().toString());
-            sendNotification(remoteMessage.getData().get("body"));
+            sendNotification(remoteMessage.getData().get(KEY_BODY));
         }
     }
+
 
     private void sendNotification(String messageBody) {
         Intent intent = new Intent(this, HomeActivity.class);

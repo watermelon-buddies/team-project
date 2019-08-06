@@ -22,6 +22,7 @@ public class UserInvite extends ParseObject {
     public static final String KEY_ACCEPTED = "accepted";
     public static final String KEY_DURATION = "duration";
     public static final String KEY_FINAL_TIME = "finalTime";
+    public static final String KEY_ADDED_TO_CAL = "addedToCalendar";
 
     public UserInvite(){
 
@@ -58,6 +59,10 @@ public class UserInvite extends ParseObject {
     public void setFinalTime(String finalTime) { put(KEY_FINAL_TIME, finalTime); }
 
     public String getFinalTime() {return getString(KEY_FINAL_TIME); }
+
+    public void setAddedToCal() {put(KEY_ADDED_TO_CAL, true);}
+
+    public boolean getAddedToCal(){return getBoolean(KEY_ADDED_TO_CAL);}
 
 
     public static class Query extends ParseQuery<UserInvite> {
