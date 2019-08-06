@@ -1,7 +1,10 @@
 package com.example.buckit.activities;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,17 +12,23 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewStub;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.buckit.R;
 import com.example.buckit.adapters.PendingInvitesAdapter;
+import com.example.buckit.models.NotificationSender;
+import com.example.buckit.models.User;
 import com.example.buckit.models.UserInvite;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -38,6 +47,7 @@ public class ViewProfile extends AppCompatActivity {
     PendingInvitesAdapter mComingUpInvitesAdapter;
     @BindView(R.id.rvPendingInvites) RecyclerView rvPendingInvites;
     @BindView(R.id.rvComingUp) RecyclerView rvComingUp;
+    @BindView(R.id.tvPending) TextView tvPending;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +85,10 @@ public class ViewProfile extends AppCompatActivity {
                     mPendingInvites.addAll(object);
                     mPendingInvitesAdapter.notifyDataSetChanged();
                     Log.d("Timeline Activity", "Successfully loaded posts!");
+                    if(mPendingInvites.size() == 0){
+                        rvPendingInvites.setVisibility(View.GONE);
+                        tvPending.setVisibility(View.GONE);
+                    }
                 } else {
                     e.printStackTrace();
                 }
@@ -104,6 +118,7 @@ public class ViewProfile extends AppCompatActivity {
                         populateComingUpInvites(false);
                     }
                     Log.d("Invites", "Successfully loaded events coming up!");
+                    addCalendarEvents();
                 } else {
                     e.printStackTrace();
                 }
@@ -111,14 +126,48 @@ public class ViewProfile extends AppCompatActivity {
         });
     }
 
+    private void addCalendarEvents(){
+        for(UserInvite currInvite : mComingUpInvites){
+            if(!currInvite.getAddedToCal()) {
+                try {
+                    addToCalendar(currInvite.getFinalTime(), currInvite.getDuration(), currInvite.getTitle());
+                    currInvite.setAddedToCal();
+                } catch (java.text.ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+    }
+
+    private void addToCalendar(String finalTime, int duration, String title) throws java.text.ParseException {
+        Calendar beginTime = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date date = sdf.parse(finalTime);
+        beginTime.setTime(date);
+        long calID = 4;
+        ContentResolver cr = getContentResolver();
+        ContentValues values = new ContentValues();
+        values.put(CalendarContract.Events.DTSTART, date.getTime());
+        values.put(CalendarContract.Events.DTEND, date.getTime()+3600000);
+        values.put(CalendarContract.Events.TITLE, title);
+        values.put(CalendarContract.Events.EVENT_LOCATION, getIntent().getStringExtra("location"));
+        values.put(CalendarContract.Events.CALENDAR_ID, calID);
+        values.put(CalendarContract.Events.EVENT_TIMEZONE, "America/Los_Angeles");
+        cr.insert(CalendarContract.Events.CONTENT_URI, values);
+    }
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == RESULT_OK && requestCode == SELECT_TIME_REQUEST_CODE){
             final Integer invitePosition = data.getExtras().getInt("position", 0);
             final UserInvite curr = mPendingInvites.get(invitePosition);
+            notifyInviter(curr);
             String finalTime = data.getStringExtra("final time");
             curr.setFinalTime(finalTime);
+            curr.setAddedToCal();
             curr.setAccepted(true);
             curr.saveInBackground(new SaveCallback() {
                 @Override
@@ -137,5 +186,10 @@ public class ViewProfile extends AppCompatActivity {
             });
 
         }
+    }
+
+    private void notifyInviter(UserInvite curr){
+        NotificationSender makeNotification = new NotificationSender(((User)curr.getCreator()).getDeviceId(), 1, curr.getInvited().getUsername());
+        makeNotification.sendNotification();
     }
 }

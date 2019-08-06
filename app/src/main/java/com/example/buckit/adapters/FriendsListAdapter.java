@@ -81,6 +81,9 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 
         if (mShow == true) {
             holder.fabAddFriends.setVisibility(View.VISIBLE);
+            if(mScheduler){
+                holder.fabAddFriends.setText("Invite");
+            }
         } else {
             holder.fabAddFriends.setVisibility(View.GONE);
         }

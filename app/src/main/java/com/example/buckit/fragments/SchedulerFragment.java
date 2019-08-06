@@ -3,7 +3,6 @@ package com.example.buckit.fragments;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.example.buckit.R;
 import com.example.buckit.activities.ViewFriends;
 import com.example.buckit.activities.ViewProfile;
+import com.example.buckit.models.NotificationSender;
 import com.example.buckit.models.User;
 import com.example.buckit.models.UserInvite;
 import com.parse.FindCallback;
@@ -32,10 +33,7 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.IOException;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -46,11 +44,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 import static com.example.buckit.fragments.EventsExploreFragment.KEY_SELECTED_CATEGORIES;
 
@@ -69,6 +62,7 @@ public class SchedulerFragment extends Fragment {
     private HashMap<String, User> userFriends;
     private ArrayList<Button> recentFriendButtons = new ArrayList<>();
     private ParseUser userToInvite;
+    private View schedulerView;
 
     private int durationIn15MinIntervals;
     @BindView(R.id.tvRecents) TextView tvRecents;
@@ -89,7 +83,7 @@ public class SchedulerFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View schedulerView = inflater.inflate(R.layout.activity_scheduler_fragment, container, false);
+        schedulerView = inflater.inflate(R.layout.activity_scheduler_fragment, container, false);
         unbinder = ButterKnife.bind(this, schedulerView);
         meetTimes = new ArrayList<>();
         userEvents = new HashMap<>();
@@ -297,10 +291,18 @@ public class SchedulerFragment extends Fragment {
                         }
                     }
                     if (v.isSelected()) {
+                        if(v.getId() == btnRecent0.getId() || v.getId() == btnRecent1.getId() || v.getId() == btnRecent2.getId() || v.getId() == btnRecent3.getId()){
+                            ImageView ivCheckmark = schedulerView.findViewById(Integer.parseInt(v.getTag().toString()));
+                            ivCheckmark.setVisibility(View.INVISIBLE);
+                            addInvitees.setText("");
+                        }
                         v.setSelected(false);
+
                     } else {
                         v.setSelected(true);
                         if(v.getId() == btnRecent0.getId() || v.getId() == btnRecent1.getId() || v.getId() == btnRecent2.getId() || v.getId() == btnRecent3.getId()){
+                            ImageView ivCheckmark = schedulerView.findViewById(Integer.parseInt(v.getTag().toString()));
+                            ivCheckmark.setVisibility(View.VISIBLE);
                             unselectOtherRecents(v);
                         }
 
@@ -311,61 +313,10 @@ public class SchedulerFragment extends Fragment {
     }
 
     private void sendNotification(){
-        JSONArray jsonArray = new JSONArray();
-        jsonArray.put(((User)userToInvite).getDeviceId());
-        sendMessage(jsonArray, "You have an event invite!");
+        NotificationSender makeNotification = new NotificationSender(((User)userToInvite).getDeviceId(), 0, ParseUser.getCurrentUser().getUsername());
+        makeNotification.sendNotification();
     }
 
-    public void sendMessage(final JSONArray recipients, final String message) {
-        try {
-            if (recipients.getString(0).length() > 0)
-                new AsyncTask<String, String, String>() {
-                    @Override
-                    protected String doInBackground(String... params) {
-                        try {
-                            JSONObject root = new JSONObject();
-                            JSONObject data = new JSONObject();
-                            data.put("body", message);
-                            root.put("data", data);
-                            root.put("registration_ids", recipients);
-                            root.put("priority", 10);
-                            String result = postToFCM(root.toString());
-                            Log.d("chat Activity", "Result: " + result);
-                            return result;
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                        return null;
-                    }
-                    @Override
-                    protected void onPostExecute(String result) {
-                        try {
-                            JSONObject resultJson = new JSONObject(result);
-                            int success, failure;
-                            success = resultJson.getInt("success");
-                            failure = resultJson.getInt("failure");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }.execute();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public String postToFCM(String bodyString) throws IOException {
-        OkHttpClient mClient = new OkHttpClient();
-        final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-        RequestBody body = RequestBody.create(JSON, bodyString);
-        Request request = new Request.Builder()
-                .url("https://fcm.googleapis.com/fcm/send")
-                .post(body)
-                .addHeader("Authorization", "key=" + "AAAARGH08UQ:APA91bFv6okGY7RVsHIXT1gfhQ4Ag_dlqCqmPSmBuChSmye8kboxYt2eJg4I-P-JPZ0ULtXUP5kac_GV1sjSPaLw1ZoM45Wtr-_jOWiv4OR9HpnxU5EgL3ZosA0bTzFdvXckTczaiBea")
-                .build();
-        Response response = mClient.newCall(request).execute();
-        return response.body().string();
-    }
 
     private void unselectOtherRecents(View button){
         for(int i = 0; i < recentFriendButtons.size(); i++){
@@ -373,6 +324,8 @@ public class SchedulerFragment extends Fragment {
                 addInvitees.setText(userFriendsList.get(i));
             } else {
                 recentFriendButtons.get(i).setSelected(false);
+                ImageView ivCheckmark = schedulerView.findViewById(Integer.parseInt(recentFriendButtons.get(i).getTag().toString()));
+                ivCheckmark.setVisibility(View.INVISIBLE);
             }
         }
     }

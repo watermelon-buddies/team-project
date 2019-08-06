@@ -41,6 +41,7 @@ public class SelectTime extends AppCompatActivity {
     ArrayList<Button> selectTimeButtons;
     TextView tvSelectedTime;
     Integer position;
+    HashMap<String, String> stringToDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +50,7 @@ public class SelectTime extends AppCompatActivity {
         ranges = new ArrayList<>();
         tvSelectedTime = findViewById(R.id.tvSelectedTime);
         toDisplay = new ArrayList<>();
+        stringToDate = new HashMap<>();
         selectTimeButtons = new ArrayList<>();
         String meetTimes = getIntent().getStringExtra("InviteTimes");
         position = getIntent().getIntExtra("position", 0);
@@ -142,13 +144,16 @@ public class SelectTime extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     if(v.getId() == btnBookIt.getId()){
-                        /* TODO: check if a time is selected */
-                        try{
-                            addToCalendar();
-                        }catch(ParseException e){
-                            e.printStackTrace();
+                        if(tvSelectedTime.getText().toString().length() > 0){
+                            try{
+                                addToCalendar();
+                            } catch(ParseException e){
+                                e.printStackTrace();
+                            }
+                            finalizeActivity();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Please select a time", Toast.LENGTH_SHORT).show();
                         }
-                        finalizeActivity();
                     }else if(v.getId() == btnOption1.getId()){
                         toDisplay.clear();
                         toDisplay.addAll(ranges.get(0));
@@ -176,22 +181,24 @@ public class SelectTime extends AppCompatActivity {
         }
     }
 
-    private void addToCalendar() throws ParseException{
+    private void addToCalendar() throws java.text.ParseException {
         Calendar beginTime = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("EEEE, HH:mm");
-        Date date = sdf.parse(tvSelectedTime.getText().toString());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date date = sdf.parse(stringToDate.get(tvSelectedTime.getText().toString()));
         beginTime.setTime(date);
-        long calID = 3;
+        long calID = 4;
         ContentResolver cr = getContentResolver();
         ContentValues values = new ContentValues();
         values.put(CalendarContract.Events.DTSTART, date.getTime());
         values.put(CalendarContract.Events.DTEND, date.getTime()+3600000);
-        values.put(CalendarContract.Events.TITLE, "Eat ice cream");
-        values.put(CalendarContract.Events.DESCRIPTION, "Group workout");
+        values.put(CalendarContract.Events.TITLE, getIntent().getStringExtra("title"));
+        values.put(CalendarContract.Events.EVENT_LOCATION, getIntent().getStringExtra("location"));
         values.put(CalendarContract.Events.CALENDAR_ID, calID);
         values.put(CalendarContract.Events.EVENT_TIMEZONE, "America/Los_Angeles");
         cr.insert(CalendarContract.Events.CONTENT_URI, values);
     }
+
+
 
     private void finalizeActivity(){
         if(tvSelectedTime.equals(R.string.select_time)){
@@ -199,7 +206,7 @@ public class SelectTime extends AppCompatActivity {
         } else{
             Intent i = new Intent();
             i.putExtra("position", position);
-            i.putExtra("final time", tvSelectedTime.getText());
+            i.putExtra("final time", stringToDate.get(tvSelectedTime.getText().toString()));
             setResult(RESULT_OK, i);
             finish();
         }
@@ -265,7 +272,9 @@ public class SelectTime extends AppCompatActivity {
             } else if (finalMeetTimes.indexOf("break") < 0 || finalMeetTimes.indexOf("break") - i + 1 >= duration) {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                 Date date = sdf.parse(finalMeetTimes.get(i));
-                withTimesRemoved.add(new java.text.SimpleDateFormat("EEEE, HH:mm").format(date));
+                String possibleDate = new java.text.SimpleDateFormat("EEEE, HH:mm").format(date);
+                withTimesRemoved.add(possibleDate);
+                stringToDate.put(possibleDate, finalMeetTimes.get(i));
             }
         }
         return withTimesRemoved;

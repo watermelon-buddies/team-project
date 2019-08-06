@@ -126,6 +126,8 @@ public class PendingInvitesAdapter extends RecyclerView.Adapter<PendingInvitesAd
                     selectTime.putExtra("userCal", mUserCal);
                     selectTime.putExtra("duration", currInvite.getDuration());
                     selectTime.putExtra("position", position);
+                    selectTime.putExtra("title", currInvite.getTitle());
+                    selectTime.putExtra("location", currInvite.getLocation());
                     ((Activity) mContext).startActivityForResult(selectTime, SELECT_TIME_REQUEST_CODE);
 
                 } else if(v.getId() == btnDecline.getId()){
