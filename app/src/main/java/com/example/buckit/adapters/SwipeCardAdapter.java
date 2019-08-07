@@ -1,20 +1,30 @@
 package com.example.buckit.adapters;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
+import android.os.Handler;
+import android.provider.CalendarContract;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.buckit.R;
 import com.example.buckit.models.Event;
 import com.wajahatkarim3.easyflipview.EasyFlipView;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
-import cdflynn.android.library.checkview.CheckView;
 import cdflynn.android.library.checkview.CheckView;
 
 public class SwipeCardAdapter extends ArrayAdapter<HashMap<Integer, Event>>  {
@@ -126,7 +136,7 @@ public class SwipeCardAdapter extends ArrayAdapter<HashMap<Integer, Event>>  {
                             myEasyFlipView.flipTheView();
                         }
                     }, 2000);
-                } catch (ParseException e) {
+                } catch (java.text.ParseException e) {
                     e.printStackTrace();
                 }
             }
