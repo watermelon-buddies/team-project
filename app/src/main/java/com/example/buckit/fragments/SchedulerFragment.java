@@ -63,6 +63,7 @@ public class SchedulerFragment extends Fragment {
     private ArrayList<Button> recentFriendButtons = new ArrayList<>();
     private ParseUser userToInvite;
     private View schedulerView;
+    private HashMap<String, ImageView> checkmarks;
 
     private int durationIn15MinIntervals;
     @BindView(R.id.tvRecents) TextView tvRecents;
@@ -77,6 +78,10 @@ public class SchedulerFragment extends Fragment {
     @BindView (R.id.btnRecent2) Button btnRecent2;
     @BindView (R.id.btnRecent3) Button btnRecent3;
     @BindView (R.id.fabViewFriends) FloatingActionButton fabViewFriends;
+    @BindView(R.id.ivCheckmark0) ImageView ivCheckmark0;
+    @BindView(R.id.ivCheckmark1) ImageView ivCheckmark1;
+    @BindView(R.id.ivCheckmark2) ImageView ivCheckmark2;
+    @BindView(R.id.ivCheckmark3) ImageView ivCheckmark3;
 
 
 
@@ -89,6 +94,8 @@ public class SchedulerFragment extends Fragment {
         userEvents = new HashMap<>();
         userFriends = new HashMap<>();
         userFriendsList = new ArrayList<>();
+        checkmarks = new HashMap<>();
+        buildCheckmarkMap();
         populateFriends();
         addFriendsSetUp();
         if (getArguments() != null){
@@ -110,6 +117,13 @@ public class SchedulerFragment extends Fragment {
                 startActivityForResult(viewFriends, SELECT_FRIEND_CODE);
             }
         });
+    }
+
+    private void buildCheckmarkMap(){
+        checkmarks.put("0", ivCheckmark0);
+        checkmarks.put("1", ivCheckmark1);
+        checkmarks.put("2", ivCheckmark2);
+        checkmarks.put("3", ivCheckmark3);
     }
 
     public void populateFriends() {
@@ -292,8 +306,7 @@ public class SchedulerFragment extends Fragment {
                     }
                     if (v.isSelected()) {
                         if(v.getId() == btnRecent0.getId() || v.getId() == btnRecent1.getId() || v.getId() == btnRecent2.getId() || v.getId() == btnRecent3.getId()){
-                            ImageView ivCheckmark = schedulerView.findViewById(Integer.parseInt(v.getTag().toString()));
-                            ivCheckmark.setVisibility(View.INVISIBLE);
+                            checkmarks.get(v.getTag()).setVisibility(View.INVISIBLE);
                             addInvitees.setText("");
                         }
                         v.setSelected(false);
@@ -301,8 +314,7 @@ public class SchedulerFragment extends Fragment {
                     } else {
                         v.setSelected(true);
                         if(v.getId() == btnRecent0.getId() || v.getId() == btnRecent1.getId() || v.getId() == btnRecent2.getId() || v.getId() == btnRecent3.getId()){
-                            ImageView ivCheckmark = schedulerView.findViewById(Integer.parseInt(v.getTag().toString()));
-                            ivCheckmark.setVisibility(View.VISIBLE);
+                            checkmarks.get(v.getTag()).setVisibility(View.VISIBLE);
                             unselectOtherRecents(v);
                         }
 
@@ -324,8 +336,7 @@ public class SchedulerFragment extends Fragment {
                 addInvitees.setText(userFriendsList.get(i));
             } else {
                 recentFriendButtons.get(i).setSelected(false);
-                ImageView ivCheckmark = schedulerView.findViewById(Integer.parseInt(recentFriendButtons.get(i).getTag().toString()));
-                ivCheckmark.setVisibility(View.INVISIBLE);
+                checkmarks.get(recentFriendButtons.get(i).getTag()).setVisibility(View.INVISIBLE);
             }
         }
     }
