@@ -257,15 +257,14 @@ public class HomeActivity extends AppCompatActivity
             finish();
        }
         else if (id == R.id.nav_view_friends) {
-            startActivity(new Intent(HomeActivity.this, ViewFriends.class));
-        } else if (id == R.id.nav_tools) {
-
+            Intent friendsView = new Intent(HomeActivity.this, ViewFriends.class);
+            friendsView.putExtra("userCal", userEvents);
+            startActivity(friendsView);
        } else if (id == R.id.nav_profile) {
             //getCalendarEvents(CALENDAR_CALLBACK_ID, Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
             Intent profileView = new Intent(HomeActivity.this, ViewProfile.class);
             profileView.putExtra("userCal", userEvents);
             startActivity(profileView);
-
 
         }
         leftDrawer.closeDrawer(GravityCompat.START);
