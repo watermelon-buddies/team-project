@@ -27,6 +27,9 @@ public class NotificationSender {
     * */
 
     private static final String KEY_BODY = "body";
+    private static final String KEY_FRIEND_NOTIFICATION = "friendNotification";
+    private static final String KEY_EVENT_NOTIFICATION = "eventNotification";
+    private static final String KEY_NUMTYPE = "numType";
     private static final String KEY_DATA = "data";
     private static final String KEY_REGISTRATION_IDS = "registration_ids";
     private static final String KEY_PRIORITY = "priority";
@@ -71,6 +74,14 @@ public class NotificationSender {
         return message;
     }
 
+    private String makeNotificationType(){
+        if(mNotificationType < 2){
+            return KEY_EVENT_NOTIFICATION;
+        } else {
+            return KEY_FRIEND_NOTIFICATION;
+        }
+    }
+
 
     @SuppressLint("StaticFieldLeak")
     public void sendNotification(){
@@ -83,6 +94,7 @@ public class NotificationSender {
                             JSONObject root = new JSONObject();
                             JSONObject data = new JSONObject();
                             data.put(KEY_BODY, makeMessage());
+                            data.put(KEY_NUMTYPE, makeNotificationType());
                             root.put(KEY_DATA, data);
                             root.put(KEY_REGISTRATION_IDS, recipients);
                             root.put(KEY_PRIORITY, 10);
