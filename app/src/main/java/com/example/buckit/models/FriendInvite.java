@@ -45,7 +45,7 @@ public class FriendInvite extends ParseObject {
         }
 
         public FriendInvite.Query getSentRequests(ParseUser user){
-            whereEqualTo(KEY_INVITER, user.getObjectId());
+            whereEqualTo(KEY_INVITER, user);
             return this;
         }
 

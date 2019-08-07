@@ -9,7 +9,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SnapHelper;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -72,7 +74,6 @@ public class BucketListCurrentFragment extends Fragment {
 
     @BindView(R.id.rvBucketList)  RecyclerView rvBucketList;
     @BindView(R.id.addItemFab)  FloatingActionButton addItemFab;
-    @BindView(R.id.swipeContainer)  SwipeRefreshLayout bucketRefreshSwipeContainer;
     @BindView(R.id.ivBlurBucket) ImageView ivBlurBucket;
     private Unbinder unbinder;
     ArrayList<Bucketlist> mBucketList;
@@ -108,16 +109,9 @@ public class BucketListCurrentFragment extends Fragment {
         // associate the LinearLayoutManager with the RecylcerView
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rvBucketList.setLayoutManager(linearLayoutManager);
+        SnapHelper snapHelper = new LinearSnapHelper();
+        snapHelper.attachToRecyclerView(rvBucketList);
         populateBucket();
-        bucketRefreshSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                // Call populate timeline when swipe to refresh is activated
-                populateBucket();
-                bucketRefreshSwipeContainer.setRefreshing(false);
-            }
-        });
-        bucketRefreshSwipeContainer.setColorSchemeResources(android.R.color.holo_red_light);
     }
 
     private void addItemToBucketList(final String description, final ParseUser user, String deadline, final String category) throws java.text.ParseException, JSONException {
@@ -221,7 +215,7 @@ public class BucketListCurrentFragment extends Fragment {
         int width = LinearLayout.LayoutParams.MATCH_PARENT;
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
         final PopupWindow popupWindow = new PopupWindow(popupView, width, height);
-        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 40);
         popupWindow.setFocusable(true);
         popupWindow.update();
         btnBuckIt.setOnClickListener(new View.OnClickListener() {

@@ -1,5 +1,6 @@
 package com.example.buckit.activities;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -20,9 +21,11 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.buckit.LoginActivity;
 import com.example.buckit.R;
 import com.example.buckit.adapters.PendingInvitesAdapter;
@@ -44,6 +47,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 import static com.example.buckit.adapters.PendingInvitesAdapter.SELECT_TIME_REQUEST_CODE;
 
@@ -85,6 +89,7 @@ public class ViewProfile extends AppCompatActivity implements NavigationView.OnN
         rvComingUp.setLayoutManager(linearLayoutManager2);
         populatePendingInvites();
         populateComingUpInvites(true);
+        customView();
         setSupportActionBar(toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, leftDrawer, toolbar, R.string.navigation_drawer_open,
@@ -241,5 +246,27 @@ public class ViewProfile extends AppCompatActivity implements NavigationView.OnN
     private void notifyInviter(UserInvite curr){
         NotificationSender makeNotification = new NotificationSender(((User)curr.getCreator()).getDeviceId(), 1, curr.getInvited().getUsername());
         makeNotification.sendNotification();
+    }
+
+    @SuppressLint("ResourceAsColor")
+    private void customView(){
+        View headerLayout = leftDrawerNavigationView.getHeaderView(0);
+        headerLayout.setBackgroundColor(R.color.bright_blue);
+        User user = (User) ParseUser.getCurrentUser();
+        TextView tvUsername = headerLayout.findViewById(R.id.tvUsername);
+        ImageView ivUserProfilePic = headerLayout.findViewById(R.id.ivUserProfilePic);
+        tvUsername.setText(user.getUsername());
+        if (user.getProfilePic() != null){
+            Glide.with(this)
+                    .load(user.getProfilePic().getUrl())
+                    .bitmapTransform(new CropCircleTransformation(this))
+                    .into(ivUserProfilePic);
+        }
+        else{
+            Glide.with(this)
+                    .load(R.drawable.no_profile)
+                    .bitmapTransform(new CropCircleTransformation(this))
+                    .into(ivUserProfilePic);
+        }
     }
 }

@@ -16,6 +16,7 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="300dp"
+
         android:layout_height="wrap_content">
 
         <View
@@ -60,12 +61,14 @@
             card_view:layout_constraintBottom_toBottomOf="parent"
             card_view:layout_constraintEnd_toStartOf="@+id/btnDeclineFriend"
             card_view:layout_constraintHorizontal_bias="0.5"
-            card_view:layout_constraintStart_toStartOf="@+id/tvRequestUsername" />
+            card_view:layout_constraintStart_toEndOf="@+id/ivRequestProfilePic" />
 
         <Button
             android:id="@+id/btnDeclineFriend"
             android:layout_width="0dp"
             android:layout_height="49dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
             android:background="@drawable/button_decline"
             android:text="@string/decline"
             android:textColor="@android:color/darker_gray"

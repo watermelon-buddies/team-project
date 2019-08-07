@@ -1,31 +1,20 @@
 package com.example.buckit.adapters;
 
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
-import android.os.Handler;
-import android.provider.CalendarContract;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.buckit.R;
 import com.example.buckit.models.Event;
 import com.wajahatkarim3.easyflipview.EasyFlipView;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 
+import cdflynn.android.library.checkview.CheckView;
 import cdflynn.android.library.checkview.CheckView;
 
 public class SwipeCardAdapter extends ArrayAdapter<HashMap<Integer, Event>>  {
@@ -75,6 +64,9 @@ public class SwipeCardAdapter extends ArrayAdapter<HashMap<Integer, Event>>  {
         ImageView ivEventDetailPicture  = contentView.findViewById(R.id.ivEventDetailPicture);
         ImageView ivGreyBackground = contentView.findViewById(R.id.ivGreyBackground);
         tvEventDate = contentView.findViewById(R.id.tvEventDate);
+        TextView tvEventTitle =  contentView.findViewById(R.id.tvDetailTitle);
+
+        TextView tvEventDate = contentView.findViewById(R.id.tvEventDate);
         ImageView btnFlip = contentView.findViewById(R.id.btnFlip);
         ImageView btnBuckEvent = contentView.findViewById(R.id.btnBuckEvent);
         ImageView btnFlipDetail = contentView.findViewById(R.id.btnFlipDetail);
@@ -90,7 +82,7 @@ public class SwipeCardAdapter extends ArrayAdapter<HashMap<Integer, Event>>  {
                 myEasyFlipView.flipTheView();
             }
         });
-        Event event = mEvents.get(position);
+        final Event event = mEvents.get(position);
         tvTitle.setText(event.getTitle());
         Glide.with(mContext)
                 .load(event.getImageUrl())
