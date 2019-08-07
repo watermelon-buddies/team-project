@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.buckit.R;
 import com.example.buckit.models.FriendInvite;
+import com.example.buckit.models.NotificationSender;
 import com.example.buckit.models.User;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -101,8 +102,6 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
                         ((Activity) mContext).setResult(((Activity)mContext).RESULT_OK, friendSelected);
                         ((Activity) mContext).finish();
                     } else {
-
-
                         Log.d("Click", user.toString());
                         createFriendRequest(currentUser, user);
                         mFriendsList.remove(position);
@@ -116,6 +115,8 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 
     private void createFriendRequest(ParseUser inviter, ParseUser invited) {
         FriendInvite newInvitation = new FriendInvite();
+        NotificationSender makeNotification = new NotificationSender(((User)invited).getDeviceId(), 2, inviter.getUsername());
+        makeNotification.sendNotification();
         newInvitation.setInviter(inviter);
         newInvitation.setInvited(invited);
         // Status 2 meaning friend request not accepter or rejected yet
