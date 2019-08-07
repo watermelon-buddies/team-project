@@ -59,6 +59,11 @@ public class User extends ParseUser {
 
     public String getUsername() { return getString(KEY_USERNAME); }
 
+    public String getUserFirstName() {
+        String name = getString(KEY_USERNAME);
+        return name.substring(0, name.indexOf(" "));
+    }
+
     public JSONArray getFriends() {return getJSONArray(KEY_FRIENDS);}
 
 

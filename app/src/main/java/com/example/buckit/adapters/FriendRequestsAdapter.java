@@ -3,6 +3,7 @@ package com.example.buckit.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintSet;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,22 +66,22 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
         // get data according to position
 
         currRequest = mRequests.get(position);
+
         holder.rootView.setTag(currRequest);
         try {
-            holder.tvRequestUsername.setText(currRequest.getInviter().fetchIfNeeded().getUsername());
-            if (currRequest.getInviter().fetchIfNeeded().getParseFile(KEY_PROFILE_PICTURE) != null) {
-                Glide.with(mContext)
-                        .load(currRequest.getInviter().fetchIfNeeded().getParseFile(KEY_PROFILE_PICTURE).getUrl())
-                        .bitmapTransform(new CropCircleTransformation(mContext))
-                        .into(holder.ivRequestProfilePic);
-            }
-            else {
-                Glide.with(mContext)
-                        .load(R.drawable.no_profile)
-                        .bitmapTransform(new CropCircleTransformation(mContext))
-                        .into(holder.ivRequestProfilePic);
-            }
-
+                holder.tvRequestUsername.setText(currRequest.getInviter().fetchIfNeeded().getUsername());
+                if (currRequest.getInviter().fetchIfNeeded().getParseFile(KEY_PROFILE_PICTURE) != null) {
+                    Glide.with(mContext)
+                            .load(currRequest.getInviter().fetchIfNeeded().getParseFile(KEY_PROFILE_PICTURE).getUrl())
+                            .bitmapTransform(new CropCircleTransformation(mContext))
+                            .into(holder.ivRequestProfilePic);
+                }
+                else {
+                    Glide.with(mContext)
+                            .load(R.drawable.no_profile)
+                            .bitmapTransform(new CropCircleTransformation(mContext))
+                            .into(holder.ivRequestProfilePic);
+                }
         } catch (ParseException e) {
             e.printStackTrace();
         }

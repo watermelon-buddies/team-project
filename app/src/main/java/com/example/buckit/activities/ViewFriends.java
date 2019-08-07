@@ -1,5 +1,6 @@
 package com.example.buckit.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -25,6 +26,7 @@ import com.example.buckit.LoginActivity;
 import com.example.buckit.R;
 import com.example.buckit.adapters.FriendRequestsAdapter;
 import com.example.buckit.adapters.FriendsListAdapter;
+import com.example.buckit.adapters.PendingSentRequestsAdapter;
 import com.example.buckit.fragments.AddFriendsActivity;
 import com.example.buckit.models.FriendInvite;
 import com.example.buckit.models.User;
@@ -44,17 +46,19 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 import static com.example.buckit.models.User.KEY_FRIENDS;
 import static com.example.buckit.models.User.KEY_PROFILE_PICTURE;
 
 public class ViewFriends extends AppCompatActivity {
 
-    Unbinder unbinder;
     ArrayList<User> mFriendsList;
+    FriendsListAdapter mFriendsAdapter;
     ArrayList<FriendInvite> mRequestsList;
     FriendRequestsAdapter mRequestsAdapter;
-    FriendsListAdapter mFriendsAdapter;
+    ArrayList<FriendInvite> mPendingRequestsList;
+    PendingSentRequestsAdapter mPendingRequestsAdapter;
     FriendsListAdapter usersAdapter;
     ArrayList<User> usersList;
     @BindView(R.id.btnAddFriends)
@@ -72,6 +76,9 @@ public class ViewFriends extends AppCompatActivity {
     ParseUser currentUser;
     @BindView(R.id.tvNoRequests) TextView tvNoRequests;
     @BindView(R.id.tvCurrentFriends) TextView tvCurrentFriends;
+    @BindView(R.id.rvPendingRequests) RecyclerView rvPendingRequests;
+    @BindView(R.id.tvPendingRequests) TextView tvPendingRequests;
+    @BindView(R.id.tvNoPendingRequests) TextView tvNoPendingRequests;
     @BindView(R.id.viewFriendsConstraint)
     ConstraintLayout viewFriendsConstraint;
     @BindView(R.id.tvFriendRequests) TextView tvFriendRequests;
@@ -119,21 +126,30 @@ public class ViewFriends extends AppCompatActivity {
             rvRequestsList.setVisibility(View.GONE);
             tvNoRequests.setVisibility(View.GONE);
             tvFriendRequests.setVisibility(View.GONE);
+            tvNoPendingRequests.setVisibility(View.GONE);
+            tvPendingRequests.setVisibility(View.GONE);
+            rvPendingRequests.setVisibility(View.GONE);
             mFriendsAdapter = new FriendsListAdapter(mFriendsList, this, true, true, currentUser);
         } else {
             mFriendsAdapter = new FriendsListAdapter(mFriendsList, this, false, false, currentUser);
         }
         rvFriendsList.setAdapter(mFriendsAdapter);
         // associate the LinearLayoutManager with the RecylcerView
-        final LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(this);
-        rvFriendsList.setLayoutManager(linearLayoutManager1);
+        final LinearLayoutManager linearLayoutManagerForFriends = new LinearLayoutManager(this);
+        rvFriendsList.setLayoutManager(linearLayoutManagerForFriends);
         updateFriends(currentUser);
         mRequestsList = new ArrayList<FriendInvite>();
         mRequestsAdapter = new FriendRequestsAdapter(mRequestsList, this, mFriendsList, mFriendsAdapter);
         rvRequestsList.setAdapter(mRequestsAdapter);
-        final LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        rvRequestsList.setLayoutManager(linearLayoutManager2);
+        final LinearLayoutManager linearLayoutManagerForRequests = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        rvRequestsList.setLayoutManager(linearLayoutManagerForRequests);
         populateInvites();
+        mPendingRequestsList = new ArrayList<FriendInvite>();
+        mPendingRequestsAdapter = new PendingSentRequestsAdapter(mPendingRequestsList, this);
+        rvPendingRequests.setAdapter(mPendingRequestsAdapter);
+        final LinearLayoutManager linearLayoutManagerForPending = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        rvPendingRequests.setLayoutManager(linearLayoutManagerForPending);
+        populatePendingRequests();
         btnAddFriends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,7 +162,7 @@ public class ViewFriends extends AppCompatActivity {
                 this, leftDrawer, toolbar, R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
         leftDrawer.addDrawerListener(toggle);
-
+        customView();
         toggle.syncState();
         leftDrawerNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -161,7 +177,6 @@ public class ViewFriends extends AppCompatActivity {
                 } else if (id == R.id.nav_view_friends) {
                     startActivity(new Intent(ViewFriends.this, ViewFriends.class));
                 } else if (id == R.id.nav_profile) {
-                    //getCalendarEvents(CALENDAR_CALLBACK_ID, Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
                     Intent profileView = new Intent(ViewFriends.this, ViewProfile.class);
                     profileView.putExtra("userCal", userEvents);
                     startActivity(profileView);
@@ -250,7 +265,7 @@ public class ViewFriends extends AppCompatActivity {
                     if (requests != null && requests.size()>0) {
                         ConstraintSet constraintSet = new ConstraintSet();
                         constraintSet.clone(viewFriendsConstraint);
-                        constraintSet.connect(R.id.tvCurrentFriends,ConstraintSet.TOP, R.id.rvFriendRequests,ConstraintSet.BOTTOM,16);
+                        constraintSet.connect(R.id.tvPendingRequests,ConstraintSet.TOP, R.id.rvFriendRequests,ConstraintSet.BOTTOM,16);
                         constraintSet.applyTo(viewFriendsConstraint);
                         tvNoRequests.setVisibility(View.INVISIBLE);
                         mRequestsList.clear();
@@ -263,6 +278,57 @@ public class ViewFriends extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void populatePendingRequests() {
+        FriendInvite.Query requestsQuery = new FriendInvite.Query();
+        requestsQuery.getSentRequests(currentUser);
+        requestsQuery.getUnansweredRequests();
+        Log.d("Pending requests", "Works");
+        requestsQuery.findInBackground(new FindCallback<FriendInvite>() {
+            @Override
+            public void done(List<FriendInvite> pendingRequests, ParseException e) {
+                if (e == null) {
+                    if (pendingRequests != null && pendingRequests.size()>0) {
+                        ConstraintSet constraintSet = new ConstraintSet();
+                        constraintSet.clone(viewFriendsConstraint);
+                        constraintSet.connect(R.id.tvCurrentFriends,ConstraintSet.TOP, R.id.rvPendingRequests,ConstraintSet.BOTTOM,16);
+                        constraintSet.applyTo(viewFriendsConstraint);
+                        tvNoPendingRequests.setVisibility(View.INVISIBLE);
+                        Log.d("Pending requests", pendingRequests.toString());
+                        mPendingRequestsList.clear();
+                        mPendingRequestsList.addAll(pendingRequests);
+                        Log.d("Pending requests", mPendingRequestsList.toString());
+                        mPendingRequestsAdapter.notifyDataSetChanged();
+                    }
+                }
+                else {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    @SuppressLint("ResourceAsColor")
+    private void customView(){
+        View headerLayout = leftDrawerNavigationView.getHeaderView(0);
+        headerLayout.setBackgroundColor(R.color.bright_blue);
+        User user = (User) ParseUser.getCurrentUser();
+        TextView tvUsername = headerLayout.findViewById(R.id.tvUsername);
+        ImageView ivUserProfilePic = headerLayout.findViewById(R.id.ivUserProfilePic);
+        tvUsername.setText(user.getUsername());
+        if (user.getProfilePic() != null){
+            Glide.with(this)
+                    .load(user.getProfilePic().getUrl())
+                    .bitmapTransform(new CropCircleTransformation(this))
+                    .into(ivUserProfilePic);
+        }
+        else{
+            Glide.with(this)
+                    .load(R.drawable.no_profile)
+                    .bitmapTransform(new CropCircleTransformation(this))
+                    .into(ivUserProfilePic);
+        }
     }
 
 }

@@ -87,7 +87,7 @@
     <string name="achieved">Achieved</string>
     <string name="buck_it">Buck It!</string>
     <string name="date_format">MM/DD/YYYY</string>
-    <string name="button_add_to_bucket_description">Add to Bucket List</string>
+    <string name="button_add_to_bucket_description">Add to Bucket</string>
     <string name="category_prompt">Choose a category</string>
     <string-array name="category_names">
         <item>Auto, Boat &amp; Air</item>

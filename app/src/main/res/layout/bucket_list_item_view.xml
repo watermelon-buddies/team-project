@@ -8,14 +8,13 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        android:foreground="?android:attr/selectableItemBackground"
         app:cardCornerRadius="@dimen/card_corner_radius"
+        app:cardElevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,7 +22,7 @@
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/tvBucketDescription"
@@ -35,17 +34,16 @@
                 android:text="Item Description"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="@+id/ivCategoryImage"
                 app:layout_constraintEnd_toEndOf="@+id/ivCategoryImage"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/ivCategoryImage"
+                app:layout_constraintTop_toBottomOf="@+id/ivCategoryImage"
                 tools:visibility="visible" />
 
             <ImageView
                 android:id="@+id/ivCategoryImage"
-                android:layout_width="match_parent"
+                android:layout_width="381dp"
                 android:layout_height="200dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
                 android:scaleType="fitXY"
                 app:layout_constraintStart_toStartOf="parent"
@@ -53,7 +51,7 @@
                 app:srcCompat="@drawable/cat_spor" />
 
             <android.support.design.widget.FloatingActionButton
-                android:id="@+id/btnEditItem"
+                android:id="@+id/btnShowOptionsForItem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -67,58 +65,6 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_item_edit" />
 
-
-            <ImageButton
-                android:id="@+id/btnDeleteItem"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginBottom="8dp"
-                android:background="@color/white"
-                android:tint="@color/bright_blue"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/btnAchievedItem"
-                app:layout_constraintTop_toBottomOf="@+id/tvBucketDescription"
-                app:srcCompat="@drawable/remove_item" />
-
-            <Button
-                android:id="@+id/btnAchievedItem"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:background="@drawable/button_oval"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:text="Achieve"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ivCategoryImage" />
-
-            <ImageView
-                android:id="@+id/btnBookItem"
-                android:layout_width="50dp"
-                android:layout_height="38dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginBottom="8dp"
-                android:tint="@color/bright_blue"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/btnAchievedItem"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ivCategoryImage"
-                app:srcCompat="@drawable/calendar_icon" />
 
         </android.support.constraint.ConstraintLayout>
 

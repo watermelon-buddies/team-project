@@ -50,7 +50,7 @@ public class SwipeCardAdapter extends ArrayAdapter<HashMap<Event, Integer>>  {
         TextView tvEndingTime  = contentView.findViewById(R.id.tvEndingTime);
         TextView tvEventDescription = contentView.findViewById(R.id.tvEventDescription);
         TextView tvEventTitle =  contentView.findViewById(R.id.tvDetailTitle);
-        ImageView ivEventDetailPicture  = contentView.findViewById(R.id.ivEventDetailPicture);
+
         TextView tvEventDate = contentView.findViewById(R.id.tvEventDate);
         ImageView btnFlip = contentView.findViewById(R.id.btnFlip);
         ImageView btnBuckEvent = contentView.findViewById(R.id.btnBuckEvent);
@@ -67,7 +67,7 @@ public class SwipeCardAdapter extends ArrayAdapter<HashMap<Event, Integer>>  {
                 myEasyFlipView.flipTheView();
             }
         });
-        Event event = mEvents.get(position);
+        final Event event = mEvents.get(position);
         tvTitle.setText(event.getTitle());
         Glide.with(mContext)
                 .load(event.getImageUrl())
@@ -83,10 +83,6 @@ public class SwipeCardAdapter extends ArrayAdapter<HashMap<Event, Integer>>  {
         return contentView;
     }
 
-
-    void bookEvent() {
-
-    }
 
 
     @Override

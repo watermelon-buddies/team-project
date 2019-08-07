@@ -20,4 +20,5 @@
     <color name="darker_grey">#F3F4F4</color>
     <color name="white">#ffffff</color>
     <color name="purple">#C47B72BE</color>
+    <color name="transparent">#00000000</color>
 </resources>

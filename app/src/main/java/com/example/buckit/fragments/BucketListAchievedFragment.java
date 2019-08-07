@@ -6,7 +6,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SnapHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,8 +54,10 @@ public class BucketListAchievedFragment extends Fragment {
         mBucketAdapter = new BucketListAdapter(getContext(), mBucketList, false);
         rvBucketList.setAdapter(mBucketAdapter);
         // associate the LinearLayoutManager with the RecylcerView
-        final GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
-        rvBucketList.setLayoutManager(gridLayoutManager);
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        rvBucketList.setLayoutManager(linearLayoutManager);
+        SnapHelper snapHelper = new LinearSnapHelper();
+        snapHelper.attachToRecyclerView(rvBucketList);
         populateBucket();
     }
 
