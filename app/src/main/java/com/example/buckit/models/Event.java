@@ -1,17 +1,10 @@
 package com.example.buckit.models;
 
-import android.os.Environment;
-
-import com.parse.ParseException;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.text.DateFormatSymbols;
-import org.mortbay.jetty.Server;
-
-import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -43,6 +36,10 @@ public class Event {
     public String getStartTime() {
         return changeTo12HourFormat(startTime.substring(11,19));
     }
+
+    public String getOriginalStartTime() { return startTime;}
+
+    public String getOriginalEndTime() {return endTime;}
 
     public String getDate() {
         int month = Integer.parseInt(startTime.substring(5,7));

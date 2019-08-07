@@ -35,6 +35,8 @@
     <string name="menu_send">Send</string>
     <string name="scheduler_title">Make a Plan</string>
     <string name="warning">Please fill out all fields</string>
+    <string name="add_to_cal">Add To Calendar</string>
+    <string name="added_to_cal">Added To Calendar</string>
 
     <string name="mon">Mon</string>
     <string name="tue">Tue</string>
