@@ -69,7 +69,5 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:10.2.1'
     implementation 'com.google.android.gms:play-services-auth:11.8.0'
     implementation 'com.wajahatkarim3.EasyFlipView:EasyFlipView:2.1.2'
-//    implementation 'com.google.firebase:firebase-messaging:19.0.1'
-
 
 }
