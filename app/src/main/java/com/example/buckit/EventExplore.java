@@ -108,17 +108,7 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
             mCurrentLocation = savedInstanceState.getParcelable(KEY_LOCATION);
             getEvents();
         }
-        eventsList = new HashMap<>();
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
-        setContentView(R.layout.activity_main);
-        rvEvents = findViewById(R.id.rvEvents);
-        tvEventTitle = findViewById(R.id.tvEventTitle);
-        rvEvents.setContentResource(R.layout.event_item_view);
-        rvEvents.setListener(this);
-        swipe_card_adapter = new SwipeCardAdapter(getApplicationContext(), 20, eventsList);
-        rvEvents.setAdapter(swipe_card_adapter);
-        final int callbackId = 42;
-        checkPermissions(callbackId, Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
+
     }
 
     private void getEvents() {
@@ -136,7 +126,7 @@ public class EventExplore extends AppCompatActivity implements CardStack.CardEve
                     for (int i = 0; i < events.length(); i++) {
                         Event currEvent = new Event(events.getJSONObject(i));
                         eventsList.put(i, currEvent);
-                        swipe_card_adapter.notifyDataSetChanged();
+
                     }
                 } catch (JSONException e) {
                     Log.d("Get events", "Failure to retrieve events");

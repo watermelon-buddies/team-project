@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -24,7 +23,6 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.parse.ParseUser;
-import com.wajahatkarim3.easyflipview.EasyFlipView;
 import com.wenchao.cardstack.CardStack;
 
 import org.json.JSONArray;
@@ -32,14 +30,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import cdflynn.android.library.checkview.CheckView;
 import cz.msebera.android.httpclient.Header;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
@@ -71,7 +68,13 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
     public HashMap<Integer, Event> eventsList;
     @BindView(R.id.rvEvents) public CardStack rvEvents;
     @BindView(R.id.ivBlur) public ImageView blur;
+    @BindView(R.id.tvPosition) TextView tvPosition;
+    @BindView(R.id.check)
+    CheckView mCheck;
+    @BindView(R.id.ivCalSuccess) ImageView ivCalSuccess;
+    @BindView(R.id.tvCalSuccess) TextView tvCalSuccess;
     private Unbinder unbinder;
+    private int swiped;
 
 
 
@@ -96,14 +99,19 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
         super.onViewCreated(view, savedInstanceState);
         ParseUser user = ParseUser.getCurrentUser();
         eventsList = new HashMap<>();
+        swiped = 0;
         rvEvents.setContentResource(R.layout.event_card_adapter);
-        swipe_card_adapter = new SwipeCardAdapter(getContext().getApplicationContext(),20, eventsList);
+        tvPosition.setText(String.valueOf(0));
+        swipe_card_adapter = new SwipeCardAdapter(getContext().getApplicationContext(),20, eventsList, tvPosition, mCheck, ivCalSuccess, tvCalSuccess);
         rvEvents.setAdapter(swipe_card_adapter);
+        rvEvents.setListener(this);
         if (getArguments() != null){
             latitude = getArguments().getDouble(LAT_KEY);
             longitude = getArguments().getDouble(LONG_KEY);
             getEvents(user);
         }
+        mCheck.bringToFront();
+
     }
 
     // Sends request specifying location for events. Result list is used to create event types
@@ -133,6 +141,7 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
                     }
                 }
             });
+
         }
         else {
             final int[] position = {0};
@@ -168,6 +177,11 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
 
     }
 
+    public void triggerCheckmark(){
+        mCheck.check();
+        mCheck.bringToFront();
+    }
+
     public static JSONArray shuffleJsonArray (JSONArray array) throws JSONException {
         // Implementing Fisher–Yates shuffle
         Random rnd = new Random();
@@ -185,15 +199,21 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
     // Makes sure swipe only discards card if user swiped it enough to prevent accidental swipes
     @Override
     public boolean swipeEnd(int section, float distance) {
-
-        return (distance>200)? true : false;
+        if(distance>200){
+            int newPosition = Integer.parseInt(tvPosition.getText().toString());
+            newPosition++;
+            tvPosition.setText(String.valueOf(newPosition));
+            Log.d("Booking", tvPosition.getText().toString());
+            return true;
+        }else {
+            return false;
+        }
 
     }
 
     @Override
     public boolean swipeStart(int section, float distance) {
-
-
+        Log.d("check", eventsList.get(0).getTitle());
         return true;
     }
 
