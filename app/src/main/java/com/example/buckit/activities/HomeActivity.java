@@ -5,8 +5,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
@@ -26,10 +27,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,13 +58,15 @@ import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.parse.ParseACL;
+import com.parse.ParseException;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -67,14 +76,10 @@ import butterknife.ButterKnife;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import me.everything.providers.android.calendar.Calendar;
 import me.everything.providers.android.calendar.CalendarProvider;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 import permissions.dispatcher.NeedsPermission;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import static com.example.buckit.models.User.KEY_NOTIFICATIONS;
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
 public class HomeActivity extends AppCompatActivity
@@ -101,6 +106,12 @@ public class HomeActivity extends AppCompatActivity
     private String userSchedulerSelected;
     private FragmentManager fragmentManager;
     private Fragment fragment;
+    private JSONArray notifications;
+    private ArrayList<String> newNotifications;
+    private ImageView ivNotifications;
+    private ImageView ivNotificationCircle;
+    private View popupView;
+    private PopupWindow popupWindow;
 
     /* HomeActivity after sucessfully logging in that contains BucketListFragment,
     EventsExploreFragment and SchedulerFragment */
@@ -114,11 +125,15 @@ public class HomeActivity extends AppCompatActivity
         stub.setLayoutResource(R.layout.home_activity_content);
         View inflated = stub.inflate();
         ButterKnife.bind(this);
+        ivNotifications = findViewById(R.id.ivNotifications);
+        ivNotificationCircle = findViewById(R.id.ivNotificationCircle);
+        newNotifications = new ArrayList<>();
         currentUser = ParseUser.getCurrentUser();
         getCalendarEvents(CALENDAR_CALLBACK_ID, Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
         setSupportActionBar(toolbar);
         setUpFragments();
         customView();
+        prepareNotifications(inflated);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, leftDrawer, toolbar, R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
@@ -130,6 +145,53 @@ public class HomeActivity extends AppCompatActivity
         }
         if (savedInstanceState != null && savedInstanceState.keySet().contains(KEY_LOCATION)) {
             mCurrentLocation = savedInstanceState.getParcelable(KEY_LOCATION);
+        }
+
+
+    }
+
+    private void prepareNotifications(View inflated){
+        ParseACL acl = new ParseACL(currentUser);
+        acl.setPublicReadAccess(true);
+        acl.setPublicWriteAccess(true);
+        currentUser.setACL(acl);
+        notifications = currentUser.getJSONArray(KEY_NOTIFICATIONS);
+        if (notifications == null){
+            String welcomeMessage = "Welcome to BuckIt. Start by adding new friends!";
+            ArrayList<String> notificationEmptyList = new ArrayList<>();
+            notificationEmptyList.add(welcomeMessage);
+            currentUser.put(KEY_NOTIFICATIONS, notificationEmptyList);
+            currentUser.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e == null) {
+                        Log.d("Home Activity", "Create a new post success!");
+                    } else {
+                        Log.d("Home Activity", "Failed in creating a post!");
+                        e.printStackTrace();
+                    }
+                }
+            });
+        } else {
+            for(int i = 1; i < notifications.length(); i++){
+                try {
+                    String notification = notifications.get(i).toString();
+                    String currUsername = currentUser.getUsername();
+                    String notificationUsername = notification.substring(0, notification.indexOf(":"));
+                    if(currUsername.equals(notificationUsername)){
+                        newNotifications.add(notification.substring(notification.indexOf(":") + 1));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+            if(newNotifications.size() > 0){
+                ivNotificationCircle.setVisibility(View.VISIBLE);
+            } else {
+                newNotifications.add(getResources().getString(R.string.noCurrentNotifications));
+            }
+            notificationIconListener(inflated);
         }
     }
 
@@ -156,7 +218,44 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
+    private void notificationIconListener(final View current){
+        ivNotifications.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(HomeActivity.this, "See Notifications", Toast.LENGTH_SHORT).show();
+                LayoutInflater inflater = (LayoutInflater)
+                        getSystemService(LAYOUT_INFLATER_SERVICE);
+                popupView = inflater.inflate(R.layout.notifications_popup, null);
+                ListView lvNotifications = popupView.findViewById(R.id.lvNotifications);
+                ArrayAdapter<String> notificationsAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, newNotifications){
+                    @Override
+                    public View getView(int position, View convertView, ViewGroup parent){
+                        // Get the Item from ListView
+                        View view = super.getView(position, convertView, parent);
 
+                        // Initialize a TextView for ListView each Item
+                        TextView tv = (TextView) view.findViewById(android.R.id.text1);
+
+                        // Set the text color of TextView (ListView Item)
+                        tv.setTextColor(Color.GRAY);
+
+                        // Generate ListView Item using TextView
+                        return view;
+                    }
+                };
+                lvNotifications.setAdapter(notificationsAdapter);
+                int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+                int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                popupWindow = new PopupWindow(popupView, width, height);
+                popupWindow.setFocusable(true);
+                popupWindow.setOutsideTouchable(true);
+                popupWindow.showAsDropDown(ivNotifications, -100, -10);
+                popupWindow.setBackgroundDrawable(new ColorDrawable(Color.BLACK));
+                popupWindow.setElevation(30);
+            }
+        });
+
+    }
 
 
     public void setUpFragments(){

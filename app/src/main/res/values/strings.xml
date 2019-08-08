@@ -91,6 +91,7 @@
     <string name="date_format">MM/DD/YYYY</string>
     <string name="button_add_to_bucket_description">Add to Bucket</string>
     <string name="category_prompt">Choose a category</string>
+    <string name="noCurrentNotifications">No notifications to show</string>
     <string-array name="category_names">
         <item>Auto, Boat &amp; Air</item>
         <item>Film &amp; Media</item>

@@ -239,7 +239,7 @@ public class SchedulerFragment extends Fragment {
 
     private void removeBusyTimes(){
         Log.d("beforeRemove", String.valueOf(meetTimes.size()));
-        for(int i = 0; i < meetTimes.size(); i++){
+        for(int i = 1; i < meetTimes.size(); i++){
             String currTime = meetTimes.get(i);
             if(userEvents.containsKey(currTime)) {
                 meetTimes.remove(i);
@@ -372,7 +372,6 @@ public class SchedulerFragment extends Fragment {
             public void done(ParseException e) {
                 if(e == null){
                     Log.d("InviteCheck", "Post created successfully");
-                    Toast.makeText(getContext(), "Invite Sent", Toast.LENGTH_SHORT).show();
                 } else{
                     Log.d("InviteCheck", "Post error");
                 }

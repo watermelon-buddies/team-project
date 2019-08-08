@@ -30,6 +30,7 @@ public class NotificationSender {
     private static final String KEY_FRIEND_NOTIFICATION = "friendNotification";
     private static final String KEY_EVENT_NOTIFICATION = "eventNotification";
     private static final String KEY_NUMTYPE = "numType";
+    private static final String KEY_RELATEDUSER = "relatedUser";
     private static final String KEY_DATA = "data";
     private static final String KEY_REGISTRATION_IDS = "registration_ids";
     private static final String KEY_PRIORITY = "priority";
@@ -46,11 +47,13 @@ public class NotificationSender {
     private String mRelatedUser;
 
 
+
     public NotificationSender(String deviceId, Integer notificationType, String relatedUser){
         recipients = new JSONArray();
         recipients.put(deviceId);
         mNotificationType = notificationType;
         mRelatedUser = relatedUser;
+
     }
 
     private String makeMessage(){
@@ -83,6 +86,7 @@ public class NotificationSender {
     }
 
 
+
     @SuppressLint("StaticFieldLeak")
     public void sendNotification(){
         try {
@@ -95,6 +99,7 @@ public class NotificationSender {
                             JSONObject data = new JSONObject();
                             data.put(KEY_BODY, makeMessage());
                             data.put(KEY_NUMTYPE, makeNotificationType());
+                            data.put(KEY_RELATEDUSER, mRelatedUser); /* TODO: add the related user name to message and that way we check if the notifications are relevant to the particular person */
                             root.put(KEY_DATA, data);
                             root.put(KEY_REGISTRATION_IDS, recipients);
                             root.put(KEY_PRIORITY, 10);

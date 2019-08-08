@@ -27,6 +27,7 @@
         android:layout_marginRight="36dp"
         android:layout_marginBottom="19dp"
         android:tint="#ff0000"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/divider3"
         app:layout_constraintEnd_toEndOf="@+id/toolbar"
         app:srcCompat="@drawable/ic_notification_circle" />
