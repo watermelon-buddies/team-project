@@ -126,7 +126,7 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
             String id = ((User)invite.getInviter()).getDeviceId();
             NotificationSender makeNotification = null;
             try {
-                makeNotification = new NotificationSender(id, 3, invite.getInvited().fetchIfNeeded().getUsername());
+                makeNotification = new NotificationSender(((User)invite.getInviter()).getUsername(), id, 3, invite.getInvited().fetchIfNeeded().getUsername());
             } catch (ParseException e) {
                 e.printStackTrace();
             }

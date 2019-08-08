@@ -1,8 +1,8 @@
 package com.example.buckit.activities;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,8 +10,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.buckit.R;
-import com.example.buckit.models.User;
 import com.example.buckit.utils.MultiSelectSpinner;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -69,6 +69,7 @@ public class SignUpDetailsActivtiy extends AppCompatActivity {
         user.setACL(acl);
         ArrayList<String> catList = new ArrayList<>();
         catList.addAll(categories);
+        user.put("deviceId", FirebaseInstanceId.getInstance().getToken());
         user.put(KEY_SELECTED_CATEGORIES, catList);
         user.saveInBackground(new SaveCallback() {
             @Override

@@ -47,6 +47,8 @@ import com.example.buckit.fragments.BucketListTabbed;
 import com.example.buckit.fragments.EventsExploreFragment;
 import com.example.buckit.fragments.SchedulerFragment;
 import com.example.buckit.models.User;
+import com.example.buckit.models.UserInvite;
+import com.example.buckit.models.UserNotification;
 import com.example.buckit.utils.ExploreActivityPermissionDispatcher;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -58,6 +60,7 @@ import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.parse.FindCallback;
 import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -80,22 +83,30 @@ import permissions.dispatcher.NeedsPermission;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static com.example.buckit.models.User.KEY_NOTIFICATIONS;
+import static com.example.buckit.models.UserNotification.KEY_IS_SEEN;
+import static com.example.buckit.models.UserNotification.KEY_TO_NOTIFY;
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    @BindView(R.id.drawer_layout) DrawerLayout leftDrawer;
-    @BindView(R.id.bottom_navigation) BottomNavigationView bottomNavigationView;
-    @BindView(R.id.nav_view) NavigationView leftDrawerNavigationView;
-    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout leftDrawer;
+    @BindView(R.id.bottom_navigation)
+    BottomNavigationView bottomNavigationView;
+    @BindView(R.id.nav_view)
+    NavigationView leftDrawerNavigationView;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     private final static String KEY_LOCATION = "location";
-    public static final String KEY_PROFILE_PICTURE= "profilePic";
+    private static final String KEY_FRIEND_NOTIFICATION = "friendNotification";
+    private static final String KEY_EVENT_NOTIFICATION = "eventNotification";
+    public static final String KEY_PROFILE_PICTURE = "profilePic";
     private final static long UPDATE_INTERVAL = 1000000;  /* 1000 secs */
     private final static long FASTEST_INTERVAL = 500000; /* 500 secs */
     private final static long EPOCH_MILLI_MONTH = 62L * 24L * 60L * 60L * 1000L;
-    public static final long ONE_MINUTE_IN_MILLIS=60000;
+    public static final long ONE_MINUTE_IN_MILLIS = 60000;
     public final static String LAT_KEY = "lat";
     public final static String LONG_KEY = "long";
     final private static int CALENDAR_CALLBACK_ID = 42;
@@ -112,6 +123,7 @@ public class HomeActivity extends AppCompatActivity
     private ImageView ivNotificationCircle;
     private View popupView;
     private PopupWindow popupWindow;
+    private HashMap<String, String> notificationToType;
 
     /* HomeActivity after sucessfully logging in that contains BucketListFragment,
     EventsExploreFragment and SchedulerFragment */
@@ -124,6 +136,7 @@ public class HomeActivity extends AppCompatActivity
         ViewStub stub = (ViewStub) findViewById(R.id.layout_stub);
         stub.setLayoutResource(R.layout.home_activity_content);
         View inflated = stub.inflate();
+        notificationToType = new HashMap<>();
         ButterKnife.bind(this);
         ivNotifications = findViewById(R.id.ivNotifications);
         ivNotificationCircle = findViewById(R.id.ivNotificationCircle);
@@ -133,7 +146,7 @@ public class HomeActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         setUpFragments();
         customView();
-        prepareNotifications(inflated);
+        prepareNotifications();
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, leftDrawer, toolbar, R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
@@ -150,67 +163,59 @@ public class HomeActivity extends AppCompatActivity
 
     }
 
-    private void prepareNotifications(View inflated){
-        ParseACL acl = new ParseACL(currentUser);
-        acl.setPublicReadAccess(true);
-        acl.setPublicWriteAccess(true);
-        currentUser.setACL(acl);
-        notifications = currentUser.getJSONArray(KEY_NOTIFICATIONS);
-        if (notifications == null){
-            String welcomeMessage = "Welcome to BuckIt. Start by adding new friends!";
-            ArrayList<String> notificationEmptyList = new ArrayList<>();
-            notificationEmptyList.add(welcomeMessage);
-            currentUser.put(KEY_NOTIFICATIONS, notificationEmptyList);
-            currentUser.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if (e == null) {
-                        Log.d("Home Activity", "Create a new post success!");
-                    } else {
-                        Log.d("Home Activity", "Failed in creating a post!");
-                        e.printStackTrace();
+    private void prepareNotifications() {
+        UserNotification.Query getNotifcations = new UserNotification.Query();
+        getNotifcations.whereEqualTo(KEY_TO_NOTIFY, currentUser.getUsername());
+        getNotifcations.whereEqualTo(KEY_IS_SEEN, false);
+        getNotifcations.findInBackground(new FindCallback<UserNotification>() {
+            @Override
+            public void done(List<UserNotification> object, ParseException e) {
+                if (e == null) {
+                    for (int i = 0; i < object.size(); i++) {
+                        UserNotification current = object.get(i);
+                        newNotifications.add(current.getMessage());
+                        notificationToType.put(current.getMessage(), current.getType());
+                        current.setSeen(true);
+                        current.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e == null) {
+                                    if (newNotifications.size() > 0) {
+                                        ivNotificationCircle.setVisibility(View.VISIBLE);
+                                    } else {
+                                        newNotifications.add(getResources().getString(R.string.noCurrentNotifications));
+                                    }
+                                    notificationIconListener();
+                                } else {
+                                    Log.d("NotificationHome", "Failed in creating a post!");
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
                     }
-                }
-            });
-        } else {
-            for(int i = 1; i < notifications.length(); i++){
-                try {
-                    String notification = notifications.get(i).toString();
-                    String currUsername = currentUser.getUsername();
-                    String notificationUsername = notification.substring(0, notification.indexOf(":"));
-                    if(currUsername.equals(notificationUsername)){
-                        newNotifications.add(notification.substring(notification.indexOf(":") + 1));
-                    }
-                } catch (JSONException e) {
+                } else {
                     e.printStackTrace();
                 }
+            }
+        });
 
-            }
-            if(newNotifications.size() > 0){
-                ivNotificationCircle.setVisibility(View.VISIBLE);
-            } else {
-                newNotifications.add(getResources().getString(R.string.noCurrentNotifications));
-            }
-            notificationIconListener(inflated);
-        }
     }
 
 
     @SuppressLint("ResourceAsColor")
-    private void customView(){
+    private void customView() {
         View headerLayout = leftDrawerNavigationView.getHeaderView(0);
         headerLayout.setBackgroundColor(R.color.bright_blue);
         User user = (User) currentUser;
         TextView tvUsername = headerLayout.findViewById(R.id.tvUsername);
         ImageView ivUserProfilePic = headerLayout.findViewById(R.id.ivUserProfilePic);
         tvUsername.setText(user.getUsername());
-        if (user.getProfilePic() != null){
+        if (user.getProfilePic() != null) {
             Glide.with(this)
                     .load(user.getProfilePic().getUrl())
                     .bitmapTransform(new CropCircleTransformation(this))
                     .into(ivUserProfilePic);
-        }
-        else{
+        } else {
             Glide.with(this)
                     .load(R.drawable.no_profile)
                     .bitmapTransform(new CropCircleTransformation(this))
@@ -218,7 +223,7 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
-    private void notificationIconListener(final View current){
+    private void notificationIconListener() {
         ivNotifications.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -226,20 +231,13 @@ public class HomeActivity extends AppCompatActivity
                 LayoutInflater inflater = (LayoutInflater)
                         getSystemService(LAYOUT_INFLATER_SERVICE);
                 popupView = inflater.inflate(R.layout.notifications_popup, null);
-                ListView lvNotifications = popupView.findViewById(R.id.lvNotifications);
-                ArrayAdapter<String> notificationsAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, newNotifications){
+                final ListView lvNotifications = popupView.findViewById(R.id.lvNotifications);
+                ArrayAdapter<String> notificationsAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, newNotifications) {
                     @Override
-                    public View getView(int position, View convertView, ViewGroup parent){
-                        // Get the Item from ListView
+                    public View getView(int position, View convertView, ViewGroup parent) {
                         View view = super.getView(position, convertView, parent);
-
-                        // Initialize a TextView for ListView each Item
                         TextView tv = (TextView) view.findViewById(android.R.id.text1);
-
-                        // Set the text color of TextView (ListView Item)
                         tv.setTextColor(Color.GRAY);
-
-                        // Generate ListView Item using TextView
                         return view;
                     }
                 };
@@ -252,17 +250,21 @@ public class HomeActivity extends AppCompatActivity
                 popupWindow.showAsDropDown(ivNotifications, -100, -10);
                 popupWindow.setBackgroundDrawable(new ColorDrawable(Color.BLACK));
                 popupWindow.setElevation(30);
+                popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                    @Override
+                    public void onDismiss() {
+                        currentUser.put(KEY_NOTIFICATIONS, newNotifications);
+                    }
+                });
             }
         });
-
     }
 
 
-    public void setUpFragments(){
+    public void setUpFragments() {
         fragmentManager = getSupportFragmentManager();
-        // handle navigation selection
         bottomNavigationView.setOnNavigationItemSelectedListener(
-                  new BottomNavigationView.OnNavigationItemSelectedListener() {
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
@@ -300,7 +302,7 @@ public class HomeActivity extends AppCompatActivity
         bottomNavigationView.setSelectedItemId(R.id.action_bucket);
     }
 
-    private void createSchedulerFragment(){
+    private void createSchedulerFragment() {
         Bundle userCal = new Bundle();
         userCal.putSerializable("userEvents", userEvents);
         userCal.putString("userSelected", userSchedulerSelected);
@@ -313,14 +315,13 @@ public class HomeActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK){
-            if(data.getExtras() != null){
+        if (resultCode == RESULT_OK) {
+            if (data.getExtras() != null) {
                 userSchedulerSelected = data.getExtras().getString("selected_user");
                 createSchedulerFragment();
             }
         }
     }
-
 
 
     @Override
@@ -329,7 +330,7 @@ public class HomeActivity extends AppCompatActivity
     }
 
 
-        @Override
+    @Override
     public void onBackPressed() {
         if (leftDrawer.isDrawerOpen(GravityCompat.START)) {
             ImageView ivUserProfilePic = findViewById(R.id.ivUserProfilePic);
@@ -346,7 +347,6 @@ public class HomeActivity extends AppCompatActivity
     /* TODO Check for need of other option on task bar*/
 
 
-
     @SuppressWarnings("StatementWithEmptyBody")
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -361,12 +361,11 @@ public class HomeActivity extends AppCompatActivity
             Intent logoutIntent = new Intent(HomeActivity.this, LoginActivity.class);
             startActivity(logoutIntent);
             finish();
-       }
-        else if (id == R.id.nav_view_friends) {
+        } else if (id == R.id.nav_view_friends) {
             Intent friendsView = new Intent(HomeActivity.this, ViewFriends.class);
             friendsView.putExtra("userCal", userEvents);
             startActivity(friendsView);
-       } else if (id == R.id.nav_profile) {
+        } else if (id == R.id.nav_profile) {
             //getCalendarEvents(CALENDAR_CALLBACK_ID, Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
             Intent profileView = new Intent(HomeActivity.this, ViewProfile.class);
             profileView.putExtra("userCal", userEvents);
@@ -399,7 +398,7 @@ public class HomeActivity extends AppCompatActivity
                         if ((currEvent.dTStart) >= today && (currEvent.dTStart) <= nextMonth) {
                             Long timeOfEvent = ((currEvent.dTend - currEvent.dTStart) / 1000) / 60;
                             Integer rangeIn15MinIntervals = Math.toIntExact(timeOfEvent) / 15;
-                            for(int i = 0; i < rangeIn15MinIntervals; i++){
+                            for (int i = 0; i < rangeIn15MinIntervals; i++) {
                                 String normalDate = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new java.util.Date(currEvent.dTStart + (15 * i * ONE_MINUTE_IN_MILLIS)));
                                 userEvents.put(normalDate, 1);
                             }

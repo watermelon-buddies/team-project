@@ -15,14 +15,11 @@ import com.example.buckit.R;
 import com.example.buckit.activities.HomeActivity;
 import com.example.buckit.activities.ViewFriends;
 import com.example.buckit.activities.ViewProfile;
+import com.example.buckit.models.UserNotification;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.parse.ParseACL;
 import com.parse.ParseException;
-import com.parse.ParseUser;
 import com.parse.SaveCallback;
-
-import static com.example.buckit.models.User.KEY_NOTIFICATIONS;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
@@ -31,7 +28,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String KEY_DATA = "data";
     private static final String KEY_NUMTYPE = "numType";
     private static final String KEY_FRIEND_NOTIFICATION = "friendNotification";
+    private static final String KEY_EVENT_NOTIFICATION = "eventNotification";
     private static final String KEY_RELATEDUSER = "relatedUser";
+    private static final String KEY_TOINVITE = "toInvite";
 
     public MyFirebaseMessagingService() {
 
@@ -47,28 +46,29 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if(remoteMessage.getData().size() > 0){
             Log.d(TAG, remoteMessage.getData().toString());
             sendNotification(remoteMessage.getData().get(KEY_BODY), remoteMessage.getData().get(KEY_NUMTYPE));
-            addToList(remoteMessage.getData().get(KEY_BODY), remoteMessage.getData().get(KEY_RELATEDUSER));
+            addToList(remoteMessage.getData().get(KEY_BODY), remoteMessage.getData().get(KEY_TOINVITE), remoteMessage.getData().get(KEY_NUMTYPE));
         }
     }
 
-    private void addToList(String message, String relatedUser){
-        ParseUser mUser = ParseUser.getCurrentUser();
-        ParseACL acl = new ParseACL(mUser);
-        acl.setPublicReadAccess(true);
-        acl.setPublicWriteAccess(true);
-        mUser.setACL(acl);
-        mUser.add(KEY_NOTIFICATIONS, relatedUser + ":" + message);
-        mUser.saveInBackground(new SaveCallback() {
+    private void addToList(String message, String relatedUser, String type){
+        UserNotification newNotification = new UserNotification();
+        newNotification.setMessage(message);
+        newNotification.setToNotify(relatedUser);
+        newNotification.setType(type);
+        newNotification.setSeen(false);
+        newNotification.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
-                    Log.d("Notify Activity", "Create a new post success!");
+                    Log.d("Notifications", "Create a new notification success!");
                 } else {
-                    Log.d("Notify Activity", "Failed in creating a post!");
+                    Log.d("Notifications", "Failed in creating a notification!");
                     e.printStackTrace();
                 }
             }
         });
+
+
     }
 
 
