@@ -1,8 +1,11 @@
 package com.example.buckit.fragments;
 
 import android.graphics.Color;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
+import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +38,7 @@ public class BucketListTabbed extends Fragment {
     private Unbinder unbinder;
     @BindView(R.id.btnAchievedBucketTab) Button btnAchievedBucket;
     @BindView(R.id.btnCurrentBucketTab) Button btnCurrentBucket;
+    @BindView(R.id.ivHorizontalDivider) ImageView ivHorizontalDivider;
     Fragment fragment;
 
     @Nullable
@@ -56,10 +61,10 @@ public class BucketListTabbed extends Fragment {
                 fragment = new BucketListAchievedFragment();
                 fragmentManager.beginTransaction().replace(R.id.flBucket,
                         fragment).commit();
-                btnCurrentBucket.setBackgroundColor(Color.WHITE);
-                btnCurrentBucket.setTextColor(getResources().getColor(R.color.bright_blue));
-                btnAchievedBucket.setBackgroundColor(getResources().getColor(R.color.bright_blue));
-                btnAchievedBucket.setTextColor(Color.WHITE);
+                btnCurrentBucket.setTextColor(getResources().getColor(R.color.grey));
+                btnAchievedBucket.setTextColor(getResources().getColor(R.color.bright_blue));
+                ivHorizontalDivider.animate().translationXBy(540);
+
             }
         });
         btnCurrentBucket.setOnClickListener(new View.OnClickListener() {
@@ -67,10 +72,9 @@ public class BucketListTabbed extends Fragment {
             public void onClick(View v) {
                 fragment = new BucketListCurrentFragment();
                 fragmentManager.beginTransaction().replace(R.id.flBucket, fragment).commit();
-                btnAchievedBucket.setBackgroundColor(Color.WHITE);
-                btnAchievedBucket.setTextColor(getResources().getColor(R.color.bright_blue));
-                btnCurrentBucket.setBackgroundColor(getResources().getColor(R.color.bright_blue));
-                btnCurrentBucket.setTextColor(Color.WHITE);
+                btnCurrentBucket.setTextColor(getResources().getColor(R.color.bright_blue));
+                btnAchievedBucket.setTextColor(getResources().getColor(R.color.grey));
+                ivHorizontalDivider.animate().translationXBy(-540);
             }
         });
     }

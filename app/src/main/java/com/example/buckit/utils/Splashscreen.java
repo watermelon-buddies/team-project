@@ -16,7 +16,6 @@ import com.example.buckit.R;
 
 public class Splashscreen extends AppCompatActivity {
 
-    RevealText revealText;
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         Window window = getWindow();
@@ -46,42 +45,8 @@ public class Splashscreen extends AppCompatActivity {
                 ivSplashCircle.startAnimation(anim);
                 tvMainLogo.startAnimation(anim);
                 ivMainLogo.startAnimation(anim);
-/*                ImageView ivAppLogo = findViewById(R.id.ivAppLogo);
-                Animation anim2 = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.alpha);
-                ivAppLogo.clearAnimation();
-                ivAppLogo.startAnimation(anim2);*/
             }
         });
-
-/*
-
-        if (anim.hasEnded()) {
-            circle.setImageDrawable(getResources().getDrawable(R.color.white));
-            Animation anim2 = AnimationUtils.loadAnimation(this, R.anim.alpha);
-            ImageView ivAppLogo = findViewById(R.id.ivAppLogo);
-            ivAppLogo.bringToFront();
-            ivAppLogo.clearAnimation();
-            ivAppLogo.startAnimation(anim2);*/
-
-
-/*
-        ObjectAnimator scaleDownX = ObjectAnimator.ofFloat(circle, "scaleX", 4.0f);
-        ObjectAnimator scaleDownY = ObjectAnimator.ofFloat(circle, "scaleY", 4.0f);
-        scaleDownX.setDuration(1000);
-        scaleDownY.setDuration(1000);
-
-        AnimatorSet scaleDown = new AnimatorSet();
-        scaleDown.play(scaleDownX).with(scaleDownY);
-
-        scaleDown.start();*/
-/*        circle.clearAnimation();
-        circle.startAnimation(anim);*/
-
-/*        revealText = findViewById(R.id.tvMainLogo);
-        revealText.setCharacterDelay(200);
-        revealText.animateText("Buck It!");*/
-
-
         splashTread = new Thread() {
             @Override
             public void run() {
@@ -105,6 +70,5 @@ public class Splashscreen extends AppCompatActivity {
             }
         };
         splashTread.start();
-
     }
 }

@@ -2,7 +2,9 @@ package com.example.buckit.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
@@ -96,7 +98,6 @@ public class HomeActivity extends AppCompatActivity
     NavigationView leftDrawerNavigationView;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-
 
     private final static String KEY_LOCATION = "location";
     private static final String KEY_FRIEND_NOTIFICATION = "friendNotification";
@@ -279,8 +280,13 @@ public class HomeActivity extends AppCompatActivity
                                 break;
                             case R.id.action_events:
                                 Bundle bundle = new Bundle();
-                                bundle.putDouble(LAT_KEY, mCurrentLocation.getLatitude());
-                                bundle.putDouble(LONG_KEY, mCurrentLocation.getLongitude());
+/*                                SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+                                Float latitude = sharedPreferences.getFloat("latitude", (float) 37.483149);
+                                Float longitude = sharedPreferences.getFloat("longitude", (float) -122.150028);*/
+                                if (mCurrentLocation != null){
+                                    bundle.putDouble(LAT_KEY, mCurrentLocation.getLatitude());
+                                    bundle.putDouble(LONG_KEY, mCurrentLocation.getLongitude());
+                                }
                                 fragment = new EventsExploreFragment();
                                 fragment.setArguments(bundle);
                                 break;
@@ -476,7 +482,12 @@ public class HomeActivity extends AppCompatActivity
             return;
         }
         mCurrentLocation = location;
-        Log.d("Location", mCurrentLocation.toString());
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putFloat("latitude", (float) mCurrentLocation.getLatitude());
+        editor.putFloat("longitude", (float) mCurrentLocation.getLongitude());
+        editor.commit();
+
     }
 
 

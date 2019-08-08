@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -202,7 +203,6 @@ public class BucketListCurrentFragment extends Fragment {
     }
 
     public void popupWindowForBucketList(View view) {
-        addBlur();
         LayoutInflater inflater = (LayoutInflater)
                 getContext().getSystemService(LAYOUT_INFLATER_SERVICE);
 
@@ -210,6 +210,8 @@ public class BucketListCurrentFragment extends Fragment {
         final Spinner spinnerCategory = popupView.findViewById(R.id.spinnerCategory);
         final EditText etItemDescription = popupView.findViewById(R.id.etItemDescription);
         final DatePicker dpCalendar = popupView.findViewById(R.id.dpCalendar);
+        Date date = new Date();
+        dpCalendar.setMinDate(date.getTime());
         final Button btnBuckIt = popupView.findViewById(R.id.btnBuckIt);
         final String deadline = (dpCalendar.getMonth()+1)+"/"+ (dpCalendar.getDayOfMonth())+"/"+dpCalendar.getYear();
         int width = LinearLayout.LayoutParams.MATCH_PARENT;
@@ -217,22 +219,27 @@ public class BucketListCurrentFragment extends Fragment {
         final PopupWindow popupWindow = new PopupWindow(popupView, width, height);
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 40);
         popupWindow.setFocusable(true);
+        popupWindow.setOutsideTouchable(true);
         popupWindow.update();
         btnBuckIt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final String description = etItemDescription.getText().toString();
                 final String category = spinnerCategory.getSelectedItem().toString();
-                try {
-                    addItemToBucketList(description, user, deadline, category);
-                } catch (java.text.ParseException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                if (description.length() <= 0) {
+                    Snackbar.make(popupView, "Please make sure you filled all required fields", Snackbar.LENGTH_SHORT).show();
                 }
-                popupWindow.dismiss();
-                populateBucket();
-                removeBlur();
+                else {
+                    try {
+                        addItemToBucketList(description, user, deadline, category);
+                    } catch (java.text.ParseException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    popupWindow.dismiss();
+                    populateBucket();
+                }
             }
         });
     }

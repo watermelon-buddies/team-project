@@ -200,12 +200,7 @@ public class ViewProfile extends AppCompatActivity implements NavigationView.OnN
             Intent friendsView = new Intent(ViewProfile.this, ViewFriends.class);
             friendsView.putExtra("userCal", userCal);
             startActivity(friendsView);
-        } else if (id == R.id.nav_profile) {
-            //getCalendarEvents(CALENDAR_CALLBACK_ID, Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
-            Intent profileView = new Intent(ViewProfile.this, ViewProfile.class);
-            profileView.putExtra("userCal", userCal);
-            startActivity(profileView);
-
+            finish();
         }
         leftDrawer.closeDrawer(GravityCompat.START);
         return true;

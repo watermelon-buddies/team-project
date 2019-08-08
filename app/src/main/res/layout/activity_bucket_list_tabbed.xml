@@ -2,17 +2,18 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintTabbed"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.BucketListTabbed">
 
     <Button
         android:id="@+id/btnCurrentBucketTab"
-        android:layout_width="203dp"
+        android:layout_width="0dp"
         android:layout_height="49dp"
-        android:background="@color/bright_blue"
+        android:background="@color/white"
         android:text="@string/first_tab_description"
-        android:textColor="@color/cardview_light_background"
+        android:textColor="@color/bright_blue"
         app:layout_constraintEnd_toStartOf="@+id/btnAchievedBucketTab"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,10 +22,11 @@
     <Button
         android:id="@+id/btnAchievedBucketTab"
         android:layout_width="204dp"
-        android:layout_height="50dp"
+        android:layout_height="0dp"
         android:background="@color/cardview_light_background"
         android:text="@string/second_tab_description"
-        android:textColor="@color/bright_blue"
+        android:textColor="@color/grey"
+        app:layout_constraintBottom_toBottomOf="@+id/btnCurrentBucketTab"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -39,6 +41,23 @@
         app:layout_constraintTop_toBottomOf="@+id/btnCurrentBucketTab">
 
     </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@+id/btnAchievedBucketTab"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/btnCurrentBucketTab"
+        app:layout_constraintTop_toBottomOf="@+id/btnCurrentBucketTab">
+        <ImageView
+            android:id="@+id/ivHorizontalDivider"
+            android:layout_width="204dp"
+            android:layout_height="2dp"
+            android:src="@color/bright_blue"/>
+    </LinearLayout>
+
+
+
 
 </android.support.constraint.ConstraintLayout>
 
