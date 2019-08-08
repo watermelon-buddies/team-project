@@ -61,10 +61,12 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
     public final static String API_KEY_LOCATION = "location.address";
     public final static String API_KEY_CATEGORY = "categories";
     public final static String KEY_SELECTED_CATEGORIES = "catSelected";
+    public final static String KEY_DEFAULT_LOCATION = "Menlo Park";
+    public final static String KEY_DEFAULT_RADIUS = "100mi";
     public View popupView;
     public SwipeCardAdapter swipe_card_adapter;
-    public float latitude;
-    public float longitude;
+    public Double latitude;
+    public Double longitude;
     public HashMap<Integer, Event> eventsList;
     @BindView(R.id.rvEvents) public CardStack rvEvents;
     @BindView(R.id.ivBlur) public ImageView blur;
@@ -106,8 +108,8 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
         rvEvents.setAdapter(swipe_card_adapter);
         rvEvents.setListener(this);
         if (getArguments() != null){
-            latitude = getArguments().getFloat(LAT_KEY);
-            longitude = getArguments().getFloat(LONG_KEY);
+            latitude = Double.valueOf(getArguments().getFloat(LAT_KEY));
+            longitude = Double.valueOf(getArguments().getFloat(LONG_KEY));
             getEvents(user);
         }
         mCheck.bringToFront();
@@ -117,14 +119,16 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
     // Sends request specifying location for events. Result list is used to create event types
     private void getEvents(ParseUser user) {
         ArrayList<String> categories = (ArrayList<String>) user.get(KEY_SELECTED_CATEGORIES);
-        if (categories.get(0) == null) {
-            Log.d("Categories", "is null");
+        if (categories.size() == 0) {
             AsyncHttpClient client = new AsyncHttpClient();
             RequestParams params = new RequestParams();
             String url = API_BASE_URL + "events/search";
-            params.put(API_KEY_AREA_RADIUS, user.getString("eventRadius"));
-            params.put(API_KEY_LATITUDE, latitude);
-            params.put(API_KEY_LONGITUDE, longitude);
+            params.put(API_KEY_AREA_RADIUS, KEY_DEFAULT_RADIUS);
+/*            if (latitude != null){
+                params.put(API_KEY_LATITUDE, latitude);
+                params.put(API_KEY_LONGITUDE, longitude);
+            }*/
+            params.put(API_KEY_LOCATION, KEY_DEFAULT_LOCATION);
             params.put(API_KEY_PARAM, PRIVATE_TOKEN);
             client.get(url, params, new JsonHttpResponseHandler() {
                 @Override
@@ -150,9 +154,12 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
                 AsyncHttpClient client = new AsyncHttpClient();
                 RequestParams params = new RequestParams();
                 String url = API_BASE_URL + "events/search";
-                params.put(API_KEY_AREA_RADIUS, "20mi");
-                params.put(API_KEY_LATITUDE, latitude);
-                params.put(API_KEY_LONGITUDE, longitude);
+                params.put(API_KEY_AREA_RADIUS, KEY_DEFAULT_RADIUS);
+/*                if (latitude != null){
+                    params.put(API_KEY_LATITUDE, latitude);
+                    params.put(API_KEY_LONGITUDE, longitude);
+                }*/
+                params.put(API_KEY_LOCATION, KEY_DEFAULT_LOCATION);
                 params.put(API_KEY_PARAM, PRIVATE_TOKEN);
                 Log.d("Events", "Loading category "+categories.get(i));
                 params.put(API_KEY_CATEGORY, categories.get(i));

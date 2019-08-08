@@ -278,11 +278,13 @@ public class HomeActivity extends AppCompatActivity
                                 break;
                             case R.id.action_events:
                                 Bundle bundle = new Bundle();
-                                SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
-                                float latitude = sharedPreferences.getFloat("latitude", (float) 37.452961);
-                                float longitude = sharedPreferences.getFloat("longitude", (float) 122.181725);
-                                bundle.putDouble(LAT_KEY, latitude);
-                                bundle.putDouble(LONG_KEY, longitude);
+/*                                SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+                                Float latitude = sharedPreferences.getFloat("latitude", (float) 37.483149);
+                                Float longitude = sharedPreferences.getFloat("longitude", (float) -122.150028);*/
+                                if (mCurrentLocation != null){
+                                    bundle.putDouble(LAT_KEY, mCurrentLocation.getLatitude());
+                                    bundle.putDouble(LONG_KEY, mCurrentLocation.getLongitude());
+                                }
                                 fragment = new EventsExploreFragment();
                                 fragment.setArguments(bundle);
                                 break;
@@ -485,7 +487,7 @@ public class HomeActivity extends AppCompatActivity
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putFloat("latitude", (float) mCurrentLocation.getLatitude());
         editor.putFloat("longitude", (float) mCurrentLocation.getLongitude());
-        editor.apply();
+        editor.commit();
 
     }
 
