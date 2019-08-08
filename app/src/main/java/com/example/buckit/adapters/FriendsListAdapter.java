@@ -115,7 +115,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 
     private void createFriendRequest(ParseUser inviter, ParseUser invited) {
         FriendInvite newInvitation = new FriendInvite();
-        NotificationSender makeNotification = new NotificationSender(((User)invited).getDeviceId(), 2, inviter.getUsername());
+        NotificationSender makeNotification = new NotificationSender(((User)invited).getUsername(), ((User)invited).getDeviceId(), 2, inviter.getUsername());
         makeNotification.sendNotification();
         newInvitation.setInviter(inviter);
         newInvitation.setInvited(invited);

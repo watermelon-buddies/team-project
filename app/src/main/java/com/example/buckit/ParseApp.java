@@ -6,8 +6,10 @@ import com.example.buckit.models.Bucketlist;
 import com.example.buckit.models.FriendInvite;
 import com.example.buckit.models.User;
 import com.example.buckit.models.UserInvite;
+import com.example.buckit.models.UserNotification;
 import com.parse.Parse;
 import com.parse.ParseObject;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 
@@ -27,6 +29,7 @@ public class ParseApp extends Application {
         ParseObject.registerSubclass(Bucketlist.class);
         ParseObject.registerSubclass(User.class);
         ParseObject.registerSubclass(UserInvite.class);
+        ParseObject.registerSubclass(UserNotification.class);
         ParseObject.registerSubclass(FriendInvite.class);
         final Parse.Configuration configuration = new Parse.Configuration.Builder(this)
                 .applicationId("fbu-buckit")

@@ -325,7 +325,7 @@ public class SchedulerFragment extends Fragment {
     }
 
     private void sendNotification(){
-        NotificationSender makeNotification = new NotificationSender(((User)userToInvite).getDeviceId(), 0, ParseUser.getCurrentUser().getUsername());
+        NotificationSender makeNotification = new NotificationSender(((User)userToInvite).getUsername(), ((User)userToInvite).getDeviceId(), 0, ParseUser.getCurrentUser().getUsername());
         makeNotification.sendNotification();
     }
 
