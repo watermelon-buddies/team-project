@@ -91,6 +91,8 @@ public class HomeActivity extends AppCompatActivity
     public static final long ONE_MINUTE_IN_MILLIS=60000;
     public final static String LAT_KEY = "lat";
     public final static String LONG_KEY = "long";
+    private final static Double DEFAULT_MENLO_PARK_LATITUDE = 37.4219983;
+    private final static Double DEFAULT_MENLO_PARK_LONGITUDE = -122.084;
     final private static int CALENDAR_CALLBACK_ID = 42;
     private LocationRequest mLocationRequest;
     public HashMap<String, Integer> userEvents;
@@ -179,6 +181,8 @@ public class HomeActivity extends AppCompatActivity
                                 Bundle bundle = new Bundle();
                                 bundle.putDouble(LAT_KEY, mCurrentLocation.getLatitude());
                                 bundle.putDouble(LONG_KEY, mCurrentLocation.getLongitude());
+                                Log.d("Location", String.valueOf(mCurrentLocation.getLatitude()));
+                                Log.d("Location", String.valueOf(mCurrentLocation.getLongitude()));
                                 fragment = new EventsExploreFragment();
                                 fragment.setArguments(bundle);
                                 break;

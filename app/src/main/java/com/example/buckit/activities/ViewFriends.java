@@ -174,12 +174,11 @@ public class ViewFriends extends AppCompatActivity {
                     Intent logoutIntent = new Intent(ViewFriends.this, LoginActivity.class);
                     startActivity(logoutIntent);
                     finish();
-                } else if (id == R.id.nav_view_friends) {
-                    startActivity(new Intent(ViewFriends.this, ViewFriends.class));
                 } else if (id == R.id.nav_profile) {
                     Intent profileView = new Intent(ViewFriends.this, ViewProfile.class);
                     profileView.putExtra("userCal", userEvents);
                     startActivity(profileView);
+                    finish();
                 }
                 leftDrawer.closeDrawer(GravityCompat.START);
                 return true;
