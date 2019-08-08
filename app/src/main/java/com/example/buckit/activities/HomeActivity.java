@@ -295,7 +295,6 @@ public class HomeActivity extends AppCompatActivity
                             Integer rangeIn15MinIntervals = Math.toIntExact(timeOfEvent) / 15;
                             for(int i = 0; i < rangeIn15MinIntervals; i++){
                                 String normalDate = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new java.util.Date(currEvent.dTStart + (15 * i * ONE_MINUTE_IN_MILLIS)));
-                                Log.d("check", normalDate);
                                 userEvents.put(normalDate, 1);
                             }
                         }

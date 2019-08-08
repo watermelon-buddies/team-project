@@ -13,6 +13,8 @@ import android.util.Log;
 
 import com.example.buckit.R;
 import com.example.buckit.activities.HomeActivity;
+import com.example.buckit.activities.ViewFriends;
+import com.example.buckit.activities.ViewProfile;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -21,6 +23,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String TAG = "FirebaseMessagingServic";
     private static final String KEY_BODY = "body";
     private static final String KEY_DATA = "data";
+    private static final String KEY_NUMTYPE = "numType";
+    private static final String KEY_FRIEND_NOTIFICATION = "friendNotification";
 
     public MyFirebaseMessagingService() {
 
@@ -35,13 +39,18 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         if(remoteMessage.getData().size() > 0){
             Log.d(TAG, remoteMessage.getData().toString());
-            sendNotification(remoteMessage.getData().get(KEY_BODY));
+            sendNotification(remoteMessage.getData().get(KEY_BODY), remoteMessage.getData().get(KEY_NUMTYPE));
         }
     }
 
 
-    private void sendNotification(String messageBody) {
+    private void sendNotification(String messageBody, String numType) {
         Intent intent = new Intent(this, HomeActivity.class);
+        if(numType.equals(KEY_FRIEND_NOTIFICATION)){
+            intent = new Intent(this, ViewFriends.class);
+        } else {
+            intent = new Intent(this, ViewProfile.class);
+        }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);

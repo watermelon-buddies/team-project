@@ -1,9 +1,7 @@
 package com.example.buckit.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintSet;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,20 +12,16 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.buckit.R;
-import com.example.buckit.activities.SelectTime;
-import com.example.buckit.activities.ViewFriends;
 import com.example.buckit.models.FriendInvite;
+import com.example.buckit.models.NotificationSender;
 import com.example.buckit.models.User;
-import com.example.buckit.models.UserInvite;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
-import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 import static com.example.buckit.models.User.KEY_FRIENDS;
 import static com.example.buckit.models.User.KEY_PROFILE_PICTURE;
@@ -128,6 +122,15 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
                 invite.setStatus(0);
             }
             invite.saveInBackground();
+            FriendInvite newInvitation = new FriendInvite();
+            String id = ((User)invite.getInviter()).getDeviceId();
+            NotificationSender makeNotification = null;
+            try {
+                makeNotification = new NotificationSender(id, 3, invite.getInvited().fetchIfNeeded().getUsername());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            makeNotification.sendNotification();
             mRequests.remove(invite);
             notifyDataSetChanged();
         }
