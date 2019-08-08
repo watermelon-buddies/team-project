@@ -45,7 +45,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 import static com.example.buckit.models.User.KEY_FRIENDS;
@@ -95,7 +94,6 @@ public class ViewFriends extends AppCompatActivity {
         JSONArray friends = currentUser.getJSONArray(KEY_FRIENDS);
         if (friends == null){
             ArrayList<String> friendsEmptyList = new ArrayList<>();
-            friendsEmptyList.add("Beam");
             currentUser.put(KEY_FRIENDS, friendsEmptyList);
             currentUser.saveInBackground(new SaveCallback() {
                 @Override

@@ -65,51 +65,53 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         // get data according to position
-        friend = (User) mFriendsList.get(position);
-        Log.d("Friend", friend.getUsername());
-        holder.tvUsername.setText(friend.getUsername());
-        if (friend.getProfilePic() != null) {
-            Glide.with(mContext)
-                    .load(friend.getProfilePic().getUrl())
-                    .bitmapTransform(new CropCircleTransformation(mContext))
-                    .into(holder.ivProfilePicture);
-        } else {
-            Glide.with(mContext)
-                    .load(R.drawable.no_profile)
-                    .bitmapTransform(new CropCircleTransformation(mContext))
-                    .into(holder.ivProfilePicture);
-        }
-
-        if (mShow == true) {
-            holder.fabAddFriends.setVisibility(View.VISIBLE);
-            if(mScheduler){
-                holder.fabAddFriends.setText("Invite");
+        if(mFriendsList.size() > 0) {
+            friend = (User) mFriendsList.get(position);
+            Log.d("Friend", friend.getUsername());
+            holder.tvUsername.setText(friend.getUsername());
+            if (friend.getProfilePic() != null) {
+                Glide.with(mContext)
+                        .load(friend.getProfilePic().getUrl())
+                        .bitmapTransform(new CropCircleTransformation(mContext))
+                        .into(holder.ivProfilePicture);
+            } else {
+                Glide.with(mContext)
+                        .load(R.drawable.no_profile)
+                        .bitmapTransform(new CropCircleTransformation(mContext))
+                        .into(holder.ivProfilePicture);
             }
-        } else {
-            holder.fabAddFriends.setVisibility(View.GONE);
-        }
-        holder.fabAddFriends.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = holder.getAdapterPosition();
-                Log.d("Click", "Working");
-                // make sure the position is valid, i.e. actually exists in the view
-                if (position != RecyclerView.NO_POSITION) {
-                    User user = mFriendsList.get(position);
-                    if (mScheduler) {
-                        Intent friendSelected = new Intent();
-                        friendSelected.putExtra("selected_user", user.getUsername());
-                        ((Activity) mContext).setResult(((Activity)mContext).RESULT_OK, friendSelected);
-                        ((Activity) mContext).finish();
-                    } else {
-                        Log.d("Click", user.toString());
-                        createFriendRequest(currentUser, user);
-                        mFriendsList.remove(position);
-                        notifyDataSetChanged();
+
+            if (mShow == true) {
+                holder.fabAddFriends.setVisibility(View.VISIBLE);
+                if (mScheduler) {
+                    holder.fabAddFriends.setText("Invite");
+                }
+            } else {
+                holder.fabAddFriends.setVisibility(View.GONE);
+            }
+            holder.fabAddFriends.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = holder.getAdapterPosition();
+                    Log.d("Click", "Working");
+                    // make sure the position is valid, i.e. actually exists in the view
+                    if (position != RecyclerView.NO_POSITION) {
+                        User user = mFriendsList.get(position);
+                        if (mScheduler) {
+                            Intent friendSelected = new Intent();
+                            friendSelected.putExtra("selected_user", user.getUsername());
+                            ((Activity) mContext).setResult(((Activity) mContext).RESULT_OK, friendSelected);
+                            ((Activity) mContext).finish();
+                        } else {
+                            Log.d("Click", user.toString());
+                            createFriendRequest(currentUser, user);
+                            mFriendsList.remove(position);
+                            notifyDataSetChanged();
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
 
     }
 
