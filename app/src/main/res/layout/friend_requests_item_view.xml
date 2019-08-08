@@ -19,16 +19,15 @@
         android:clickable="true"
         android:clipToPadding="false"
         android:foreground="?android:attr/selectableItemBackground"
-        android:paddingLeft="20dp"
         android:paddingBottom="30dp"
         card_view:cardCornerRadius="@dimen/card_corner_radius"
         card_view:cardElevation="@dimen/card_elevation">
 
 
         <android.support.constraint.ConstraintLayout
-            android:layout_width="300dp"
+            android:layout_width="248dp"
 
-            android:layout_height="match_parent">
+            android:layout_height="141dp">
 
             <View
                 android:id="@+id/buttonDivider"
@@ -43,7 +42,7 @@
             <TextView
                 android:id="@+id/tvRequestUsername"
                 android:layout_width="0dp"
-                android:layout_height="16dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
@@ -52,6 +51,8 @@
                 android:layout_marginBottom="8dp"
                 android:gravity="center"
                 android:text="TextView"
+                android:textSize="18sp"
+                android:textStyle="bold"
                 card_view:layout_constraintBottom_toTopOf="@+id/btnDeclineFriend"
                 card_view:layout_constraintEnd_toEndOf="parent"
                 card_view:layout_constraintHorizontal_bias="0.0"
@@ -62,25 +63,23 @@
                 android:id="@+id/btnAcceptFriend"
                 android:layout_width="0dp"
                 android:layout_height="49dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="1dp"
                 android:layout_marginRight="1dp"
-                android:background="@drawable/button_accept"
+                android:background="#FFFFFF"
                 android:text="@string/accept"
                 android:textColor="@color/bright_blue"
                 card_view:layout_constraintBottom_toBottomOf="parent"
                 card_view:layout_constraintEnd_toStartOf="@+id/btnDeclineFriend"
                 card_view:layout_constraintHorizontal_bias="0.5"
-                card_view:layout_constraintStart_toEndOf="@+id/ivRequestProfilePic" />
+                card_view:layout_constraintStart_toStartOf="parent"
+                card_view:layout_constraintTop_toBottomOf="@+id/ivRequestProfilePic" />
 
             <Button
                 android:id="@+id/btnDeclineFriend"
                 android:layout_width="0dp"
                 android:layout_height="49dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:background="@drawable/button_decline"
+                android:background="@color/white"
                 android:text="@string/decline"
                 android:textColor="@android:color/darker_gray"
                 card_view:layout_constraintBottom_toBottomOf="parent"
@@ -90,8 +89,8 @@
 
             <ImageView
                 android:id="@+id/ivRequestProfilePic"
-                android:layout_width="109dp"
-                android:layout_height="123dp"
+                android:layout_width="79dp"
+                android:layout_height="78dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="8dp"

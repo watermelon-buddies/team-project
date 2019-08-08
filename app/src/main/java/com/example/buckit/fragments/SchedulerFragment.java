@@ -134,15 +134,17 @@ public class SchedulerFragment extends Fragment {
             @Override
             public void done(List<User> object, ParseException e) {
                 if (e == null) {
-                    if (object != null && object.size() > 0){
+                    if (object != null && object.size() > 0) {
                         ParseObject user = object.get(0);  // only one match expected
                         // now get the user's friends
                         List<User> friends = user.getList("friends");
-                        for(User friend : friends){
-                            userFriends.put(friend.getUsername(), friend);
-                            userFriendsList.add(friend.getUsername());
+                        if (friends != null) {
+                            for (User friend : friends) {
+                                userFriends.put(friend.getUsername(), friend);
+                                userFriendsList.add(friend.getUsername());
+                            }
+                            Log.d("Timeline Activity", "Successfully loaded friends!");
                         }
-                        Log.d("Timeline Activity", "Successfully loaded friends!");
                     }
                     setButtons();
                 } else {

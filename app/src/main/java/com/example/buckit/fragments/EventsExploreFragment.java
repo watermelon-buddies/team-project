@@ -119,7 +119,7 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
     // Sends request specifying location for events. Result list is used to create event types
     private void getEvents(ParseUser user) {
         ArrayList<String> categories = (ArrayList<String>) user.get(KEY_SELECTED_CATEGORIES);
-        if (categories.size() == 0) {
+        if (categories == null || categories.size() == 0) {
             AsyncHttpClient client = new AsyncHttpClient();
             RequestParams params = new RequestParams();
             String url = API_BASE_URL + "events/search";

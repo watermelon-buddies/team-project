@@ -4,11 +4,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
 
-    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/viewFriendsConstraint"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -95,17 +94,14 @@
             android:id="@+id/tvFriendRequests"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginLeft="24dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
             android:text="Friend Requests"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="@color/bright_blue"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
@@ -113,19 +109,15 @@
             android:id="@+id/tvPendingRequests"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginLeft="24dp"
             android:layout_marginTop="32dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
             android:text="Pending Requests"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="@color/bright_blue"
-            android:textSize="17sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/rvPendingRequests"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rvFriendRequests" />
 
@@ -133,16 +125,13 @@
             android:id="@+id/tvNoPendingRequests"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:text="No current pending requests!"
+            android:layout_marginStart="24dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="16dp"
+            android:text="No current pending requests"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="@color/grey"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:textSize="15sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvPendingRequests" />
 
@@ -150,16 +139,13 @@
             android:id="@+id/tvNoRequests"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginLeft="24dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
             android:text="No current friend requests"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="@color/grey"
             android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvFriendRequests" />
 
@@ -167,18 +153,14 @@
             android:id="@+id/tvCurrentFriends"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="24dp"
             android:text="Friends"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="@color/bright_blue"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvNoPendingRequests" />
 
@@ -193,6 +175,15 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvPendingRequests" />
+
+        <View
+            android:id="@+id/divider11"
+            android:layout_width="395dp"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     </android.support.constraint.ConstraintLayout>
 

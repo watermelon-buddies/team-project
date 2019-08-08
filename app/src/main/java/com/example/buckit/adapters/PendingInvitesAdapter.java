@@ -21,6 +21,7 @@ import com.parse.SaveCallback;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 public class PendingInvitesAdapter extends RecyclerView.Adapter<PendingInvitesAdapter.ViewHolder> {
 
@@ -66,7 +67,30 @@ public class PendingInvitesAdapter extends RecyclerView.Adapter<PendingInvitesAd
             e.printStackTrace();
         }
         holder.tvWhere.setText("at " + currInvite.getLocation());
+        setColor(position, holder);
+    }
 
+    private void setColor(int position, ViewHolder holder){
+        int chosenColor = R.color.pastel_pink;
+        int toColor = new Random().nextInt(5);
+        switch (toColor){
+            case 0:
+                chosenColor = R.color.pastel_mustard;
+                break;
+            case 1:
+                chosenColor = R.color.pastel_pink;
+                break;
+            case 2:
+                chosenColor = R.color.pastel_green;
+                break;
+            case 3:
+                chosenColor = R.color.pastel_purple;
+                break;
+            case 4:
+                chosenColor = R.color.bright_blue;
+                break;
+        }
+        holder.colorBorder.setBackgroundColor(mContext.getResources().getColor(chosenColor));
 
     }
 
@@ -95,10 +119,12 @@ public class PendingInvitesAdapter extends RecyclerView.Adapter<PendingInvitesAd
         public Button btnDecline;
         public View buttonDivider;
         public View horizontalDivider;
+        public View colorBorder;
 
         public ViewHolder(View itemView) {
             super(itemView);
             tvWhat = itemView.findViewById(R.id.tvWhat);
+            colorBorder = itemView.findViewById(R.id.colorBorder);
             tvWho = itemView.findViewById(R.id.tvWho);
             tvWhere = itemView.findViewById(R.id.tvWhere);
             btnAccept = itemView.findViewById(R.id.btnAccept);
