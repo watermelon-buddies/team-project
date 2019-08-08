@@ -68,8 +68,6 @@ public class SignUpActivity extends AppCompatActivity {
                     Intent i = new Intent();
                     i.putExtra("username", username);
                     i.putExtra("password", password);
-                    Log.d("username", username);
-
                     setResult(RESULT_OK, i);
                     Toast.makeText(getApplicationContext(), "Account created successfully",
                             Toast.LENGTH_SHORT).show();
