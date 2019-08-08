@@ -1,92 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/cvFriendRequest"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/grid_margin"
-    android:layout_marginTop="@dimen/cell_margin"
-    android:layout_marginRight="@dimen/grid_margin"
-    android:clickable="true"
-    android:foreground="?android:attr/selectableItemBackground"
-    card_view:cardCornerRadius="@dimen/card_corner_radius"
-    card_view:cardElevation="@dimen/card_elevation">
+    android:clipToPadding="false"
+    android:paddingLeft="20dp"
+    android:paddingBottom="16dp">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cvFriendRequest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/grid_margin"
+        android:layout_marginTop="@dimen/cell_margin"
+        android:layout_marginRight="@dimen/grid_margin"
+        android:clickable="true"
+        android:clipToPadding="false"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:paddingLeft="20dp"
+        android:paddingBottom="30dp"
+        card_view:cardCornerRadius="@dimen/card_corner_radius"
+        card_view:cardElevation="@dimen/card_elevation">
 
 
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="300dp"
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="300dp"
 
-        android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
-        <View
-            android:id="@+id/buttonDivider"
-            android:layout_width="1dp"
-            android:layout_height="0dp"
-            android:background="@color/darker_grey"
-            card_view:layout_constraintBottom_toBottomOf="@+id/btnDeclineFriend"
-            card_view:layout_constraintStart_toStartOf="@+id/btnDeclineFriend"
-            card_view:layout_constraintTop_toTopOf="@+id/btnDeclineFriend"
-            card_view:layout_constraintVertical_bias="0.0" />
+            <View
+                android:id="@+id/buttonDivider"
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:background="@color/darker_grey"
+                card_view:layout_constraintBottom_toBottomOf="@+id/btnDeclineFriend"
+                card_view:layout_constraintStart_toStartOf="@+id/btnDeclineFriend"
+                card_view:layout_constraintTop_toTopOf="@+id/btnDeclineFriend"
+                card_view:layout_constraintVertical_bias="0.0" />
 
-        <TextView
-            android:id="@+id/tvRequestUsername"
-            android:layout_width="0dp"
-            android:layout_height="16dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="8dp"
-            android:gravity="center"
-            android:text="TextView"
-            card_view:layout_constraintBottom_toTopOf="@+id/btnDeclineFriend"
-            card_view:layout_constraintEnd_toEndOf="parent"
-            card_view:layout_constraintHorizontal_bias="0.0"
-            card_view:layout_constraintStart_toEndOf="@+id/ivRequestProfilePic"
-            card_view:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/tvRequestUsername"
+                android:layout_width="0dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center"
+                android:text="TextView"
+                card_view:layout_constraintBottom_toTopOf="@+id/btnDeclineFriend"
+                card_view:layout_constraintEnd_toEndOf="parent"
+                card_view:layout_constraintHorizontal_bias="0.0"
+                card_view:layout_constraintStart_toEndOf="@+id/ivRequestProfilePic"
+                card_view:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/btnAcceptFriend"
-            android:layout_width="0dp"
-            android:layout_height="49dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginEnd="1dp"
-            android:layout_marginRight="1dp"
-            android:background="@drawable/button_accept"
-            android:text="@string/accept"
-            android:textColor="@color/bright_blue"
-            card_view:layout_constraintBottom_toBottomOf="parent"
-            card_view:layout_constraintEnd_toStartOf="@+id/btnDeclineFriend"
-            card_view:layout_constraintHorizontal_bias="0.5"
-            card_view:layout_constraintStart_toEndOf="@+id/ivRequestProfilePic" />
+            <Button
+                android:id="@+id/btnAcceptFriend"
+                android:layout_width="0dp"
+                android:layout_height="49dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginEnd="1dp"
+                android:layout_marginRight="1dp"
+                android:background="@drawable/button_accept"
+                android:text="@string/accept"
+                android:textColor="@color/bright_blue"
+                card_view:layout_constraintBottom_toBottomOf="parent"
+                card_view:layout_constraintEnd_toStartOf="@+id/btnDeclineFriend"
+                card_view:layout_constraintHorizontal_bias="0.5"
+                card_view:layout_constraintStart_toEndOf="@+id/ivRequestProfilePic" />
 
-        <Button
-            android:id="@+id/btnDeclineFriend"
-            android:layout_width="0dp"
-            android:layout_height="49dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:background="@drawable/button_decline"
-            android:text="@string/decline"
-            android:textColor="@android:color/darker_gray"
-            card_view:layout_constraintBottom_toBottomOf="parent"
-            card_view:layout_constraintEnd_toEndOf="parent"
-            card_view:layout_constraintHorizontal_bias="0.5"
-            card_view:layout_constraintStart_toEndOf="@+id/btnAcceptFriend" />
+            <Button
+                android:id="@+id/btnDeclineFriend"
+                android:layout_width="0dp"
+                android:layout_height="49dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@drawable/button_decline"
+                android:text="@string/decline"
+                android:textColor="@android:color/darker_gray"
+                card_view:layout_constraintBottom_toBottomOf="parent"
+                card_view:layout_constraintEnd_toEndOf="parent"
+                card_view:layout_constraintHorizontal_bias="0.5"
+                card_view:layout_constraintStart_toEndOf="@+id/btnAcceptFriend" />
 
-        <ImageView
-            android:id="@+id/ivRequestProfilePic"
-            android:layout_width="109dp"
-            android:layout_height="123dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
-            card_view:layout_constraintStart_toStartOf="parent"
-            card_view:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@tools:sample/avatars[1]" />
+            <ImageView
+                android:id="@+id/ivRequestProfilePic"
+                android:layout_width="109dp"
+                android:layout_height="123dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                card_view:layout_constraintStart_toStartOf="parent"
+                card_view:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@tools:sample/avatars[1]" />
 
-    </android.support.constraint.ConstraintLayout>
-</android.support.v7.widget.CardView>
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v7.widget.CardView>
+
+</ScrollView>

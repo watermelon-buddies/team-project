@@ -11,6 +11,7 @@ import org.json.JSONArray;
 public class User extends ParseUser {
 
     public static final String KEY_FRIENDS = "friends";
+    public static final String KEY_NOTIFICATIONS = "userNotifications";
     public static final String KEY_PROFILE_PICTURE= "profilePic";
     public static final String KEY_CATEGORIES_SELECTED = "catSelected";
     public static final String KEY_EVENTS_RSVP = "eventsRSVP";
