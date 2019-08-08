@@ -63,8 +63,8 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
     public final static String KEY_SELECTED_CATEGORIES = "catSelected";
     public View popupView;
     public SwipeCardAdapter swipe_card_adapter;
-    public Double latitude;
-    public Double longitude;
+    public float latitude;
+    public float longitude;
     public HashMap<Integer, Event> eventsList;
     @BindView(R.id.rvEvents) public CardStack rvEvents;
     @BindView(R.id.ivBlur) public ImageView blur;
@@ -106,8 +106,8 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
         rvEvents.setAdapter(swipe_card_adapter);
         rvEvents.setListener(this);
         if (getArguments() != null){
-            latitude = getArguments().getDouble(LAT_KEY);
-            longitude = getArguments().getDouble(LONG_KEY);
+            latitude = getArguments().getFloat(LAT_KEY);
+            longitude = getArguments().getFloat(LONG_KEY);
             getEvents(user);
         }
         mCheck.bringToFront();

@@ -2,7 +2,9 @@ package com.example.buckit.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -91,8 +93,6 @@ public class HomeActivity extends AppCompatActivity
     public static final long ONE_MINUTE_IN_MILLIS=60000;
     public final static String LAT_KEY = "lat";
     public final static String LONG_KEY = "long";
-    private final static Double DEFAULT_MENLO_PARK_LATITUDE = 37.4219983;
-    private final static Double DEFAULT_MENLO_PARK_LONGITUDE = -122.084;
     final private static int CALENDAR_CALLBACK_ID = 42;
     private LocationRequest mLocationRequest;
     public HashMap<String, Integer> userEvents;
@@ -179,10 +179,11 @@ public class HomeActivity extends AppCompatActivity
                                 break;
                             case R.id.action_events:
                                 Bundle bundle = new Bundle();
-                                bundle.putDouble(LAT_KEY, mCurrentLocation.getLatitude());
-                                bundle.putDouble(LONG_KEY, mCurrentLocation.getLongitude());
-                                Log.d("Location", String.valueOf(mCurrentLocation.getLatitude()));
-                                Log.d("Location", String.valueOf(mCurrentLocation.getLongitude()));
+                                SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+                                float latitude = sharedPreferences.getFloat("latitude", (float) 37.452961);
+                                float longitude = sharedPreferences.getFloat("longitude", (float) 122.181725);
+                                bundle.putDouble(LAT_KEY, latitude);
+                                bundle.putDouble(LONG_KEY, longitude);
                                 fragment = new EventsExploreFragment();
                                 fragment.setArguments(bundle);
                                 break;
@@ -381,7 +382,12 @@ public class HomeActivity extends AppCompatActivity
             return;
         }
         mCurrentLocation = location;
-        Log.d("Location", mCurrentLocation.toString());
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putFloat("latitude", (float) mCurrentLocation.getLatitude());
+        editor.putFloat("longitude", (float) mCurrentLocation.getLongitude());
+        editor.apply();
+
     }
 
 
