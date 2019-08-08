@@ -237,7 +237,7 @@ public class ViewProfile extends AppCompatActivity implements NavigationView.OnN
     }
 
     private void notifyInviter(UserInvite curr){
-        NotificationSender makeNotification = new NotificationSender(((User)curr.getCreator()).getDeviceId(), 1, curr.getInvited().getUsername());
+        NotificationSender makeNotification = new NotificationSender(((User)curr.getCreator()).getUsername(), ((User)curr.getCreator()).getDeviceId(), 1, curr.getInvited().getUsername());
         makeNotification.sendNotification();
     }
 
