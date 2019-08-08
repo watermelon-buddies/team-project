@@ -10,8 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.buckit.models.User;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.parse.ParseUser;
+import com.parse.ParseException;
 import com.parse.SignUpCallback;
 
 import butterknife.BindView;
@@ -55,15 +54,16 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void registerNewUser(final String username, final String password) {
         // Create the ParseUser
-        User user = (User) new ParseUser();
+        User user = new User();
         // Set core properties
         user.setUsername(username);
-        user.setDeviceId(FirebaseInstanceId.getInstance().getToken());
+        //user.setDeviceId(FirebaseInstanceId.getInstance().getToken());
         user.setPassword(password);
+
        // Invoke signUpInBackground
         user.signUpInBackground(new SignUpCallback() {
             @Override
-            public void done(com.parse.ParseException e) {
+            public void done(ParseException e) {
                 if (e == null) {
                     Intent i = new Intent();
                     i.putExtra("username", username);

@@ -9,6 +9,7 @@ import com.example.buckit.models.UserInvite;
 import com.example.buckit.models.UserNotification;
 import com.parse.Parse;
 import com.parse.ParseObject;
+import com.parse.ParseUser;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -31,6 +32,7 @@ public class ParseApp extends Application {
         ParseObject.registerSubclass(UserInvite.class);
         ParseObject.registerSubclass(UserNotification.class);
         ParseObject.registerSubclass(FriendInvite.class);
+        ParseObject.registerSubclass(ParseUser.class);
         final Parse.Configuration configuration = new Parse.Configuration.Builder(this)
                 .applicationId("fbu-buckit")
                 .clientKey("buckist2019")

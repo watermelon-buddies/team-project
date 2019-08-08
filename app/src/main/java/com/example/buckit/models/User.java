@@ -19,10 +19,15 @@ public class User extends ParseUser {
     public static final String KEY_OBJECT_ID = "objectId";
     public static final String KEY_EVENT_RADIUS = "eventRadius";
     public static final String KEY_DEVICE_ID = "deviceId";
+    public static final String KEY_PASSWORD = "password";
 
     public User(){ }
 
     /* TODO - Modify for array types */
+
+    public void setUsername(String username){ put(KEY_USERNAME, username); }
+
+    public void setPassword(String password){ put(KEY_PASSWORD, password); }
 
 
     public void setFriends(String name){
