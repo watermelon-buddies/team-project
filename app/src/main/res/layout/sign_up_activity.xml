@@ -7,23 +7,23 @@
     tools:context=".SignUpActivity">
 
 
-
     <EditText
         android:id="@+id/etUsername"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginLeft="32dp"
-        android:layout_marginTop="50dp"
         android:layout_marginEnd="32dp"
         android:layout_marginRight="32dp"
+        android:layout_marginBottom="24dp"
         android:ems="10"
         android:foregroundGravity="bottom"
         android:hint="Create new username"
         android:inputType="textEmailAddress"
+        app:layout_constraintBottom_toTopOf="@+id/etPassword"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/etPassword"
@@ -31,15 +31,15 @@
         android:layout_height="40dp"
         android:layout_marginStart="32dp"
         android:layout_marginLeft="32dp"
-        android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
         android:layout_marginRight="32dp"
+        android:layout_marginBottom="24dp"
         android:ems="10"
         android:hint="Set password"
         android:inputType="textPassword"
+        app:layout_constraintBottom_toTopOf="@+id/btnRegister"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etUsername" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btnBack"
@@ -70,6 +70,21 @@
         app:layout_constraintBottom_toTopOf="@+id/btnBack"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/ivSignUpImage"
+        android:layout_width="311dp"
+        android:layout_height="181dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="128dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:scaleType="fitXY"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@drawable/buck_it_logo_2" />
 
 
 </android.support.constraint.ConstraintLayout>

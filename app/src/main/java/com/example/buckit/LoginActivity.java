@@ -43,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Intent i = new Intent(LoginActivity.this, SignUpActivity.class);
-                    startActivityForResult(i, SIGNUP_REQUEST_CODE);
+                    startActivity(i);
                 }
             });
             btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -64,33 +64,6 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
         // Finish so user can't go back to home screen
         finish();
-    }
-
-
-    // Retrieves texts and sends us to parse to verify info
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK && requestCode == SIGNUP_REQUEST_CODE){
-            String username = data.getExtras().getString("username");
-            String password = data.getExtras().getString("password");
-            firstLogIn(username, password);
-        }
-    }
-
-    private void firstLogIn(String username, String password) {
-        ParseUser.logInInBackground(username, password, new LogInCallback() {
-            @Override
-            public void done(ParseUser user, ParseException e) {
-                if(e == null){
-                    startActivity(new Intent(LoginActivity.this, SignUpDetailsActivtiy.class));
-                    finish();
-                } else {
-                    Log.e("LoginActivity", "Error");
-                    e.printStackTrace();
-                }
-            }
-        });
     }
 
     // Checks that the user exists and the password corresponds to it
