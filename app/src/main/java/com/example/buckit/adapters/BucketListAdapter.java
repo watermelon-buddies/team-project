@@ -2,17 +2,15 @@ package com.example.buckit.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -20,10 +18,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.buckit.R;
+import com.example.buckit.activities.HomeActivity;
+import com.example.buckit.fragments.SchedulerFragment;
 import com.example.buckit.models.Bucketlist;
 import com.parse.FindCallback;
 import com.parse.ParseException;
-
 
 import java.util.List;
 
@@ -45,6 +44,7 @@ public class BucketListAdapter extends RecyclerView.Adapter<BucketListAdapter.Vi
     public View popupView;
     PopupWindow popupWindow;
     Bucketlist bucketList;
+    ViewHolder viewHolder;
 
     public BucketListAdapter(Context context, List<Bucketlist> items, boolean notAchieved) {
         mBucketList = items;
@@ -58,7 +58,7 @@ public class BucketListAdapter extends RecyclerView.Adapter<BucketListAdapter.Vi
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         View postView = inflater.inflate(R.layout.bucket_list_item_view, parent, false);
-        ViewHolder viewHolder = new ViewHolder(postView);
+        viewHolder = new ViewHolder(postView);
         return viewHolder;
     }
 
@@ -117,7 +117,7 @@ public class BucketListAdapter extends RecyclerView.Adapter<BucketListAdapter.Vi
                     displayPopupWindow(v);
                 }
             });
-            if (show = true) btnShowOptionsForItem.setVisibility(View.VISIBLE);
+            if (show) btnShowOptionsForItem.setVisibility(View.VISIBLE);
             else btnShowOptionsForItem.setVisibility(View.INVISIBLE);
         }
     }
@@ -128,6 +128,7 @@ public class BucketListAdapter extends RecyclerView.Adapter<BucketListAdapter.Vi
         popupView = inflater.inflate(R.layout.bucketlist_popup, null);
         btnAchieveItem = popupView.findViewById(R.id.btnAchieveItem);
         btnDeleteItem = popupView.findViewById(R.id.btnDeleteItem);
+        btnBookItem = popupView.findViewById(R.id.btnBookItem);
         btnBookItem = popupView.findViewById(R.id.btnBookItem);
         btnAchieveItem.setOnClickListener(this);
         btnDeleteItem.setOnClickListener(this);
@@ -176,6 +177,19 @@ public class BucketListAdapter extends RecyclerView.Adapter<BucketListAdapter.Vi
                 });
                 mBucketList.remove(item);
                 notifyDataSetChanged();
+                popupWindow.dismiss();
+            }
+        }
+        else if(v.getId() == btnBookItem.getId()){
+            if(item != null){
+                Bundle data = new Bundle();
+                data.putString("activity", viewHolder.tvBucketDescription.getText().toString());
+                SchedulerFragment scheduler = new SchedulerFragment();
+                scheduler.setArguments(data);
+                FragmentTransaction fragmentTransaction = ((HomeActivity)mContext).getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.flmain, scheduler);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
                 popupWindow.dismiss();
             }
         }

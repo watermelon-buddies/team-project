@@ -84,6 +84,7 @@ public class SchedulerFragment extends Fragment {
     @BindView(R.id.ivCheckmark1) ImageView ivCheckmark1;
     @BindView(R.id.ivCheckmark2) ImageView ivCheckmark2;
     @BindView(R.id.ivCheckmark3) ImageView ivCheckmark3;
+    @BindView(R.id.tvSchedulerTitle) TextView tvSchedulerTitle;
 
 
 
@@ -192,7 +193,15 @@ public class SchedulerFragment extends Fragment {
         createButtonArray(schedulerView);
         btnSend = schedulerView.findViewById(R.id.btnSend);
         schedulerButtons.add(btnSend);
-        userSelected = getArguments().getString("userSelected");
+        if(getArguments() != null){
+            userSelected = getArguments().getString("userSelected");
+            Bundle extras = getArguments();
+            if(extras != null){
+                String activity = getArguments().getString("activity");
+                etEventName.setText(activity);
+                tvSchedulerTitle.setText(activity);
+            }
+        }
         addListeners();
         addRecentListeners();
     }
@@ -228,17 +237,19 @@ public class SchedulerFragment extends Fragment {
 
     private void setButtons(){
         if(userFriendsList.size() > 0) {
-            tvRecents.setVisibility(View.VISIBLE);
-            ImageView btnToSend = btnRecent0;
-            for (int i = 0; i < userFriendsList.size(); i++) {
-                if (i == 1) {
-                    btnToSend = btnRecent1;
-                } else if (i == 2) {
-                    btnToSend = btnRecent2;
-                } else if (i == 3) {
-                    btnToSend = btnRecent3;
+            if(tvRecents != null && btnRecent0 !=null) {
+                tvRecents.setVisibility(View.VISIBLE);
+                ImageView btnToSend = btnRecent0;
+                for (int i = 0; i < userFriendsList.size(); i++) {
+                    if (i == 1) {
+                        btnToSend = btnRecent1;
+                    } else if (i == 2) {
+                        btnToSend = btnRecent2;
+                    } else if (i == 3) {
+                        btnToSend = btnRecent3;
+                    }
+                    handleSetUp(userFriendsList.get(i), btnToSend);
                 }
-                handleSetUp(userFriendsList.get(i), btnToSend);
             }
         }
         addRecentListeners();

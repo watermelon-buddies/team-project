@@ -289,7 +289,7 @@ public class ViewFriends extends AppCompatActivity {
                     if (pendingRequests != null && pendingRequests.size()>0) {
                         ConstraintSet constraintSet = new ConstraintSet();
                         constraintSet.clone(viewFriendsConstraint);
-                        constraintSet.connect(R.id.tvCurrentFriends,ConstraintSet.TOP, R.id.rvPendingRequests,ConstraintSet.BOTTOM,16);
+                        constraintSet.connect(R.id.tvCurrentFriends,ConstraintSet.TOP, R.id.rvPendingRequests,ConstraintSet.BOTTOM,32);
                         constraintSet.applyTo(viewFriendsConstraint);
                         tvNoPendingRequests.setVisibility(View.INVISIBLE);
                         Log.d("Pending requests", pendingRequests.toString());

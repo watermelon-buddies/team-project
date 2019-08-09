@@ -15,7 +15,7 @@
             android:id="@+id/constraintLayout3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
+            android:layout_marginTop="32dp"
             app:layout_constraintStart_toEndOf="@+id/fabViewFriends"
             app:layout_constraintTop_toBottomOf="@+id/tvAddInvitees">
 
@@ -282,14 +282,13 @@
             android:id="@+id/tvRecents"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:text="@string/recent_friends"
             android:textColor="#B6B2B2"
-            android:textSize="12sp"
+            android:textSize="14sp"
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="@+id/constraintLayout3"
             app:layout_constraintStart_toStartOf="@+id/constraintLayout3"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout3" />
+            app:layout_constraintTop_toTopOf="@+id/add_friends" />
 
         <TextView
             android:id="@+id/tvSelectDays"

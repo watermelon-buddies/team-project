@@ -59,12 +59,15 @@ public class ViewProfile extends AppCompatActivity implements NavigationView.OnN
     @BindView(R.id.rvPendingInvites) RecyclerView rvPendingInvites;
     @BindView(R.id.rvComingUp) RecyclerView rvComingUp;
     @BindView(R.id.tvPending) TextView tvPending;
+    @BindView(R.id.ivProfilePicture) ImageView ivProfilePicture;
+    @BindView(R.id.tvUsename) TextView tvUsername;
     @BindView(R.id.drawer_layout)
     DrawerLayout leftDrawer;
     @BindView(R.id.nav_view)
     NavigationView leftDrawerNavigationView;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.tvNoEvents) TextView tvNoEvents;
     HashMap<String, Integer> userCal;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +77,7 @@ public class ViewProfile extends AppCompatActivity implements NavigationView.OnN
         stub.setLayoutResource(R.layout.view_profile);
         View inflated = stub.inflate();
         ButterKnife.bind(this);
+        setUserView();
         userCal = (HashMap<String, Integer>) getIntent().getSerializableExtra("userCal");
         mPendingInvites = new ArrayList<UserInvite>();
         mComingUpInvites = new ArrayList<>();
@@ -122,6 +126,23 @@ public class ViewProfile extends AppCompatActivity implements NavigationView.OnN
         });
     }
 
+    private void setUserView(){
+        User user = (User) ParseUser.getCurrentUser();
+        if (user.getProfilePic() != null){
+            Glide.with(this)
+                    .load(user.getProfilePic().getUrl())
+                    .bitmapTransform(new CropCircleTransformation(this))
+                    .into(ivProfilePicture);
+        }
+        else{
+            Glide.with(this)
+                    .load(R.drawable.no_profile)
+                    .bitmapTransform(new CropCircleTransformation(this))
+                    .into(ivProfilePicture);
+        }
+        tvUsername.setText(user.getUsername());
+    }
+
     protected void populateComingUpInvites(final boolean invited){
         final UserInvite.Query comingUpInviteQuery = new UserInvite.Query();
         comingUpInviteQuery.getTop().withAccepted().withInvited();
@@ -135,13 +156,14 @@ public class ViewProfile extends AppCompatActivity implements NavigationView.OnN
             @Override
             public void done(List<UserInvite> objects, ParseException e) {
                 if(e == null){
-                    if(invited){
-                        mComingUpInvites.clear();
-                    }
                     mComingUpInvites.addAll(objects);
                     mComingUpInvitesAdapter.notifyDataSetChanged();
                     if(invited){
                         populateComingUpInvites(false);
+                    } else {
+                        if(mComingUpInvites.size() == 0){
+                            tvNoEvents.setVisibility(View.VISIBLE);
+                        }
                     }
                     Log.d("Invites", "Successfully loaded events coming up!");
                     addCalendarEvents();
