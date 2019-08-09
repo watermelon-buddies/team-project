@@ -300,7 +300,7 @@ public class HomeActivity extends AppCompatActivity
                                 break;
                             case R.id.action_events:
                                 Bundle bundle = new Bundle();
-/*                                SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+/*                              
                                 Float latitude = sharedPreferences.getFloat("latitude", (float) 37.483149);
                                 Float longitude = sharedPreferences.getFloat("longitude", (float) -122.150028);*/
                                 if (mCurrentLocation != null){
