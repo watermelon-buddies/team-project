@@ -18,6 +18,7 @@
         android:layout_marginRight="8dp"
         android:text="@string/radius_description"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@color/bright_blue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinCategoriesSignUp" />
@@ -28,13 +29,15 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:text="@string/category_select_question"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@color/bright_blue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="211dp" />
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
     <Spinner
         android:id="@+id/spinDistanceType"
@@ -81,7 +84,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="32dp"
         android:background="@drawable/button_oval"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
@@ -90,19 +93,39 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <Button
+        android:id="@+id/btnTakeProfilePicture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/button_oval"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="Take a profile pitcture"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.545"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etEventRadius" />
+
     <TextView
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:text="@string/almost_done"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@color/bright_blue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="102dp" />
+        app:layout_constraintTop_toBottomOf="@+id/ivShowTakenProfilePic" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -118,18 +141,20 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/buck_it_logo_2" />
 
-    <TextView
-        android:id="@+id/textView6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <ImageView
+        android:id="@+id/ivShowTakenProfilePic"
+        android:layout_width="150dp"
+        android:layout_height="128dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:text="@string/almost_done_2"
+        android:scaleType="fitXY"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        tools:srcCompat="@tools:sample/avatars[1]" />
 
 </android.support.constraint.ConstraintLayout>
