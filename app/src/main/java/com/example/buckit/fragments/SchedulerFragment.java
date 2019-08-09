@@ -19,6 +19,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.buckit.R;
 import com.example.buckit.activities.ViewFriends;
 import com.example.buckit.activities.ViewProfile;
@@ -44,6 +45,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 import static com.example.buckit.fragments.EventsExploreFragment.KEY_SELECTED_CATEGORIES;
 
@@ -60,7 +62,7 @@ public class SchedulerFragment extends Fragment {
     private Button btnSend;
     private HashMap<String, Integer> userEvents;
     private HashMap<String, User> userFriends;
-    private ArrayList<Button> recentFriendButtons = new ArrayList<>();
+    private ArrayList<ImageView> recentFriendButtons = new ArrayList<>();
     private ParseUser userToInvite;
     private View schedulerView;
     private HashMap<String, ImageView> checkmarks;
@@ -73,10 +75,10 @@ public class SchedulerFragment extends Fragment {
     @BindView(R.id.spinnerMinutes) Spinner spinnerMinutes;
     @BindView(R.id.tvEventTitle) TextView tvEventTitle;
     @BindView(R.id.etLocation) EditText etLocation;
-    @BindView (R.id.btnRecent0) Button btnRecent0;
-    @BindView (R.id.btnRecent1) Button btnRecent1;
-    @BindView (R.id.btnRecent2) Button btnRecent2;
-    @BindView (R.id.btnRecent3) Button btnRecent3;
+    @BindView (R.id.btnRecent0) ImageView btnRecent0;
+    @BindView (R.id.btnRecent1) ImageView btnRecent1;
+    @BindView (R.id.btnRecent2) ImageView btnRecent2;
+    @BindView (R.id.btnRecent3) ImageView btnRecent3;
     @BindView (R.id.fabViewFriends) FloatingActionButton fabViewFriends;
     @BindView(R.id.ivCheckmark0) ImageView ivCheckmark0;
     @BindView(R.id.ivCheckmark1) ImageView ivCheckmark1;
@@ -106,6 +108,35 @@ public class SchedulerFragment extends Fragment {
             addInvitees.setText(userSelected);
         }
         return schedulerView;
+    }
+
+    private void addRecentListeners(){
+        for(ImageView recent : recentFriendButtons){
+            recent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                        if(v.getId() == btnRecent0.getId() || v.getId() == btnRecent1.getId() || v.getId() == btnRecent2.getId() || v.getId() == btnRecent3.getId()){
+                            String checkmark = getCorrespondingImage(v);
+                            if(checkmarks.get(checkmark).getVisibility() == View.VISIBLE){
+                                checkmarks.get(checkmark).setVisibility(View.INVISIBLE);
+                                addInvitees.setText("");
+                            } else {
+                                checkmarks.get(checkmark).setVisibility(View.VISIBLE);
+                                unselectOtherRecents(v);
+                            }
+                        }
+
+                    }
+
+            });
+        }
+    }
+
+    private String getCorrespondingImage(View v){
+        if(v.getId() == btnRecent1.getId()){ return "1";}
+        else if(v.getId() == btnRecent2.getId()){ return "2";}
+        else if(v.getId() == btnRecent3.getId()){ return "3";}
+        else { return "0"; }
     }
 
     private void addFriendsSetUp(){
@@ -163,6 +194,7 @@ public class SchedulerFragment extends Fragment {
         schedulerButtons.add(btnSend);
         userSelected = getArguments().getString("userSelected");
         addListeners();
+        addRecentListeners();
     }
 
     private void checkCategories(){
@@ -197,7 +229,7 @@ public class SchedulerFragment extends Fragment {
     private void setButtons(){
         if(userFriendsList.size() > 0) {
             tvRecents.setVisibility(View.VISIBLE);
-            Button btnToSend = btnRecent0;
+            ImageView btnToSend = btnRecent0;
             for (int i = 0; i < userFriendsList.size(); i++) {
                 if (i == 1) {
                     btnToSend = btnRecent1;
@@ -209,14 +241,19 @@ public class SchedulerFragment extends Fragment {
                 handleSetUp(userFriendsList.get(i), btnToSend);
             }
         }
+        addRecentListeners();
     }
 
 
-    private void handleSetUp(String original, Button btn){
-        String initials = original.substring(0,1) + original.substring((original.indexOf(" ")+1), (original.indexOf(" ") + 2));
+    private void handleSetUp(String original, ImageView btn){
+        User current = userFriends.get(original);
         btn.setVisibility(View.VISIBLE);
-        btn.setText(initials);
         recentFriendButtons.add(btn);
+        Glide.with(getContext())
+                .load(current.getProfilePic().getUrl())
+                .bitmapTransform(new CropCircleTransformation(getContext()))
+                .into(btn);
+
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -294,9 +331,9 @@ public class SchedulerFragment extends Fragment {
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(v.getId() == btnSend.getId()) {
+                    if (v.getId() == btnSend.getId()) {
                         constructCalendarList();
-                        if (meetTimes.size() == 0 || addInvitees.getText().toString().equals("")|| etLocation.getText().toString().equals("")| etEventName.getText().toString().equals("")) {
+                        if (meetTimes.size() == 0 || addInvitees.getText().toString().equals("") || etLocation.getText().toString().equals("") | etEventName.getText().toString().equals("")) {
                             Toast.makeText(getContext(), R.string.warning, Toast.LENGTH_SHORT).show();
                         } else {
                             removeBusyTimes();
@@ -305,21 +342,8 @@ public class SchedulerFragment extends Fragment {
                             sendNotification();
                             getActivity().finish();
                         }
-                    }
-                    if (v.isSelected()) {
-                        if(v.getId() == btnRecent0.getId() || v.getId() == btnRecent1.getId() || v.getId() == btnRecent2.getId() || v.getId() == btnRecent3.getId()){
-                            checkmarks.get(v.getTag()).setVisibility(View.INVISIBLE);
-                            addInvitees.setText("");
-                        }
-                        v.setSelected(false);
-
                     } else {
-                        v.setSelected(true);
-                        if(v.getId() == btnRecent0.getId() || v.getId() == btnRecent1.getId() || v.getId() == btnRecent2.getId() || v.getId() == btnRecent3.getId()){
-                            checkmarks.get(v.getTag()).setVisibility(View.VISIBLE);
-                            unselectOtherRecents(v);
-                        }
-
+                        v.setSelected(!v.isSelected());
                     }
                 }
             });
@@ -337,8 +361,7 @@ public class SchedulerFragment extends Fragment {
             if(button.getId() == recentFriendButtons.get(i).getId()){
                 addInvitees.setText(userFriendsList.get(i));
             } else {
-                recentFriendButtons.get(i).setSelected(false);
-                checkmarks.get(recentFriendButtons.get(i).getTag()).setVisibility(View.INVISIBLE);
+                checkmarks.get(getCorrespondingImage(recentFriendButtons.get(i))).setVisibility(View.INVISIBLE);
             }
         }
     }
@@ -406,10 +429,6 @@ public class SchedulerFragment extends Fragment {
         Button btnAfternoon = schedulerView.findViewById(R.id.btnAfternoon);
         Button btnEvening = schedulerView.findViewById(R.id.btnEvening);
         Button btnNight = schedulerView.findViewById(R.id.btnNight);
-        schedulerButtons.add(btnRecent0);
-        schedulerButtons.add(btnRecent1);
-        schedulerButtons.add(btnRecent2);
-        schedulerButtons.add(btnRecent3);
         schedulerButtons.add(btnMonday);
         schedulerButtons.add(btnTuesday);
         schedulerButtons.add(btnWednesday);
