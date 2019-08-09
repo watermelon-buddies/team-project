@@ -22,11 +22,18 @@ import com.bumptech.glide.Glide;
 import com.example.buckit.R;
 import com.example.buckit.utils.MultiSelectSpinner;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -35,8 +42,12 @@ import java.util.List;
 import butterknife.BindInt;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cz.msebera.android.httpclient.Header;
 
+import static com.example.buckit.fragments.EventsExploreFragment.API_BASE_URL;
+import static com.example.buckit.fragments.EventsExploreFragment.API_KEY_PARAM;
 import static com.example.buckit.fragments.EventsExploreFragment.KEY_SELECTED_CATEGORIES;
+import static com.example.buckit.fragments.EventsExploreFragment.PRIVATE_TOKEN;
 import static com.example.buckit.models.User.KEY_EVENT_RADIUS;
 
 public class SignUpDetailsActivtiy extends AppCompatActivity {
@@ -129,14 +140,39 @@ public class SignUpDetailsActivtiy extends AppCompatActivity {
         }
     }
 
-    private void completeRegistration(ParseUser user, List<String> categories, String radius){
+    private void completeRegistration(ParseUser user, final List<String> categories, String radius){
         user.put(KEY_EVENT_RADIUS, radius);
         ParseACL acl = new ParseACL(user);
         acl.setPublicReadAccess(true);
         acl.setPublicWriteAccess(true);
         user.setACL(acl);
-        ArrayList<String> catList = new ArrayList<>();
-        catList.addAll(categories);
+        final ArrayList<String> catList = new ArrayList<>();
+        AsyncHttpClient client = new AsyncHttpClient();
+        RequestParams params = new RequestParams();
+        String url = API_BASE_URL + "categories/";
+        params.put(API_KEY_PARAM, PRIVATE_TOKEN);
+        client.get(url, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    Log.d("Categories", String.valueOf(response.length()));
+                    JSONArray categoriesSearch = response.getJSONArray("categories");
+                    Log.d("Categories", String.valueOf(categoriesSearch.length()));
+                    for (int j = 0; j < categories.size(); j++) {
+                        String categoryName = categories.get(j);
+                        for (int i = 0; i < response.length(); i++){
+                            JSONObject catObject = categoriesSearch.getJSONObject(i);
+                            if (catObject.getString("name").equals(categoryName) ){
+                                catList.add(catObject.getString("id"));
+                                break;
+                            }
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         user.put("deviceId", FirebaseInstanceId.getInstance().getToken());
         if (photoFile != null) user.put("profilePic", new ParseFile(photoFile));
         user.put(KEY_SELECTED_CATEGORIES, catList);
@@ -149,4 +185,6 @@ public class SignUpDetailsActivtiy extends AppCompatActivity {
             }
         });
     }
+
+
 }

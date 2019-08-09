@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.buckit.activities.SignUpDetailsActivtiy;
 import com.example.buckit.models.User;
 import com.parse.ParseException;
 import com.parse.SignUpCallback;
@@ -59,16 +60,12 @@ public class SignUpActivity extends AppCompatActivity {
         user.setUsername(username);
         //user.setDeviceId(FirebaseInstanceId.getInstance().getToken());
         user.setPassword(password);
-
        // Invoke signUpInBackground
         user.signUpInBackground(new SignUpCallback() {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
-                    Intent i = new Intent();
-                    i.putExtra("username", username);
-                    i.putExtra("password", password);
-                    setResult(RESULT_OK, i);
+                    startActivity(new Intent( SignUpActivity.this, SignUpDetailsActivtiy.class));
                     Toast.makeText(getApplicationContext(), "Account created successfully",
                             Toast.LENGTH_SHORT).show();
                     finish();

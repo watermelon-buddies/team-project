@@ -122,12 +122,10 @@ public class BucketListCurrentFragment extends Fragment {
         newItem.setAchieved(false);
         Date date = changeDateToParseFormat(deadline);
         newItem.setCategory(category);
-        JSONArray categories = user.getJSONArray(KEY_SELECTED_CATEGORIES);
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
         String url = API_BASE_URL + "categories/";
         params.put(API_KEY_PARAM, PRIVATE_TOKEN);
-        boolean exists = false;
         client.get(url, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
