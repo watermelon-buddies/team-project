@@ -14,7 +14,9 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.buckit.R;
 import com.example.buckit.adapters.SwipeCardAdapter;
@@ -75,7 +77,9 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
     CheckView mCheck;
     @BindView(R.id.ivCalSuccess) ImageView ivCalSuccess;
     @BindView(R.id.tvCalSuccess) TextView tvCalSuccess;
+    ProgressBar progressBar;
     private Unbinder unbinder;
+    private int responseLength;
     private int swiped;
 
 
@@ -104,6 +108,7 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
         swiped = 0;
         rvEvents.setContentResource(R.layout.event_card_adapter);
         tvPosition.setText(String.valueOf(0));
+        progressBar = getActivity().findViewById(R.id.actionProgressBar);
         swipe_card_adapter = new SwipeCardAdapter(getContext().getApplicationContext(),20, eventsList, tvPosition, mCheck, ivCalSuccess, tvCalSuccess);
         rvEvents.setAdapter(swipe_card_adapter);
         rvEvents.setListener(this);
@@ -120,6 +125,7 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
     private void getEvents(ParseUser user) {
         ArrayList<String> categories = (ArrayList<String>) user.get(KEY_SELECTED_CATEGORIES);
         if (categories == null || categories.size() == 0) {
+            showProgressBar();
             AsyncHttpClient client = new AsyncHttpClient();
             RequestParams params = new RequestParams();
             String url = API_BASE_URL + "events/search";
@@ -134,11 +140,15 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
+                        Log.d("Response", response.toString());
                         JSONArray events = response.getJSONArray("events");
-                        for (int j = 0; j < events.length(); j++) {
+                        Log.d("Response", events.toString());
+                        responseLength = events.length();
+                        for (int j = 0; j < responseLength; j++) {
                             Event currEvent = new Event(events.getJSONObject(j));
                             eventsList.put(j, currEvent);
-                            swipe_card_adapter.notifyDataSetChanged();;
+                            swipe_card_adapter.notifyDataSetChanged();
+                            hideProgressBar();
                         }
                     } catch (JSONException e) {
                         Log.d("Get events", "Failure to retrieve events");
@@ -151,6 +161,7 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
             final int[] position = {0};
             for (int i = 0;i < categories.size(); i++) {
                 Log.d("Categories", "is not null");
+                showProgressBar();
                 AsyncHttpClient client = new AsyncHttpClient();
                 RequestParams params = new RequestParams();
                 String url = API_BASE_URL + "events/search";
@@ -168,11 +179,13 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                         try {
                             JSONArray events = response.getJSONArray("events");
-                            for (int j = 0; j < events.length(); j++) {
+                            responseLength = events.length();
+                            for (int j = 0; j < responseLength; j++) {
                                 Event currEvent = new Event(events.getJSONObject(j));
                                 eventsList.put(position[0], currEvent);
                                 position[0]++;
-                                swipe_card_adapter.notifyDataSetChanged();;
+                                swipe_card_adapter.notifyDataSetChanged();
+                                hideProgressBar();
                             }
                         } catch (JSONException e) {
                             Log.d("Get events", "Failure to retrieve events");
@@ -211,6 +224,14 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
             newPosition++;
             tvPosition.setText(String.valueOf(newPosition));
             Log.d("Booking", tvPosition.getText().toString());
+            Log.d("Booking", String.valueOf(responseLength));
+            if ((newPosition % 25) == 0) {
+                swipe_card_adapter = new SwipeCardAdapter(getContext().getApplicationContext(),20, eventsList, tvPosition, mCheck, ivCalSuccess, tvCalSuccess);
+                rvEvents.setAdapter(swipe_card_adapter);
+                rvEvents.setListener(this);
+                Toast.makeText(getContext(), "Out of events! Reloading new ones!", Toast.LENGTH_SHORT).show();
+                getEvents(ParseUser.getCurrentUser());
+            }
             return true;
         }else {
             return false;
@@ -242,67 +263,14 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
     }
 
 
-
-
-    public void onButtonShowPopupWindowClick(View view) {
-        addBlur();
-        LayoutInflater inflater = (LayoutInflater)
-                getContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-        popupView = inflater.inflate(R.layout.events_explore_popup_window, null);
-        int width = LinearLayout.LayoutParams.MATCH_PARENT;
-        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        final PopupWindow popupWindow = new PopupWindow(popupView, width, height);
-        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 50);
-        addBlur();
-        blur.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-                removeBlur();
-            }
-        });
-        TextView tvSaveEvent = popupView.findViewById(R.id.tvSaveEvent);
-        ImageView ivClose = popupView.findViewById(R.id.ivClose);
-        ivClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-                removeBlur();
-            }
-        });
-        TextView tvBuckit = popupView.findViewById(R.id.tvBuckit);
-        setListeners(tvSaveEvent, ivClose, tvBuckit);
+    public void showProgressBar() {
+        // Show progress item
+        progressBar.setVisibility(View.VISIBLE);
     }
 
-    private void setListeners(TextView tvSaveEvent, ImageView ivClose, TextView tvBuckit) {
-        ivClose.bringToFront();
-        tvSaveEvent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("OnClick", "Save Event");
-            }
-        });
-        tvBuckit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("OnClick", "Buck event");
-            }
-        });
-
-
-    }
-
-    // Blur options in the back and disable
-    private void addBlur() {
-        blur.setVisibility(View.VISIBLE);
-        Animation aniFade = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_in);
-        blur.startAnimation(aniFade);
-    }
-
-    private void removeBlur(){
-        Animation aniFade = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_out);
-        blur.startAnimation(aniFade);
-        blur.setVisibility(View.INVISIBLE);
+    public void hideProgressBar() {
+        // Hide progress item
+        progressBar.setVisibility(View.GONE);
     }
 
 }

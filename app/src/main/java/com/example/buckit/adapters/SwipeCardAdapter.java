@@ -66,6 +66,7 @@ public class SwipeCardAdapter extends ArrayAdapter<HashMap<Integer, Event>>  {
     public View getView(int position, final View contentView, ViewGroup parent) {
         ImageView ivEventPicture = contentView.findViewById(R.id.ivEventPicture);
         TextView tvTitle = contentView.findViewById(R.id.tvTitle);
+        if (position == 0) tvTitle.setTag("Final");
         final EasyFlipView myEasyFlipView  = contentView.findViewById(R.id.myEasyFlipView);
         myEasyFlipView.setFlipOnTouch(false);
         tvStartTime  = contentView.findViewById(R.id.tvStartTime);
