@@ -266,8 +266,10 @@ public class SelectTime extends AppCompatActivity {
             if (finalMeetTimes.get(i).equals("break")) {
                 finalMeetTimes.remove(i);
                 i--;
-                if(!withTimesRemoved.get(withTimesRemoved.size() - 1).equals("rangeBreak")){
-                    withTimesRemoved.add("rangeBreak");
+                if(withTimesRemoved.size() > 1){
+                    if(!withTimesRemoved.get(withTimesRemoved.size() - 1).equals("rangeBreak")){
+                        withTimesRemoved.add("rangeBreak");
+                    }
                 }
             } else if (finalMeetTimes.indexOf("break") < 0 || finalMeetTimes.indexOf("break") - i + 1 >= duration) {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");

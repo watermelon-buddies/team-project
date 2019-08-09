@@ -76,10 +76,8 @@ public class SwipeCardAdapter extends ArrayAdapter<HashMap<Integer, Event>>  {
         ImageView ivGreyBackground = contentView.findViewById(R.id.ivGreyBackground);
         tvEventDate = contentView.findViewById(R.id.tvEventDate);
         TextView tvEventTitle =  contentView.findViewById(R.id.tvDetailTitle);
-
         TextView tvEventDate = contentView.findViewById(R.id.tvEventDate);
         ImageView btnFlip = contentView.findViewById(R.id.btnFlip);
-        ImageView btnBuckEvent = contentView.findViewById(R.id.btnBuckEvent);
         ImageView btnFlipDetail = contentView.findViewById(R.id.btnFlipDetail);
         btnFlipDetail.setOnClickListener(new View.OnClickListener() {
             @Override

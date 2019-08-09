@@ -51,6 +51,7 @@
                 android:layout_marginRight="8dp"
                 android:ems="10"
                 android:gravity="center"
+                android:background="@null"
                 android:hint="@string/bucket_item_hint"
                 android:importantForAutofill="no"
                 android:inputType="textPersonName"

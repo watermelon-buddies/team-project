@@ -32,6 +32,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -180,12 +181,7 @@ public class HomeActivity extends AppCompatActivity
                             @Override
                             public void done(ParseException e) {
                                 if (e == null) {
-                                    if (newNotifications.size() > 0) {
-                                        ivNotificationCircle.setVisibility(View.VISIBLE);
-                                    } else {
-                                        newNotifications.add(getResources().getString(R.string.noCurrentNotifications));
-                                    }
-                                    notificationIconListener();
+                                    Log.d("NotificationHome", "Succeeded in creating a post!");
                                 } else {
                                     Log.d("NotificationHome", "Failed in creating a post!");
                                     e.printStackTrace();
@@ -193,6 +189,13 @@ public class HomeActivity extends AppCompatActivity
                             }
                         });
                     }
+                    if (newNotifications.size() > 0) {
+                        ivNotificationCircle.setVisibility(View.VISIBLE);
+                    } else {
+                        newNotifications.add(getResources().getString(R.string.noCurrentNotifications));
+                        notificationToType.put(getResources().getString(R.string.noCurrentNotifications), "noType");
+                    }
+                    notificationIconListener();
                 } else {
                     e.printStackTrace();
                 }
@@ -256,6 +259,23 @@ public class HomeActivity extends AppCompatActivity
                         currentUser.put(KEY_NOTIFICATIONS, newNotifications);
                     }
                 });
+                setItemListeners(lvNotifications);
+            }
+        });
+    }
+
+    private void setItemListeners(ListView lvNotifications){
+        lvNotifications.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String type = notificationToType.get(newNotifications.get(position));
+                if(type.equals(KEY_EVENT_NOTIFICATION)){
+                    Intent profile = new Intent(HomeActivity.this, ViewProfile.class);
+                    startActivity(profile);
+                } else if(type.equals(KEY_FRIEND_NOTIFICATION)){
+                    Intent friends = new Intent(HomeActivity.this, ViewFriends.class);
+                    startActivity(friends);
+                }
             }
         });
     }
@@ -392,15 +412,17 @@ public class HomeActivity extends AppCompatActivity
             CalendarProvider provider = new CalendarProvider(getApplicationContext());
             List<me.everything.providers.android.calendar.Calendar> calendars = provider.getCalendars().getList();
             for (Calendar currCal : calendars) {
-                if (!currCal.name.equals("Holidays in United States") && !currCal.name.equals("Contacts")) {
-                    for (me.everything.providers.android.calendar.Event currEvent : provider.getEvents(currCal.id).getList()) {
-                        // Checks events are happening within the range of two months
-                        if ((currEvent.dTStart) >= today && (currEvent.dTStart) <= nextMonth) {
-                            Long timeOfEvent = ((currEvent.dTend - currEvent.dTStart) / 1000) / 60;
-                            Integer rangeIn15MinIntervals = Math.toIntExact(timeOfEvent) / 15;
-                            for (int i = 0; i < rangeIn15MinIntervals; i++) {
-                                String normalDate = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new java.util.Date(currEvent.dTStart + (15 * i * ONE_MINUTE_IN_MILLIS)));
-                                userEvents.put(normalDate, 1);
+                if (currCal != null) {
+                    if (!currCal.name.equals("Holidays in United States") && !currCal.name.equals("Contacts")) {
+                        for (me.everything.providers.android.calendar.Event currEvent : provider.getEvents(currCal.id).getList()) {
+                            // Checks events are happening within the range of two months
+                            if ((currEvent.dTStart) >= today && (currEvent.dTStart) <= nextMonth) {
+                                Long timeOfEvent = ((currEvent.dTend - currEvent.dTStart) / 1000) / 60;
+                                Integer rangeIn15MinIntervals = Math.toIntExact(timeOfEvent) / 15;
+                                for (int i = 0; i < rangeIn15MinIntervals; i++) {
+                                    String normalDate = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new java.util.Date(currEvent.dTStart + (15 * i * ONE_MINUTE_IN_MILLIS)));
+                                    userEvents.put(normalDate, 1);
+                                }
                             }
                         }
                     }
