@@ -105,8 +105,9 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
                         } else {
                             Log.d("Click", user.toString());
                             createFriendRequest(currentUser, user);
-                            mFriendsList.remove(position);
-                            notifyDataSetChanged();
+                            holder.fabAddFriends.setText("Requested");
+                            holder.fabAddFriends.setBackground(mContext.getResources().getDrawable(R.drawable.button_oval_grey));
+                            holder.fabAddFriends.setEnabled(false);
                         }
                     }
                 }

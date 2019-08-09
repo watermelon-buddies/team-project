@@ -255,6 +255,7 @@ public class ViewFriends extends AppCompatActivity {
         FriendInvite.Query requestsQuery = new FriendInvite.Query();
         requestsQuery.getFriendRequests(currentUser);
         requestsQuery.getUnansweredRequests();
+        requestsQuery.orderByDescending("createdAt");
         requestsQuery.findInBackground(new FindCallback<FriendInvite>() {
             @Override
             public void done(List<FriendInvite> requests, ParseException e) {
@@ -281,6 +282,7 @@ public class ViewFriends extends AppCompatActivity {
         FriendInvite.Query requestsQuery = new FriendInvite.Query();
         requestsQuery.getSentRequests(currentUser);
         requestsQuery.getUnansweredRequests();
+        requestsQuery.orderByDescending("createdAt");
         Log.d("Pending requests", "Works");
         requestsQuery.findInBackground(new FindCallback<FriendInvite>() {
             @Override

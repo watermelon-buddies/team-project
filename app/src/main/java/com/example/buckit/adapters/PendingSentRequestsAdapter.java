@@ -51,7 +51,7 @@ public class PendingSentRequestsAdapter extends RecyclerView.Adapter<PendingSent
         Log.d("Pending request", currPendingRequest.toString());
         try {
             String username = currPendingRequest.getInvited().fetchIfNeeded().getUsername();
-            holder.tvRequestUsername.setText(username.substring(0, username.indexOf(" ")));
+            holder.tvRequestUsername.setText(username);
                 Log.d("Invited", currPendingRequest.getInvited().fetchIfNeeded().getUsername());
                 if (currPendingRequest.getInvited().fetchIfNeeded().getParseFile(KEY_PROFILE_PICTURE) != null) {
                     Glide.with(mContext)
