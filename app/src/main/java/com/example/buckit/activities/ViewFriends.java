@@ -172,7 +172,12 @@ public class ViewFriends extends AppCompatActivity {
                     Intent logoutIntent = new Intent(ViewFriends.this, LoginActivity.class);
                     startActivity(logoutIntent);
                     finish();
-                } else if (id == R.id.nav_profile) {
+                }
+                else if (id  == R.id.nav_home) {
+                    Intent friendsView = new Intent(ViewFriends.this, HomeActivity.class);
+                    startActivity(friendsView);
+                }
+                else if (id == R.id.nav_profile) {
                     Intent profileView = new Intent(ViewFriends.this, ViewProfile.class);
                     profileView.putExtra("userCal", userEvents);
                     startActivity(profileView);

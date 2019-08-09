@@ -381,6 +381,9 @@ public class HomeActivity extends AppCompatActivity
             Intent logoutIntent = new Intent(HomeActivity.this, LoginActivity.class);
             startActivity(logoutIntent);
             finish();
+        } else if (id  == R.id.nav_home) {
+            Intent friendsView = new Intent(HomeActivity.this, ViewFriends.class);
+            startActivity(friendsView);
         } else if (id == R.id.nav_view_friends) {
             Intent friendsView = new Intent(HomeActivity.this, ViewFriends.class);
             friendsView.putExtra("userCal", userEvents);

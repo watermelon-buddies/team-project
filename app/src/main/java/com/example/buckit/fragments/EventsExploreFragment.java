@@ -80,7 +80,6 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
     ProgressBar progressBar;
     private Unbinder unbinder;
     private int responseLength;
-    private int swiped;
 
     @Nullable
     @Override
@@ -102,7 +101,6 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
         super.onViewCreated(view, savedInstanceState);
         ParseUser user = ParseUser.getCurrentUser();
         eventsList = new HashMap<>();
-        swiped = 0;
         rvEvents.setContentResource(R.layout.event_card_adapter);
         tvPosition.setText(String.valueOf(0));
         progressBar = getActivity().findViewById(R.id.actionProgressBar);
