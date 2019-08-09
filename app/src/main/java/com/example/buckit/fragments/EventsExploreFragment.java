@@ -82,9 +82,6 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
     private int responseLength;
     private int swiped;
 
-
-
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
