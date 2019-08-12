@@ -18,6 +18,7 @@ public class Event {
     public String imageUrl;
     public String eventUrl;
     public String description;
+    public Boolean addedToCal;
 
     public Event(JSONObject object) throws JSONException {
         title = object.getJSONObject("name").getString("text");
@@ -26,6 +27,15 @@ public class Event {
         imageUrl = object.getJSONObject("logo").getJSONObject("original").getString("url");
         eventUrl = object.getString("url");
         description = object.getJSONObject("description").getString("text");
+        addedToCal = false;
+    }
+
+    public void setAddedToCal(){
+        addedToCal = true;
+    }
+
+    public Boolean getAddedToCal(){
+        return addedToCal;
     }
 
 

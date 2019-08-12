@@ -109,6 +109,7 @@ public class SelectTime extends AppCompatActivity {
         Log.d("beforeRemove", String.valueOf(finalMeetTimes.size()));
         for (int i = 0; i < finalMeetTimes.size(); i++) {
             String currTime = finalMeetTimes.get(i);
+
             if (userEvents.containsKey(currTime)) {
                 for (int j = 0; j < userEvents.get(currTime) - 1; j++) {
                     if (i < finalMeetTimes.size()) {

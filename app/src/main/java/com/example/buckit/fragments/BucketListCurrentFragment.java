@@ -15,17 +15,15 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.buckit.R;
 import com.example.buckit.adapters.BucketListAdapter;
@@ -59,7 +57,6 @@ import static com.example.buckit.fragments.EventsExploreFragment.API_KEY_PARAM;
 import static com.example.buckit.fragments.EventsExploreFragment.KEY_SELECTED_CATEGORIES;
 import static com.example.buckit.fragments.EventsExploreFragment.PRIVATE_TOKEN;
 import static com.example.buckit.models.Bucketlist.KEY_USER;
-import static com.parse.Parse.getApplicationContext;
 
 public class BucketListCurrentFragment extends Fragment {
 
@@ -80,6 +77,8 @@ public class BucketListCurrentFragment extends Fragment {
     public View popupView;
     boolean mFirstLoad;
     ParseUser user;
+    View mView;
+    FrameLayout layout_MainMenu;
 
     /* Inflate bucket_list_fragment.xml and bind views using Butterknife */
     @Nullable
@@ -111,6 +110,9 @@ public class BucketListCurrentFragment extends Fragment {
         SnapHelper snapHelper = new LinearSnapHelper();
         snapHelper.attachToRecyclerView(rvBucketList);
         populateBucket();
+        mView = bucketListView;
+        layout_MainMenu = (FrameLayout) mView.findViewById( R.id.mainmenu);
+        layout_MainMenu.getForeground().setAlpha(0);
     }
 
     private void addItemToBucketList(final String description, final ParseUser user, String deadline, final String category) throws java.text.ParseException, JSONException {
@@ -202,15 +204,24 @@ public class BucketListCurrentFragment extends Fragment {
         int width = LinearLayout.LayoutParams.MATCH_PARENT;
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
         final PopupWindow popupWindow = new PopupWindow(popupView, width, height);
+        layout_MainMenu.getForeground().setAlpha(100);
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 40);
         popupWindow.setFocusable(true);
         popupWindow.setOutsideTouchable(true);
         popupWindow.update();
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                layout_MainMenu.getForeground().setAlpha(0);
+
+            }
+        });
         btnBuckIt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final String description = etItemDescription.getText().toString();
                 final String category = spinnerCategory.getSelectedItem().toString();
+                //layout_MainMenu.getForeground().setAlpha( 180);
                 if (description.length() <= 0) {
                     Snackbar.make(popupView, "Please make sure you filled all required fields", Snackbar.LENGTH_SHORT).show();
                 }
@@ -222,6 +233,7 @@ public class BucketListCurrentFragment extends Fragment {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                    layout_MainMenu.getForeground().setAlpha(0);
                     popupWindow.dismiss();
                     populateBucket();
                 }
@@ -246,7 +258,6 @@ public class BucketListCurrentFragment extends Fragment {
                         mBucketList.addAll(object);
                         mBucketAdapter.notifyDataSetChanged();
                         if (mFirstLoad) {
-                            rvBucketList.scrollToPosition(0);
                             mFirstLoad = false;
                         }
 

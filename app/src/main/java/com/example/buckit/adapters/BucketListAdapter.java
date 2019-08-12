@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -28,10 +27,9 @@ import java.util.List;
 
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
-import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 import static com.example.buckit.models.Bucketlist.KEY_ACHIEVED;
 
-public class BucketListAdapter extends RecyclerView.Adapter<BucketListAdapter.ViewHolder> implements View.OnClickListener {
+public class BucketListAdapter extends RecyclerView.Adapter<BucketListAdapter.ViewHolder>  {
 
     TextView btnAchieveItem;
     TextView btnDeleteItem;
@@ -45,6 +43,7 @@ public class BucketListAdapter extends RecyclerView.Adapter<BucketListAdapter.Vi
     PopupWindow popupWindow;
     Bucketlist bucketList;
     ViewHolder viewHolder;
+    ImageView ivDelete;
 
     public BucketListAdapter(Context context, List<Bucketlist> items, boolean notAchieved) {
         mBucketList = items;
@@ -63,13 +62,71 @@ public class BucketListAdapter extends RecyclerView.Adapter<BucketListAdapter.Vi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         // get data according to position
 
         bucketList = mBucketList.get(position);
-        holder.btnShowOptionsForItem.setTag(bucketList);
+        holder.btnDone.setTag(bucketList);
+        holder.btnScheduler.setTag(bucketList);
+        holder.ivDelete.setTag(bucketList);
         holder.tvBucketDescription.setText(bucketList.getName());
-        int id = mContext.getResources().getIdentifier("com.example.buckit:drawable/cat_" + bucketList.getCategory().toLowerCase().substring(0, 4), null, null);
+        holder.btnDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Bucketlist item = mBucketList.get(position);
+                if (item != null) {
+                    Log.d("Click", "Working!");
+                    Bucketlist.Query bucketQuery = new Bucketlist.Query();
+                    bucketQuery.whereEqualTo("objectId", item.getObjectId());
+                    bucketQuery.findInBackground(new FindCallback<Bucketlist>() {
+                        @Override
+                        public void done(List<Bucketlist> objects, ParseException e) {
+                            Bucketlist selectedItem = objects.get(0);
+                            selectedItem.put(KEY_ACHIEVED, true);
+                            selectedItem.saveInBackground();
+                        }
+                    });
+                    mBucketList.remove(item);
+                    notifyDataSetChanged();
+                }
+
+            }
+        });
+        holder.btnScheduler.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle data = new Bundle();
+                final Bucketlist item = mBucketList.get(position);
+                data.putString("activity", item.getName());
+                SchedulerFragment scheduler = new SchedulerFragment();
+                scheduler.setArguments(data);
+                FragmentTransaction fragmentTransaction = ((HomeActivity) mContext).getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.flmain, scheduler);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            }
+        });
+        holder.ivDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Bucketlist item = mBucketList.get(position);
+                Log.d("Click", "Working!");
+                Bucketlist.Query bucketQuery = new Bucketlist.Query();
+                bucketQuery.whereEqualTo("objectId", item.getObjectId());
+                bucketQuery.findInBackground(new FindCallback<Bucketlist>() {
+                    @Override
+                    public void done(List<Bucketlist> objects, ParseException e) {
+                        Bucketlist selectedItem = objects.get(0);
+                        selectedItem.deleteInBackground();
+                    }
+                });
+                mBucketList.remove(item);
+                notifyDataSetChanged();
+
+            }
+        });
+
+        int id = mContext.getResources().getIdentifier("com.example.buckit:drawable/cat_" + bucketList.getCategory().toLowerCase().substring(0, 3), null, null);
         Log.d("category", String.valueOf(id));
         Glide.with(mContext)
                 .load(id)
@@ -98,10 +155,12 @@ public class BucketListAdapter extends RecyclerView.Adapter<BucketListAdapter.Vi
 
     // create the viewholder class
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView tvBucketDescription;
         public ImageView ivCategoryImage;
-        public FloatingActionButton btnShowOptionsForItem;
+        public FloatingActionButton btnDone;
+        public FloatingActionButton btnScheduler;
+        public FloatingActionButton ivDelete;
 
         @SuppressLint("RestrictedApi")
         public ViewHolder(View itemView) {
@@ -109,91 +168,23 @@ public class BucketListAdapter extends RecyclerView.Adapter<BucketListAdapter.Vi
             rootView = itemView;
             ivCategoryImage = itemView.findViewById(R.id.ivCategoryImage);
             tvBucketDescription = itemView.findViewById(R.id.tvBucketDescription);
-            btnShowOptionsForItem = itemView.findViewById(R.id.btnShowOptionsForItem);
-            btnShowOptionsForItem.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    currentItem = (Bucketlist) btnShowOptionsForItem.getTag();
-                    displayPopupWindow(v);
-                }
-            });
-            if (show) btnShowOptionsForItem.setVisibility(View.VISIBLE);
-            else btnShowOptionsForItem.setVisibility(View.INVISIBLE);
+            btnDone = itemView.findViewById(R.id.btnDone);
+            btnScheduler = itemView.findViewById(R.id.btnScheduler);
+            ivDelete = itemView.findViewById(R.id.ivDelete);
+            if (!show) {
+                btnDone.setVisibility(View.INVISIBLE);
+                btnScheduler.setVisibility(View.INVISIBLE);
+                ivDelete.setVisibility(View.INVISIBLE);
+            } else {
+                btnDone.setVisibility(View.VISIBLE);
+                btnScheduler.setVisibility(View.VISIBLE);
+                ivDelete.setVisibility(View.VISIBLE);
+            }
+
         }
     }
 
-    private void displayPopupWindow(View anchorView) {
-        LayoutInflater inflater = (LayoutInflater)
-                mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
-        popupView = inflater.inflate(R.layout.bucketlist_popup, null);
-        btnAchieveItem = popupView.findViewById(R.id.btnAchieveItem);
-        btnDeleteItem = popupView.findViewById(R.id.btnDeleteItem);
-        btnBookItem = popupView.findViewById(R.id.btnBookItem);
-        btnBookItem = popupView.findViewById(R.id.btnBookItem);
-        btnAchieveItem.setOnClickListener(this);
-        btnDeleteItem.setOnClickListener(this);
-        btnBookItem.setOnClickListener(this);
-        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        popupWindow = new PopupWindow(popupView, width, height);
-        popupWindow.setFocusable(true);
-        popupWindow.setOutsideTouchable(true);
-        popupWindow.showAsDropDown(anchorView, -100, -10);
-        popupWindow.setBackgroundDrawable(mContext.getResources().getDrawable(R.color.transparent));
-    }
 
-    @Override
-    public void onClick(View v) {
-        Bucketlist item = currentItem;
-        if (v.getId() == btnAchieveItem.getId()){
-            if (item != null) {
-                Log.d("Click", "Working!");
-                Bucketlist.Query bucketQuery = new Bucketlist.Query();
-                bucketQuery.whereEqualTo("objectId", item.getObjectId());
-                bucketQuery.findInBackground(new FindCallback<Bucketlist>() {
-                    @Override
-                    public void done(List<Bucketlist> objects, ParseException e) {
-                        Bucketlist selectedItem = objects.get(0);
-                        selectedItem.put(KEY_ACHIEVED, true);
-                        selectedItem.saveInBackground();
-                    }
-                });
-                mBucketList.remove(item);
-                notifyDataSetChanged();
-                popupWindow.dismiss();
-            }
-        }
-        else if(v.getId() == btnDeleteItem.getId()) {
-            if (item != null) {
-                Log.d("Click", "Working!");
-                Bucketlist.Query bucketQuery = new Bucketlist.Query();
-                bucketQuery.whereEqualTo("objectId", item.getObjectId());
-                bucketQuery.findInBackground(new FindCallback<Bucketlist>() {
-                    @Override
-                    public void done(List<Bucketlist> objects, ParseException e) {
-                        Bucketlist selectedItem = objects.get(0);
-                        selectedItem.deleteInBackground();
-                    }
-                });
-                mBucketList.remove(item);
-                notifyDataSetChanged();
-                popupWindow.dismiss();
-            }
-        }
-        else if(v.getId() == btnBookItem.getId()){
-            if(item != null){
-                Bundle data = new Bundle();
-                data.putString("activity", viewHolder.tvBucketDescription.getText().toString());
-                SchedulerFragment scheduler = new SchedulerFragment();
-                scheduler.setArguments(data);
-                FragmentTransaction fragmentTransaction = ((HomeActivity)mContext).getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.flmain, scheduler);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-                popupWindow.dismiss();
-            }
-        }
-    }
 }
 
 
