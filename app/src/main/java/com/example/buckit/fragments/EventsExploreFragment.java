@@ -5,15 +5,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,7 +28,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,7 +35,6 @@ import butterknife.Unbinder;
 import cdflynn.android.library.checkview.CheckView;
 import cz.msebera.android.httpclient.Header;
 
-import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 import static com.example.buckit.activities.HomeActivity.LAT_KEY;
 import static com.example.buckit.activities.HomeActivity.LONG_KEY;
 import static com.parse.Parse.getApplicationContext;
@@ -110,7 +103,7 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
         if (getArguments() != null){
             latitude = getArguments().getFloat(LAT_KEY);
             longitude = getArguments().getFloat(LONG_KEY);
-            getEvents(user);
+            getDummyEvents();
         }
         mCheck.bringToFront();
 
@@ -119,7 +112,7 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
     // Sends request specifying location for events. Result list is used to create event types
     private void getEvents(ParseUser user) {
         ArrayList<String> categories = (ArrayList<String>) user.get(KEY_SELECTED_CATEGORIES);
-        if (categories == null || categories.size() == 0) {
+        //final int[] position = {4};
             showProgressBar();
             AsyncHttpClient client = new AsyncHttpClient();
             RequestParams params = new RequestParams();
@@ -139,7 +132,7 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
                         JSONArray events = response.getJSONArray("events");
                         Log.d("Response", events.toString());
                         responseLength = events.length();
-                        for (int j = 0; j < responseLength; j++) {
+                        for (int j = 4; j < responseLength; j++) {
                             Event currEvent = new Event(events.getJSONObject(j));
                             eventsList.put(j, currEvent);
                             swipe_card_adapter.notifyDataSetChanged();
@@ -151,65 +144,78 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
                 }
             });
 
+//        else {
+//            for (int i = 0;i < categories.size(); i++) {
+//                Log.d("Categories", "is not null");
+//                showProgressBar();
+//                AsyncHttpClient client = new AsyncHttpClient();
+//                RequestParams params = new RequestParams();
+//                String url = API_BASE_URL + "events/search";
+//                params.put(API_KEY_AREA_RADIUS, KEY_DEFAULT_RADIUS);
+//                params.put(API_KEY_LOCATION, KEY_DEFAULT_LOCATION);
+//                params.put(API_KEY_PARAM, PRIVATE_TOKEN);
+//                Log.d("Events", "Loading category "+categories.get(i));
+//                params.put(API_KEY_CATEGORY, categories.get(i));
+//                client.get(url, params, new JsonHttpResponseHandler() {
+//                    @Override
+//                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+//                        try {
+//                            position[0]++;
+//                            JSONArray events = response.getJSONArray("events");
+//                            responseLength = events.length();
+//                            for (int j = 0; j < responseLength; j++) {
+//                                Event currEvent = new Event(events.getJSONObject(j));
+//                                eventsList.put(position[0], currEvent);
+//                                position[0]++;
+//                                swipe_card_adapter.notifyDataSetChanged();
+//                                hideProgressBar();
+//                            }
+//                        } catch (JSONException e) {
+//                            Log.d("Get events", "Failure to retrieve events");
+//                        }
+//                    }
+//                });
+//            }
+//        }
+    }
+
+    private void getDummyEvents(){
+        eventsList.clear();
+        ArrayList<String> urls = new ArrayList<>();
+        String url0 = API_BASE_URL + "events/61520805385";
+        urls.add(url0);
+        String url1 = API_BASE_URL + "events/26807011493";
+        urls.add(url1);
+        String url2 = API_BASE_URL + "events/53078098020";
+        urls.add(url2);
+        String url3 = API_BASE_URL + "events/55845412131";
+        urls.add(url3);
+        for(int i = 3; i >= 0; i--){
+            addDummyEvent(urls.get(i), i);
         }
-        else {
-            final int[] position = {0};
-            for (int i = 0;i < categories.size(); i++) {
-                Log.d("Categories", "is not null");
-                showProgressBar();
-                AsyncHttpClient client = new AsyncHttpClient();
-                RequestParams params = new RequestParams();
-                String url = API_BASE_URL + "events/search";
-                params.put(API_KEY_AREA_RADIUS, KEY_DEFAULT_RADIUS);
-/*                if (latitude != null){
-                    params.put(API_KEY_LATITUDE, latitude);
-                    params.put(API_KEY_LONGITUDE, longitude);
-                }*/
-                params.put(API_KEY_LOCATION, KEY_DEFAULT_LOCATION);
-                params.put(API_KEY_PARAM, PRIVATE_TOKEN);
-                Log.d("Events", "Loading category "+categories.get(i));
-                params.put(API_KEY_CATEGORY, categories.get(i));
-                client.get(url, params, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        try {
-                            JSONArray events = response.getJSONArray("events");
-                            responseLength = events.length();
-                            for (int j = 0; j < responseLength; j++) {
-                                Event currEvent = new Event(events.getJSONObject(j));
-                                eventsList.put(position[0], currEvent);
-                                position[0]++;
-                                swipe_card_adapter.notifyDataSetChanged();
-                                hideProgressBar();
-                            }
-                        } catch (JSONException e) {
-                            Log.d("Get events", "Failure to retrieve events");
-                        }
+    }
+
+    private void addDummyEvent(String url, final int i){
+        AsyncHttpClient client = new AsyncHttpClient();
+        RequestParams params = new RequestParams();
+        params.put(API_KEY_PARAM, PRIVATE_TOKEN);
+        client.get(url, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    Event currEvent = new Event(response);
+                    eventsList.put(i, currEvent);
+                    if(i == 0){
+                        getEvents(ParseUser.getCurrentUser());
                     }
-                });
+                } catch (JSONException e) {
+                    Log.d("Get events", "Failure to retrieve events");
+                    e.printStackTrace();
+                }
             }
-        }
-
+        });
     }
 
-    public void triggerCheckmark(){
-        mCheck.check();
-        mCheck.bringToFront();
-    }
-
-    public static JSONArray shuffleJsonArray (JSONArray array) throws JSONException {
-        // Implementing Fisher–Yates shuffle
-        Random rnd = new Random();
-        for (int i = array.length() - 1; i >= 0; i--)
-        {
-            int j = rnd.nextInt(i + 1);
-            // Simple swap
-            Object object = array.get(j);
-            array.put(j, array.get(i));
-            array.put(i, object);
-        }
-        return array;
-    }
 
     // Makes sure swipe only discards card if user swiped it enough to prevent accidental swipes
     @Override
@@ -225,7 +231,7 @@ public class EventsExploreFragment extends Fragment implements CardStack.CardEve
                 rvEvents.setAdapter(swipe_card_adapter);
                 rvEvents.setListener(this);
                 Toast.makeText(getContext(), "Out of events! Reloading new ones!", Toast.LENGTH_SHORT).show();
-                getEvents(ParseUser.getCurrentUser());
+                getDummyEvents();
             }
             return true;
         }else {

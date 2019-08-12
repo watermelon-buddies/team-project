@@ -7,7 +7,7 @@
             android:icon="@drawable/home_icon"
             android:iconTint="@color/bright_blue"
             android:iconTintMode="src_in"
-            android:title="Profile" />
+            android:title="Home" />
         <item
             android:id="@+id/nav_profile"
             android:icon="@drawable/ic_profile"

@@ -252,6 +252,7 @@ public class ViewProfile extends AppCompatActivity implements NavigationView.OnN
                         mPendingInvitesAdapter.removeData(invitePosition);
                         mComingUpInvites.add(curr);
                         mComingUpInvitesAdapter.notifyItemInserted(mComingUpInvites.size()-1);
+                        tvNoEvents.setVisibility(View.INVISIBLE);
                     } else {
                         Log.d("Accept invite", "Failed in booking invite");
                         e.printStackTrace();

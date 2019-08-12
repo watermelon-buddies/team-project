@@ -49,11 +49,12 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/btnCurrentBucketTab"
         app:layout_constraintTop_toBottomOf="@+id/btnCurrentBucketTab">
+
         <ImageView
             android:id="@+id/ivHorizontalDivider"
-            android:layout_width="204dp"
+            android:layout_width="199dp"
             android:layout_height="2dp"
-            android:src="@color/bright_blue"/>
+            android:src="@color/bright_blue" />
     </LinearLayout>
 
 

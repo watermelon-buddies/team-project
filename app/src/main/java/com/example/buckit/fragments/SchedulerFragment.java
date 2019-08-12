@@ -198,8 +198,11 @@ public class SchedulerFragment extends Fragment {
             Bundle extras = getArguments();
             if(extras != null){
                 String activity = getArguments().getString("activity");
-                etEventName.setText(activity);
-                tvSchedulerTitle.setText(activity);
+                userEvents = (HashMap<String, Integer>)getArguments().getSerializable("userEvents");
+                if(activity != null){
+                    etEventName.setText(activity);
+                    tvSchedulerTitle.setText(activity);
+                }
             }
         }
         addListeners();
@@ -351,6 +354,7 @@ public class SchedulerFragment extends Fragment {
                             sendInvite();
                             startActivity(new Intent(getActivity(), ViewProfile.class));
                             sendNotification();
+                            Toast.makeText(getContext(), "Event Invite Sent!", Toast.LENGTH_SHORT).show();
                             getActivity().finish();
                         }
                     } else {
