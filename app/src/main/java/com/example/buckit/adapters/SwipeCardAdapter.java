@@ -118,7 +118,7 @@ public class SwipeCardAdapter extends ArrayAdapter<HashMap<Integer, Event>>  {
             @Override
             public void onClick(View v) {
                 int position = Integer.parseInt(mTvPosition.getText().toString());
-                Event currEvent = mEvents.get(position);
+                final Event currEvent = mEvents.get(position);
                 Log.d("Booking", currEvent.getTitle());
                 try {
                     addToCalendar(currEvent.getOriginalStartTime().replaceAll("T", " "), currEvent.getOriginalEndTime().replaceAll("T", " "), currEvent.getTitle());
@@ -148,8 +148,6 @@ public class SwipeCardAdapter extends ArrayAdapter<HashMap<Integer, Event>>  {
         mCheck.startAnimation(out);
         mIvCalSuccess.setVisibility(View.INVISIBLE);
         mCheck.setVisibility(View.INVISIBLE);
-
-
     }
 
     private void addToCalendar(String startTime, String endTime, String title) throws java.text.ParseException {

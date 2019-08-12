@@ -218,6 +218,10 @@ public class ViewProfile extends AppCompatActivity implements NavigationView.OnN
             startActivity(logoutIntent);
             finish();
         }
+        else if (id  == R.id.nav_home) {
+            Intent friendsView = new Intent(ViewProfile.this, HomeActivity.class);
+            startActivity(friendsView);
+        }
         else if (id == R.id.nav_view_friends) {
             Intent friendsView = new Intent(ViewProfile.this, ViewFriends.class);
             friendsView.putExtra("userCal", userCal);

@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.buckit.R;
@@ -71,6 +72,8 @@ public class BucketListCurrentFragment extends Fragment {
     @BindView(R.id.rvBucketList)  RecyclerView rvBucketList;
     @BindView(R.id.addItemFab)  FloatingActionButton addItemFab;
     @BindView(R.id.ivBlurBucket) ImageView ivBlurBucket;
+    @BindView(R.id.tvNoCurrentItems)
+    TextView tvNoCurrentItems;
     private Unbinder unbinder;
     ArrayList<Bucketlist> mBucketList;
     BucketListAdapter mBucketAdapter;
@@ -117,6 +120,23 @@ public class BucketListCurrentFragment extends Fragment {
         newItem.setAchieved(false);
         Date date = changeDateToParseFormat(deadline);
         newItem.setCategory(category);
+        saveCategoryKeyInUserDatabase(category);
+        newItem.setDeadline(date);
+        newItem.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    Snackbar.make(popupView, "Successfully added to bucket list!", Snackbar.LENGTH_SHORT).show();
+                } else {
+                    Log.d("Bucketlist Fragment", "Failed in adding new item to Parse!");
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
+
+    private void saveCategoryKeyInUserDatabase(final String category) {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
         String url = API_BASE_URL + "categories/";
@@ -126,7 +146,7 @@ public class BucketListCurrentFragment extends Fragment {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
                     JSONArray categories = response.getJSONArray("categories");
-                    for (int i = 0; i < categories.length(); i++){
+                    for (int i = 0; i < response.length(); i++){
                         JSONObject catObject = categories.getJSONObject(i);
                         if (catObject.getString("name").equals(category) ){
                             Log.d("ID", catObject.getString("id"));
@@ -135,9 +155,9 @@ public class BucketListCurrentFragment extends Fragment {
                                 @Override
                                 public void done(ParseException e) {
                                     if (e == null) {
-                                        Log.d("Home Activity", "Create a new post success!");
+                                        Log.d("Bucketlist Fragment", "Success in adding new item to User");
                                     } else {
-                                        Log.d("Home Activity", "Failed in creating a post!");
+                                        Log.d("Bucketlist Fragment", "Failed in adding new item to User!");
                                         e.printStackTrace();
                                     }
                                 }
@@ -146,21 +166,6 @@ public class BucketListCurrentFragment extends Fragment {
                         }
                     }
                 } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        newItem.setDeadline(date);
-        Toast.makeText(getContext(), "Added item to bucket list", Toast.LENGTH_LONG);
-        /* TODO - Change to snackbar compared to toast */
-        newItem.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e == null) {
-                    Log.d("Home Activity", "Create a new post success!");
-                } else {
-                    Log.d("Home Activity", "Failed in creating a post!");
                     e.printStackTrace();
                 }
             }
@@ -175,19 +180,6 @@ public class BucketListCurrentFragment extends Fragment {
         String parseDate = fmtOut.format(d);
         return fmtOut.parse(parseDate);
     }
-
-    private void addBlur() {
-        ivBlurBucket.setVisibility(View.VISIBLE);
-        Animation aniFade = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_in);
-        ivBlurBucket.startAnimation(aniFade);
-    }
-
-    private void removeBlur(){
-        Animation aniFade = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_out);
-        ivBlurBucket.startAnimation(aniFade);
-        ivBlurBucket.setVisibility(View.INVISIBLE);
-    }
-
 
     /* Unbind butterknife binded views when fragment is closed*/
     @Override public void onDestroyView() {
@@ -248,19 +240,22 @@ public class BucketListCurrentFragment extends Fragment {
         bucketQuery.findInBackground(new FindCallback<Bucketlist>() {
             @Override
             public void done(List<Bucketlist> object, ParseException e) {
-                if (e == null) {
-                    mBucketList.clear();
-                    mBucketList.addAll(object);
-                    mBucketAdapter.notifyDataSetChanged();
-                    if (mFirstLoad) {
-                        rvBucketList.scrollToPosition(0);
-                        mFirstLoad = false;
-                    }
+                if (object != null && object.size()>0){
+                    if (e == null) {
+                        mBucketList.clear();
+                        mBucketList.addAll(object);
+                        mBucketAdapter.notifyDataSetChanged();
+                        if (mFirstLoad) {
+                            rvBucketList.scrollToPosition(0);
+                            mFirstLoad = false;
+                        }
 
-                    Log.d("Timeline Activity", "Successfully loaded posts!");
-                } else {
-                    e.printStackTrace();
+                        Log.d("Timeline Activity", "Successfully loaded posts!");
+                    } else {
+                        e.printStackTrace();
+                    }
                 }
+                else tvNoCurrentItems.setVisibility(View.VISIBLE);
             }
         });
     }
