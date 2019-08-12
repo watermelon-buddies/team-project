@@ -23,6 +23,7 @@ import com.example.buckit.models.Bucketlist;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 
+import java.util.HashMap;
 import java.util.List;
 
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
@@ -44,11 +45,13 @@ public class BucketListAdapter extends RecyclerView.Adapter<BucketListAdapter.Vi
     Bucketlist bucketList;
     ViewHolder viewHolder;
     ImageView ivDelete;
+    HashMap<String, Integer> mUserEvents;
 
-    public BucketListAdapter(Context context, List<Bucketlist> items, boolean notAchieved) {
+    public BucketListAdapter(Context context, List<Bucketlist> items, boolean notAchieved, HashMap<String, Integer> userEvents) {
         mBucketList = items;
         mContext = context;
         show = notAchieved;
+        mUserEvents = userEvents;
     }
 
     @NonNull
@@ -98,6 +101,7 @@ public class BucketListAdapter extends RecyclerView.Adapter<BucketListAdapter.Vi
                 Bundle data = new Bundle();
                 final Bucketlist item = mBucketList.get(position);
                 data.putString("activity", item.getName());
+                data.putSerializable("userEvents", mUserEvents);
                 SchedulerFragment scheduler = new SchedulerFragment();
                 scheduler.setArguments(data);
                 FragmentTransaction fragmentTransaction = ((HomeActivity) mContext).getSupportFragmentManager().beginTransaction();

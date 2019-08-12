@@ -61,7 +61,11 @@ public class SelectTime extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        userEvents = (HashMap<String, Integer>) getIntent().getSerializableExtra("userCal");
+        userEvents = new HashMap<>();
+        if(getIntent().getSerializableExtra("userCal") != null){
+            userEvents = (HashMap<String, Integer>) getIntent().getSerializableExtra("userCal");
+        }
+        userEvents.put("dummy", 2);
         finalMeetTimes = new ArrayList<>();
         for (int i = 0; i < sentTimes.length(); i++) {
             try {

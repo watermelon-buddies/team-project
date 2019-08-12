@@ -289,7 +289,10 @@ public class HomeActivity extends AppCompatActivity
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.action_bucket:
+                                Bundle userCalendar = new Bundle();
+                                userCalendar.putSerializable("userEvents", userEvents);
                                 fragment = new BucketListTabbed();
+                                fragment.setArguments(userCalendar);
                                 break;
                             case R.id.action_schedule:
                                 Bundle userCal = new Bundle();
@@ -300,9 +303,6 @@ public class HomeActivity extends AppCompatActivity
                                 break;
                             case R.id.action_events:
                                 Bundle bundle = new Bundle();
-/*
-                                Float latitude = sharedPreferences.getFloat("latitude", (float) 37.483149);
-                                Float longitude = sharedPreferences.getFloat("longitude", (float) -122.150028);*/
                                 if (mCurrentLocation != null){
                                     bundle.putDouble(LAT_KEY, mCurrentLocation.getLatitude());
                                     bundle.putDouble(LONG_KEY, mCurrentLocation.getLongitude());

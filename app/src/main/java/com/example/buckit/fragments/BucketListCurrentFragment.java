@@ -44,6 +44,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -79,6 +80,7 @@ public class BucketListCurrentFragment extends Fragment {
     ParseUser user;
     View mView;
     FrameLayout layout_MainMenu;
+    HashMap<String, Integer> userEvents;
 
     /* Inflate bucket_list_fragment.xml and bind views using Butterknife */
     @Nullable
@@ -86,6 +88,9 @@ public class BucketListCurrentFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View bucketListView = inflater.inflate(R.layout.bucket_list_current, container, false);
         unbinder = ButterKnife.bind(this, bucketListView);
+        if (getArguments() != null) {
+            userEvents = (HashMap<String, Integer>) getArguments().getSerializable("userEvents");
+        }
         return bucketListView;
     }
 
@@ -102,7 +107,7 @@ public class BucketListCurrentFragment extends Fragment {
         });
 
         mBucketList = new ArrayList<>();
-        mBucketAdapter = new BucketListAdapter(getContext(), mBucketList, true);
+        mBucketAdapter = new BucketListAdapter(getContext(), mBucketList, true, userEvents);
         rvBucketList.setAdapter(mBucketAdapter);
         // associate the LinearLayoutManager with the RecylcerView
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
