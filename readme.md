@@ -23,6 +23,12 @@ Your [design product spec](https://hackmd.io/s/H1wGpVUh7) (described in that lin
  * [list second screen here]
    * [list associated required story here]
    * ...
+   
+## Video Walkthrough
+
+Here's a walkthrough of implemented user stories:
+
+<img src='walkthrough.gif' />
 
 ## 3. Navigation
 
