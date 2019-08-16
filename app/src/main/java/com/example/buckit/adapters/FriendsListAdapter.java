@@ -64,7 +64,6 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     @SuppressLint("RestrictedApi")
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        // get data according to position
         if(mFriendsList.size() > 0) {
             friend = (User) mFriendsList.get(position);
             Log.d("Friend", friend.getUsername());
@@ -122,7 +121,6 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         makeNotification.sendNotification();
         newInvitation.setInviter(inviter);
         newInvitation.setInvited(invited);
-        // Status 2 meaning friend request not accepter or rejected yet
         newInvitation.setStatus(2);
         newInvitation.saveInBackground(new SaveCallback() {
             @Override
@@ -144,13 +142,10 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         notifyDataSetChanged();
     }
 
-    // Add a list of items -- change to type used
     public void addAll(List<User> list) {
         mFriendsList.addAll(list);
         notifyDataSetChanged();
     }
-
-    // create the viewholder class
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView tvUsername;

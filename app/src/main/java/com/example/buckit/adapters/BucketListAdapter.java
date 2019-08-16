@@ -66,8 +66,6 @@ public class BucketListAdapter extends RecyclerView.Adapter<BucketListAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-        // get data according to position
-
         bucketList = mBucketList.get(position);
         holder.btnDone.setTag(bucketList);
         holder.btnScheduler.setTag(bucketList);
@@ -144,20 +142,16 @@ public class BucketListAdapter extends RecyclerView.Adapter<BucketListAdapter.Vi
     public int getItemCount() {
         return mBucketList.size();
     }
-    // for each row, inflate the layout and cache references intop view
 
     public void clear() {
         mBucketList.clear();
         notifyDataSetChanged();
     }
 
-    // Add a list of items
     public void addAll(List<Bucketlist> list) {
         mBucketList.addAll(list);
         notifyDataSetChanged();
     }
-
-    // create the viewholder class
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView tvBucketDescription;

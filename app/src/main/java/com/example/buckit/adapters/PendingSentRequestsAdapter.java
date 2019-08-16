@@ -77,7 +77,6 @@ public class PendingSentRequestsAdapter extends RecyclerView.Adapter<PendingSent
         return mPendingRequests.size();
     }
 
-    // create the viewholder class
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public View rootView;

@@ -21,16 +21,12 @@ import com.example.buckit.models.Event;
 import com.wajahatkarim3.easyflipview.EasyFlipView;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
 import cdflynn.android.library.checkview.CheckView;
 
 public class SwipeCardAdapter extends ArrayAdapter<HashMap<Integer, Event>>  {
-
-    /* Called in order to fill in information in each card of event explorer
-     */
 
     Context mContext;
     HashMap<Integer, Event> mEvents;
@@ -47,7 +43,6 @@ public class SwipeCardAdapter extends ArrayAdapter<HashMap<Integer, Event>>  {
     TextView mTvCalSuccess;
 
 
-    // Events are contained in a hashmap in which the key is their index.
     public SwipeCardAdapter(Context context, int resource, HashMap<Integer, Event> events, TextView tvPosition, CheckView check, ImageView ivCalSuccess, TextView tvCalSuccess) {
         super(context, resource);
         mContext = context;
@@ -60,8 +55,6 @@ public class SwipeCardAdapter extends ArrayAdapter<HashMap<Integer, Event>>  {
 
     }
 
-
-    // Sets content by getting information from event in hashmap
     @Override
     public View getView(int position, final View contentView, ViewGroup parent) {
         ImageView ivEventPicture = contentView.findViewById(R.id.ivEventPicture);
@@ -151,7 +144,6 @@ public class SwipeCardAdapter extends ArrayAdapter<HashMap<Integer, Event>>  {
     }
 
     private void addToCalendar(String startTime, String endTime, String title) throws java.text.ParseException {
-        Calendar beginTime = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date start = sdf.parse(startTime);
         Date end = sdf.parse(endTime);

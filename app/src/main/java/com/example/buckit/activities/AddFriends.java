@@ -1,4 +1,4 @@
-package com.example.buckit.fragments;
+package com.example.buckit.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import com.example.buckit.R;
-import com.example.buckit.activities.ViewFriends;
 import com.example.buckit.adapters.FriendsListAdapter;
 import com.example.buckit.models.FriendInvite;
 import com.example.buckit.models.User;
@@ -26,7 +25,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class AddFriendsActivity extends AppCompatActivity {
+public class AddFriends extends AppCompatActivity {
 
     Unbinder unbinder;
     FriendsListAdapter usersAdapter;
@@ -53,7 +52,7 @@ public class AddFriendsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
-                startActivity(new Intent(AddFriendsActivity.this, ViewFriends.class));
+                startActivity(new Intent(AddFriends.this, ViewFriends.class));
             }
         });
     }

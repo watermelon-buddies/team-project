@@ -29,9 +29,7 @@ public class AddToBucketList extends DialogFragment {
 
 
     public AddToBucketList() {
-            // Empty constructor is required for DialogFragment
-            // Make sure not to add arguments to the constructor
-            // Use `newInstance` instead as shown below
+
             }
 
     public static AddToBucketList newInstance(String title) {
@@ -47,10 +45,6 @@ public class AddToBucketList extends DialogFragment {
                              Bundle savedInstanceState) {
             return inflater.inflate(R.layout.bucket_list_add_fragment, container);
             }
-
-    public interface EditNameDialogListener {
-        void onFinishEditDialog(String text);
-    }
 
 
     @Override
@@ -70,13 +64,9 @@ public class AddToBucketList extends DialogFragment {
             public void onClick(View v) {
                 final String description = etDescription.getText().toString();
                 final ParseUser user = ParseUser.getCurrentUser();
-/*                final File file = new File(imagePath);
-                final ParseFile parseFile = new ParseFile(file);*/
                 createPost(description, user);
             }
         });
-        // Get field from view
-        // Fetch arguments from bundle and set title
         String title = getArguments().getString("title", "Compose Tweet");
         getDialog().setTitle(title);
     }
@@ -106,7 +96,6 @@ public class AddToBucketList extends DialogFragment {
         }
 
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            //This sets a textview to the current length
             tvCharCount.setText(String.valueOf(280-(s.length()))+" characters remaining");
         }
 

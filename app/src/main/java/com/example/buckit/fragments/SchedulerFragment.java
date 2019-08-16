@@ -282,7 +282,6 @@ public class SchedulerFragment extends Fragment {
                 if(btnText.equals("Fri")){ addDayToArray(new java.text.SimpleDateFormat("dd/MM/yyyy").format(getNextWeekday(DayOfWeek.FRIDAY))); }
                 if(btnText.equals("Sat")){ addDayToArray(new java.text.SimpleDateFormat("dd/MM/yyyy").format(getNextWeekday(DayOfWeek.SATURDAY))); }
                 if(btnText.equals("Sun")){ addDayToArray(new java.text.SimpleDateFormat("dd/MM/yyyy").format(getNextWeekday(DayOfWeek.SUNDAY))); }
-                /*TODO: Bug control*/
             }
         }
     }

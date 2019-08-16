@@ -502,7 +502,6 @@ public class HomeActivity extends AppCompatActivity
     }
 
     public void onLocationChanged(Location location) {
-        // GPS may be turned off
         if (location == null) {
             return;
         }

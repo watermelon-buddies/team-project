@@ -39,8 +39,6 @@ public class PendingInvitesAdapter extends RecyclerView.Adapter<PendingInvitesAd
         isPending = pendingInvites;
     }
 
-
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -53,8 +51,6 @@ public class PendingInvitesAdapter extends RecyclerView.Adapter<PendingInvitesAd
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        // get data according to position
-
         currInvite = mUserInvites.get(position);
         holder.tvWhat.setText(currInvite.getTitle());
         ParseUser getFriend = currInvite.getCreator();
@@ -107,9 +103,6 @@ public class PendingInvitesAdapter extends RecyclerView.Adapter<PendingInvitesAd
         notifyItemRangeChanged(position,getItemCount());
     }
 
-
-
-    // create the viewholder class
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView tvWhat;

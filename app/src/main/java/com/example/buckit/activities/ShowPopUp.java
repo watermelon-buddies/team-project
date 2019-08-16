@@ -13,7 +13,6 @@ public class ShowPopUp extends Activity implements OnClickListener {
     Button ok;
     Button cancel;
 
-    boolean click = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

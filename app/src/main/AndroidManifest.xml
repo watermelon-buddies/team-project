@@ -57,7 +57,7 @@
             android:name=".activities.ViewFriends"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".fragments.AddFriendsActivity"
+            android:name=".activities.AddFriends"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.SelectTime"

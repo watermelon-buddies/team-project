@@ -1,13 +1,9 @@
 package com.example.buckit.models;
 
-import com.parse.Parse;
 import com.parse.ParseClassName;
-import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-
-import org.json.JSONArray;
 
 @ParseClassName("FriendInvite")
 public class FriendInvite extends ParseObject {
@@ -25,8 +21,6 @@ public class FriendInvite extends ParseObject {
     public ParseUser getInviter () {return getParseUser(KEY_INVITER); }
 
     public void setInviter (ParseUser user) {put(KEY_INVITER, user); }
-
-    public int getStatus() {return getInt(KEY_REQUEST_STATUS); }
 
     public void setStatus (int status) { put(KEY_REQUEST_STATUS, status); }
 
@@ -46,11 +40,6 @@ public class FriendInvite extends ParseObject {
 
         public FriendInvite.Query getSentRequests(ParseUser user){
             whereEqualTo(KEY_INVITER, user);
-            return this;
-        }
-
-        public FriendInvite.Query withInviter(){
-            include(KEY_INVITER);
             return this;
         }
 

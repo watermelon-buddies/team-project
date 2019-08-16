@@ -18,7 +18,6 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.example.buckit.R;
 import com.example.buckit.utils.MultiSelectSpinner;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -39,7 +38,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindInt;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
@@ -52,17 +50,12 @@ import static com.example.buckit.models.User.KEY_EVENT_RADIUS;
 
 public class SignUpDetailsActivtiy extends AppCompatActivity {
 
-    @BindView(R.id.spinCategoriesSignUp)
-    MultiSelectSpinner spinCategoriesSignUp;
-    @BindView(R.id.etEventRadius)
-    EditText etEventRadius;
-    @BindView(R.id.spinDistanceType)
-    Spinner spinDistanceType;
-    @BindView(R.id.btnFinishRegistration)
-    Button btnFinishRegistration;
+    @BindView(R.id.spinCategoriesSignUp) MultiSelectSpinner spinCategoriesSignUp;
+    @BindView(R.id.etEventRadius) EditText etEventRadius;
+    @BindView(R.id.spinDistanceType) Spinner spinDistanceType;
+    @BindView(R.id.btnFinishRegistration) Button btnFinishRegistration;
     @BindView(R.id.btnTakeProfilePicture) Button btnTakeProfilePicture;
-    @BindView(R.id.ivShowTakenProfilePic)
-    ImageView ivShowTakenProfilePic;
+    @BindView(R.id.ivShowTakenProfilePic) ImageView ivShowTakenProfilePic;
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
     public final String TAG = "CameraAction";
     public String photoFileName = "photo.jpg";
@@ -99,33 +92,21 @@ public class SignUpDetailsActivtiy extends AppCompatActivity {
     }
 
     public void LaunchCamera() {
-        // create Intent to take a picture and return control to the calling application
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Create a File reference to access to future access
         photoFile = getPhotoFileUri(photoFileName);
-
-        // wrap File object into a content provider
-        // required for API >= 24
-        // See https://guides.codepath.com/android/Sharing-Content-with-Intents#sharing-files-with-api-24-or-higher
         Uri fileProvider = FileProvider.getUriForFile(this, "com.fileprovider", photoFile);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
-
-        // If you call startActivityForResult() using an intent that no app can handle, your app will crash.
-        // So as long as the result is not null, it's safe to use the intent.
         if (intent.resolveActivity(this.getPackageManager()) != null) {
-            // Start the image capture intent to take photo
             startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
         }
 
     }
-    // Returns the File for a photo stored on disk given the fileName
+
     public File getPhotoFileUri(String fileName) {
         File mediaStorageDir = new File(this.getExternalFilesDir(Environment.DIRECTORY_PICTURES), TAG);
-        // Create the storage directory if it does not exist
         if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()){
             Log.d(TAG, "failed to create directory");
         }
-        // Return the file target for the photo based on filename
         File file = new File(mediaStorageDir.getPath() + File.separator + fileName);
         return file;
     }

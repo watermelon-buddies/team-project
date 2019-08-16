@@ -61,12 +61,6 @@ import static com.example.buckit.models.Bucketlist.KEY_USER;
 
 public class BucketListCurrentFragment extends Fragment {
 
-    /*
-    Fragment activated when bucket icon on bottom naivation bar is clicked that allows user to see
-    their bucket list ideas, add ideas with categories specified and go to scheduler to book
-    specific time
-     */
-
     @BindView(R.id.rvBucketList)  RecyclerView rvBucketList;
     @BindView(R.id.addItemFab)  FloatingActionButton addItemFab;
     @BindView(R.id.ivBlurBucket) ImageView ivBlurBucket;
@@ -82,7 +76,7 @@ public class BucketListCurrentFragment extends Fragment {
     FrameLayout layout_MainMenu;
     HashMap<String, Integer> userEvents;
 
-    /* Inflate bucket_list_fragment.xml and bind views using Butterknife */
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -97,7 +91,6 @@ public class BucketListCurrentFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull final View bucketListView, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(bucketListView, savedInstanceState);
-        /* addItem floating action button for adding new item to the bucket list */
         user = ParseUser.getCurrentUser();
         addItemFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,7 +102,6 @@ public class BucketListCurrentFragment extends Fragment {
         mBucketList = new ArrayList<>();
         mBucketAdapter = new BucketListAdapter(getContext(), mBucketList, true, userEvents);
         rvBucketList.setAdapter(mBucketAdapter);
-        // associate the LinearLayoutManager with the RecylcerView
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rvBucketList.setLayoutManager(linearLayoutManager);
         SnapHelper snapHelper = new LinearSnapHelper();
@@ -188,7 +180,6 @@ public class BucketListCurrentFragment extends Fragment {
         return fmtOut.parse(parseDate);
     }
 
-    /* Unbind butterknife binded views when fragment is closed*/
     @Override public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();

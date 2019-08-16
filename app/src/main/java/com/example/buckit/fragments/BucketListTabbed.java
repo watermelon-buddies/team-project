@@ -79,7 +79,6 @@ public class BucketListTabbed extends Fragment {
         });
     }
 
-    /* Unbind butterknife binded views when fragment is closed*/
     @Override public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();

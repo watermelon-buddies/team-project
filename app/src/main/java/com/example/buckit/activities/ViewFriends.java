@@ -27,7 +27,6 @@ import com.example.buckit.R;
 import com.example.buckit.adapters.FriendRequestsAdapter;
 import com.example.buckit.adapters.FriendsListAdapter;
 import com.example.buckit.adapters.PendingSentRequestsAdapter;
-import com.example.buckit.fragments.AddFriendsActivity;
 import com.example.buckit.models.FriendInvite;
 import com.example.buckit.models.User;
 import com.parse.FindCallback;
@@ -106,7 +105,7 @@ public class ViewFriends extends AppCompatActivity {
                     }
                 }
             });
-            startActivity(new Intent(ViewFriends.this, AddFriendsActivity.class));
+            startActivity(new Intent(ViewFriends.this, AddFriends.class));
             this.finish();
         }
         setContentView(R.layout.activities_drawrer_main);
@@ -151,7 +150,7 @@ public class ViewFriends extends AppCompatActivity {
         btnAddFriends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(ViewFriends.this, AddFriendsActivity.class));
+                startActivity(new Intent(ViewFriends.this, AddFriends.class));
                 finish();
             }
         });

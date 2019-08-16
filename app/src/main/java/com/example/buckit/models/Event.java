@@ -10,8 +10,6 @@ import java.util.Date;
 
 public class Event {
 
-    // Gets event JSON Object and stores it accordingly
-
     public String title;
     public String startTime;
     public String endTime;
@@ -29,15 +27,6 @@ public class Event {
         description = object.getJSONObject("description").getString("text");
         addedToCal = false;
     }
-
-    public void setAddedToCal(){
-        addedToCal = true;
-    }
-
-    public Boolean getAddedToCal(){
-        return addedToCal;
-    }
-
 
     public String getTitle(){
         return title;
@@ -68,9 +57,7 @@ public class Event {
         Date date = null;
         String formattedTime = null;
         try{
-            //Conversion of input String to date
             date= df.parse(time);
-            //old date format to new date format
             formattedTime = outputformat.format(date);
         } catch (java.text.ParseException e) {
             e.printStackTrace();
@@ -80,10 +67,6 @@ public class Event {
 
     public String getImageUrl() {
         return imageUrl;
-    }
-
-    public String getEventUrl() {
-        return eventUrl;
     }
 
     public String getDescription() {

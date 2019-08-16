@@ -63,7 +63,6 @@ public class BucketListAchievedFragment extends Fragment {
         populateBucket();
     }
 
-    /* Unbind butterknife binded views when fragment is closed*/
     @Override public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();

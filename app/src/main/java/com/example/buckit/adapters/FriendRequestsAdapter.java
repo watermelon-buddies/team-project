@@ -57,10 +57,7 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        // get data according to position
-
         currRequest = mRequests.get(position);
-
         holder.rootView.setTag(currRequest);
         try {
                 holder.tvRequestUsername.setText(currRequest.getInviter().fetchIfNeeded().getUsername());
@@ -88,7 +85,6 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
         return mRequests.size();
     }
 
-    // create the viewholder class
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public View rootView;

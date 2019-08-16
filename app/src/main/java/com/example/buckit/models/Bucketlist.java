@@ -5,8 +5,6 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
-import org.json.JSONArray;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,19 +40,14 @@ public class Bucketlist extends ParseObject {
         put(KEY_USER, user);
     }
 
-    public Boolean getAchieved () {return getBoolean(KEY_ACHIEVED); }
-
     public void setAchieved (Boolean achieved) { put (KEY_ACHIEVED, achieved); }
 
     public String getCategory() { return getString(KEY_CATEGORY); }
 
     public void setCategory(String category) { put(KEY_CATEGORY, category); }
 
-    public Date getDeadline () {return getDate(KEY_DEADLINE); }
-
     public void setDeadline (Date deadline) {put (KEY_DEADLINE, deadline); }
 
-/*    public JSONArray getElements() { return getJSONArray(KEY_ELEMENTS);}*/
 
     public String changeDateToSimpleFormat(String strDate) throws ParseException {
         DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
