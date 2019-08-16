@@ -112,7 +112,6 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
                 }
             });
         }
-
     }
 
     private void createFriendRequest(ParseUser inviter, ParseUser invited) {
